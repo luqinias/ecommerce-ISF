@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="{% static 'css/componentes.css' %}">
   <link rel="stylesheet" href="{% static 'css/paginas.css' %}">
   {% block extra_head %}{% endblock %}
+  {% load seo %}{% jsonld_site %}
   {% block jsonld %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>

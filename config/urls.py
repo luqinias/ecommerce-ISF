@@ -8,6 +8,7 @@ admin.site.site_title = "ISF · Admin"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", include("apps.seo.urls")),
     path("", include("apps.conteudo.urls")),
     path("", include("apps.core.urls")),
     path("", include("apps.catalogo.urls")),

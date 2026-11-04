@@ -21,7 +21,11 @@ def home(request):
 def _pagina(request, slug: str):
     pagina = get_object_or_404(Page.objects.prefetch_related("sections"), slug=slug, active=True)
     template = "conteudo/pagina_legal.html" if pagina.kind == Page.Kind.LEGAL else "conteudo/pagina.html"
-    return render(request, template, {"pagina": pagina, "secoes": list(pagina.sections.all())})
+    return render(
+        request,
+        template,
+        {"pagina": pagina, "secoes": list(pagina.sections.all()), "trilha": [("Início", "/"), (pagina.title, None)]},
+    )
 
 
 def sobre(request):

@@ -1,1 +1,1 @@
-{# JSON-LD da listagem: completado na feature 007 (seo) #}
+{% load seo %}{% if not noindex %}{% jsonld_listagem cfg.titulo canonical produtos cfg.breadcrumb %}{% endif %}
