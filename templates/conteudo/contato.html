@@ -23,9 +23,9 @@
   <ul class="canais">
     <li class="canal canal--destaque">
       <span class="icone-redondo">{% icone "whatsapp" 20 %}</span>
-      <span class="kicker">Mais rápido · WhatsApp</span>
+      <span class="kicker">WhatsApp</span>
       <b>{{ site.phone_display|definir }}</b>
-      <p>Mande fotos da área, a lista de materiais ou só a ideia. É por aqui que a maioria dos pedidos começa.</p>
+      <p>Canal mais rápido para tirar dúvidas e enviar a lista de materiais ou fotos da área.</p>
       <a class="btn btn--acento btn--sm" href="{% whatsapp_url %}" {% if site.whatsapp_number %}target="_blank" rel="noopener"{% endif %}>Chamar no WhatsApp</a>
     </li>
     <li class="canal">
@@ -40,14 +40,14 @@
       <span class="kicker">Endereço</span>
       <b>{{ site.address|definir|linebreaksbr }}</b>
       <p>CNPJ {{ site.cnpj|definir }}</p>
-      {% if site.address and "[DEFINIR]" not in site.address %}<a class="btn btn--claro btn--sm" href="https://www.google.com/maps/search/?api=1&amp;query={{ site.address|urlencode }}" target="_blank" rel="noopener">Abrir rota no mapa</a>{% endif %}
+      {% if site.address and "[DEFINIR]" not in site.address %}<a class="btn btn--claro btn--sm" href="https://www.google.com/maps/search/?api=1&amp;query={{ site.address|urlencode }}" target="_blank" rel="noopener">Ver no mapa</a>{% endif %}
     </li>
   </ul>
 
   <section class="contato__form secao" aria-labelledby="form-titulo">
     <div>
-      <span class="kicker">Orçamento mais rápido</span>
-      <h2 id="form-titulo">Com estas informações, a proposta sai na primeira resposta</h2>
+      <span class="kicker">Antes de enviar</span>
+      <h2 id="form-titulo">O que ajuda a montar a proposta</h2>
       <ul class="checklist">
         <li>{% icone "check" 18 %} <span><b>O produto ou a ideia</b> — link do catálogo, foto ou descrição.</span></li>
         <li>{% icone "check" 18 %} <span><b>Cultura e área</b> — o que vai irrigar e o tamanho.</span></li>
@@ -82,8 +82,8 @@
 {% if faq %}
 <section class="secao secao--creme" aria-labelledby="faq-contato">
   <div class="container container--estreito">
-    <span class="kicker">Antes de chamar</span>
-    <h2 id="faq-contato">Dúvidas que chegam todo dia</h2>
+    <span class="kicker">FAQ</span>
+    <h2 id="faq-contato">Antes de entrar em contato</h2>
     {% include "conteudo/_faq.html" with perguntas=faq %}
   </div>
 </section>

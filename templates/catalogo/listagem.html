@@ -43,7 +43,7 @@
           <li><a class="chip" rel="nofollow" href="{{ url_base }}?{% if query_chip %}{{ query_chip }}&amp;{% endif %}tipo={{ chip.slug }}" {% if tipo_ativo.slug == chip.slug %}aria-current="true"{% endif %}>{{ chip.rotulo }} <small>{{ chip.total }}</small></a></li>
         {% endfor %}
         {% if todas_categorias %}
-          <li><button type="button" class="chip chip--mais" data-expandir aria-controls="todas-categorias" aria-expanded="false" data-texto-mais="Ver todas as categorias ↓" data-texto-menos="Ocultar categorias ↑"><span data-rotulo>Ver todas as categorias ↓</span></button></li>
+          <li><button type="button" class="chip chip--mais" data-expandir aria-controls="todas-categorias" aria-expanded="false" data-texto-mais="Mostrar todas as categorias ↓" data-texto-menos="Ocultar categorias ↑"><span data-rotulo>Mostrar todas as categorias ↓</span></button></li>
         {% endif %}
       </ul>
     </nav>
@@ -94,7 +94,7 @@
   {# L06 Ajuda #}
   <aside class="ajuda-lista" aria-labelledby="ajuda-titulo">
     <div>
-      <h2 id="ajuda-titulo" class="h3">Não encontrou o que procura?</h2>
+      <h2 id="ajuda-titulo" class="h3">Precisa de ajuda para escolher?</h2>
       <p>Conte o que você precisa irrigar e a equipe sugere as opções para o seu projeto.</p>
     </div>
     <a class="btn btn--primario" href="{% if cfg.tipo == 'categoria' %}{% whatsapp_url site.category_help_message categoria=cfg.titulo %}{% else %}{% whatsapp_url %}{% endif %}" {% if site.whatsapp_number %}target="_blank" rel="noopener"{% endif %}>

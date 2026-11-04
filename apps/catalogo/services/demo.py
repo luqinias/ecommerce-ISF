@@ -57,7 +57,7 @@ def _colecoes():
         "Preparo para a safra": {"color": "ouro", "featured": True, "is_main": True, "order": 2,
                                  "starts_on": hoje - timedelta(days=15), "ends_on": hoje + timedelta(days=120),
                                  "order_deadline": hoje + timedelta(days=45),
-                                 "deadline_note": "Depois disso, sob consulta",
+                                 "deadline_note": "Após a data, consultar disponibilidade",
                                  "description": "Monte o sistema antes do plantio e evite a fila da alta temporada."},
     }  # fmt: skip
 

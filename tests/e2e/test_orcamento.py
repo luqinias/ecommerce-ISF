@@ -35,7 +35,7 @@ def test_adicionar_revisar_e_enviar(base, pagina_desktop, cenario):
     expect(page.locator("#contador-lista")).to_have_text("1")
     expect(page.locator(".toast")).to_contain_text("Gotejador adicionado")
     page.locator(".toast a").click()
-    expect(page.get_by_role("heading", level=1)).to_have_text("Vamos preparar seu orçamento?")
+    expect(page.get_by_role("heading", level=1)).to_have_text("Revise sua lista e peça o orçamento")
     expect(page.locator(".tabela-itens")).to_contain_text("G1-2")
     expect(page.locator("#qtd-1")).to_have_value("200")
     page.fill("#id_name", "Maria")
@@ -46,7 +46,7 @@ def test_adicionar_revisar_e_enviar(base, pagina_desktop, cenario):
     page.check("#id_consent")
     with page.expect_request("https://wa.me/**") as req:
         page.get_by_role("button", name="Enviar pedido de orçamento").click()
-        expect(page.get_by_role("heading", level=1)).to_have_text("Sua solicitação foi recebida!")
+        expect(page.get_by_role("heading", level=1)).to_have_text("Pedido de orçamento enviado")
     url = unquote(req.value.url)
     quote = Quote.objects.get()
     assert url.startswith("https://wa.me/5534999990000?text=") and quote.code in url and "200 peças" in url

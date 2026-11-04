@@ -18,3 +18,7 @@ docs/engenharia-reversa/raw/
 !.env.example
 /test-results/
 /playwright-report/
+# capturas da validação (regeneráveis) e composições com a referência
+docs/validacao/screenshots/
+docs/validacao/lado-a-lado/
+docs/validacao/raw/

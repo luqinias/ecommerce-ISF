@@ -11,7 +11,7 @@
   </ol>
   <div class="confirmacao">
     <span class="confirmacao__icone">{% icone "check" 32 %}</span>
-    <h1>Sua solicitação foi recebida!</h1>
+    <h1>Pedido de orçamento enviado</h1>
     <p class="lead">Pedido <b class="mono">{{ quote.code }}</b>. {% if quote.email %}Enviamos uma confirmação para <b>{{ quote.email }}</b>. {% endif %}A equipe responde com a proposta o mais rápido possível.</p>
     {% if link_whatsapp %}
       <a class="btn btn--acento btn--lg" href="{{ link_whatsapp }}" data-whatsapp-auto="{% if abrir %}1{% endif %}">{% icone "whatsapp" 20 %} Abrir o WhatsApp com meu orçamento</a>

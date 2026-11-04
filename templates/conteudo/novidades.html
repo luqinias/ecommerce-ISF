@@ -14,8 +14,8 @@
       <p class="lead">{{ texto.text }}</p>
     </div>
     {% if ultimos %}
-    <div class="ultimos" aria-label="Últimos lançamentos">
-      <div class="ultimos__topo"><span>Últimos lançamentos</span><span class="selo"><span class="selo__ponto"></span>Atualizado</span></div>
+    <div class="ultimos" aria-label="Entraram por último">
+      <div class="ultimos__topo"><span>Entraram por último</span><span class="selo"><span class="selo__ponto"></span>Atualizado</span></div>
       <ul>{% for p in ultimos %}{% with img=p.main_image %}<li><a href="{{ p.get_absolute_url }}">{% if img %}<img src="{{ img.card_url }}" alt="" width="56" height="56">{% else %}<span></span>{% endif %}<span>{{ p.name }}<small>{{ p.primary_category.name }}</small></span></a></li>{% endwith %}{% endfor %}</ul>
     </div>
     {% endif %}
@@ -23,7 +23,7 @@
 </section>
 <div class="container listagem">
   <div class="cabecalho-secao">
-    <div><span class="kicker">Filtre por tipo</span><h2>Os mais recentes primeiro</h2></div>
+    <div><span class="kicker">Filtre por tipo</span><h2>Do mais novo para o mais antigo</h2></div>
     <span class="texto-suave texto-pequeno">{{ total }} produto{{ total|pluralize }}</span>
   </div>
   <nav class="barra-lista__chips" aria-label="Filtrar por tipo">
@@ -38,7 +38,7 @@
   <div class="carregar-mais" id="carregar-mais">
     {% if proxima %}
       <a class="btn btn--ghost" href="{{ proxima }}" hx-get="{{ proxima }}" hx-target="#lista-novidades" hx-swap="beforeend"
-         hx-select="#lista-novidades > li" hx-select-oob="#carregar-mais" hx-push-url="false">Carregar mais novidades</a>
+         hx-select="#lista-novidades > li" hx-select-oob="#carregar-mais" hx-push-url="false">Mostrar mais produtos</a>
     {% endif %}
   </div>
   <aside class="cta-escuro">

@@ -9,7 +9,7 @@ def test_404_util_e_noindex(client):
     html = resp.content.decode()
     assert resp.status_code == 404
     assert '<meta name="robots" content="noindex, follow">' in html
-    assert "Esta página não existe." in html
+    assert "Página não encontrada" in html
     assert 'name="q"' in html
     assert 'href="/produtos/"' in html
 

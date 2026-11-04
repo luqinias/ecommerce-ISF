@@ -255,8 +255,9 @@
 .tile__corpo small { color: var(--fg-muted); }
 
 /* H07 Como funciona */
-.passos-home { display: grid; gap: var(--s-3); margin: 0; padding: 0; list-style: none; }
-@media (min-width: 640px) { .passos-home { grid-template-columns: repeat(2, 1fr); gap: var(--s-4); } }
+.passos-home { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 640px) { .passos-home { gap: var(--s-4); } }
+@media (max-width: 639px) { .passo { padding: var(--s-4); } .passo__num { font-size: 1.5rem; } }
 @media (min-width: 960px) { .passos-home { grid-template-columns: repeat(4, 1fr); } }
 .passo { padding: var(--s-6) var(--s-5); border-radius: var(--r-2xl); background: var(--surface); }
 .passo__num { display: block; margin-bottom: var(--s-3); font-size: 2rem; font-weight: 800; color: var(--primary); letter-spacing: -0.03em; }

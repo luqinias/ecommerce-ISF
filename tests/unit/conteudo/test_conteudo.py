@@ -32,7 +32,7 @@ def test_home_tem_as_secoes_na_ordem(client, conteudo):
            "faixa-titulo", "porque-titulo", "faq-titulo"]  # fmt: skip
     posicoes = [html.index(f'id="{i}"') for i in ids]
     assert posicoes == sorted(posicoes)
-    assert "Acabou de chegar" in html and 'id="vb-gotejamento"' in html
+    assert "Recém-chegados" in html and 'id="vb-gotejamento"' in html
     assert "Ver mais projetos (2)" in html
     assert "Pedidos até" in html and "Safra" in html
     assert html.count('class="faq__item"') == 5
@@ -69,7 +69,7 @@ def test_paginas_institucionais(client, conteudo):
 
 
 def test_contato_grava_lead(client, conteudo):
-    assert "Dúvidas que chegam todo dia" in client.get("/contato/").content.decode()
+    assert "Antes de entrar em contato" in client.get("/contato/").content.decode()
     dados = {
         "name": "João",
         "email": "j@example.com",
@@ -89,7 +89,7 @@ def test_novidades_e_carregar_mais(client, conteudo):
     ProductFactory.create_batch(15)
     html = client.get("/novidades/").content.decode()
     assert len(re.findall(r'class="card-produto"', html)) == 20
-    assert 'hx-get="/novidades/page/2/"' in html and "Últimos lançamentos" in html
+    assert 'hx-get="/novidades/page/2/"' in html and "Entraram por último" in html
     pagina2 = client.get("/novidades/page/2/").content.decode()
     assert len(re.findall(r'class="card-produto"', pagina2)) == 7 and "Carregar mais" not in pagina2
     assert client.get("/novidades/page/3/").status_code == 404

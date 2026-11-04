@@ -25,3 +25,5 @@
 | P18 | Textos da home: hero, diferenciais, "Como funciona", faixa de prazos/safra, "Por que nós", FAQ | Fase 1 | Aberta |
 | P19 | IDs do Google Tag Manager e do Meta Pixel (se forem usados) | Fase 1 (LGPD) | Aberta |
 | P20 | Horário de atendimento e endereço para retirada/visita (página de contato) | Fase 1 | Aberta |
+| P21 | Revisar o conteúdo inicial da home criado por `carregar_conteudo_demo` (diferenciais, passos, FAQ, Sobre, Termos, Privacidade): os itens com `[DEFINIR]` precisam de texto real antes do go-live | Fase 3 (006) | Aberta |
+| P22 | Política de privacidade: confirmar com o jurídico o texto da seção de cookies e as bases legais | Fase 3 (008) | Aberta |

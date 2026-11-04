@@ -118,7 +118,7 @@ def test_enviar_pedido_grava_envia_emails_e_confirma(client, catalogo, site_conf
     assert quote.email_sent_at and not quote.email_error
     assert client.session["lista_orcamento"] == {}
     pagina = client.get(resp["Location"]).content.decode()
-    assert "Sua solicitação foi recebida!" in pagina and "https://wa.me/5511999990000?text=" in pagina
+    assert "Pedido de orçamento enviado" in pagina and "https://wa.me/5511999990000?text=" in pagina
 
 
 def test_confirmacao_so_na_mesma_sessao(client, catalogo, site_config):

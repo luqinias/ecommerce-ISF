@@ -35,7 +35,7 @@ PASSOS = [
 ]
 FAQ_HOME = [
     (
-        "Qual é a quantidade mínima de compra?",
+        "Existe pedido mínimo?",
         "Cada produto mostra na página a quantidade mínima e o múltiplo de venda (por exemplo, rolos ou caixas). Você ajusta as quantidades na lista antes de enviar.",
     ),
     (
@@ -171,7 +171,7 @@ def carregar(*, se_vazio: bool = False) -> bool:
     ):
         PageSection.objects.create(page=sobre, title=t, body=b, order=n)
     for slug, titulo, destaque, kicker, lead, secoes in (
-        ("politica-de-privacidade", "Seus dados, com cuidado e só para o necessário", "só para o necessário", "Política de privacidade", "Como tratamos os dados que você informa no site.", PRIVACIDADE),
+        ("politica-de-privacidade", "Como cuidamos dos seus dados", "seus dados", "Política de privacidade", "Como tratamos os dados que você informa no site.", PRIVACIDADE),
         ("termos-de-uso", "Como funciona o site", "o site", "Termos de uso", "As regras para usar o catálogo e pedir orçamento.", TERMOS),
     ):  # fmt: skip
         pagina = Page.objects.create(slug=slug, kind=Page.Kind.LEGAL, title=titulo, highlight=destaque, kicker=kicker, lead=lead,

@@ -111,7 +111,7 @@ def test_colecao_vigente_e_fora_do_periodo(client):
 
 def test_catalogo_geral_tem_todas_categorias(client, arvore):
     html = client.get("/produtos/").content.decode()
-    assert "Ver todas as categorias" in html and 'id="todas-categorias"' in html
+    assert "Mostrar todas as categorias" in html and 'id="todas-categorias"' in html
     assert 'rel="canonical" href="http://testserver/produtos/"' in html
 
 

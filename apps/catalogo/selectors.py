@@ -98,7 +98,7 @@ def chips(base: QuerySet[Product], *, excluir: list[int] | None = None, limite: 
 
 
 def categorias_com_total() -> list[Category]:
-    """Todas as categorias ativas com o total de produtos ativos (grade 'Ver todas as categorias')."""
+    """Todas as categorias ativas com o total de produtos ativos (grade 'Mostrar todas as categorias')."""
     return list(
         Category.objects.active()
         .select_related("parent")

@@ -8,7 +8,7 @@
   <div class="container">
     {% include "componentes/breadcrumb.html" %}
     <span class="kicker">Blog da {{ site.short_name }}</span>
-    <h1>{% if categoria %}{{ categoria.name }}{% else %}Ideias para irrigar <em>melhor</em>{% endif %}</h1>
+    <h1>{% if categoria %}{{ categoria.name }}{% else %}Guias e novidades sobre <em>irrigação</em>{% endif %}</h1>
     {% if destaque %}
       <a class="post-destaque" href="{{ destaque.get_absolute_url }}">
         <span class="post-destaque__img">{% if destaque.cover %}<img src="{{ destaque.cover.url }}" alt="" width="800" height="480">{% else %}{% icone "sprout" 56 %}{% endif %}</span>

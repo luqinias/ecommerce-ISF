@@ -34,4 +34,4 @@ def test_404_dentro_da_moldura(base, pagina_desktop):
     page = pagina_desktop
     resp = page.goto(base + "/nao-existe/")
     assert resp.status == 404
-    expect(page.get_by_role("heading", level=1)).to_have_text("Esta página não existe.")
+    expect(page.get_by_role("heading", level=1)).to_have_text("Página não encontrada")

@@ -13,18 +13,18 @@ from apps.conteudo.models import Banner, FAQItem, Highlight, HowItWorksStep, Por
 
 # Textos genéricos usados enquanto a equipe não edita a seção (P18). Nada de dado real inventado.
 PADROES = {
-    "vitrine": {"kicker": "Catálogo", "title": "Escolha pelo que o seu sistema precisa.", "cta_label": "Ver catálogo completo →", "cta_url": "/produtos/"},
+    "vitrine": {"kicker": "Catálogo", "title": "Linhas de produto em destaque", "cta_label": "Abrir o catálogo →", "cta_url": "/produtos/"},
     "datas": {"kicker": "Coleções", "title": "Campanhas para planejar a safra com antecedência.", "cta_label": "Ver todos os produtos →", "cta_url": "/produtos/"},
     "portfolio": {"kicker": "Projetos", "title": "Sistemas que já estão irrigando no campo.", "text": "Alguns projetos e instalações acompanhados pela equipe. [DEFINIR] fotos e dados reais dos clientes.", "cta_label": "Fale com a equipe sobre o seu projeto →", "cta_url": "whatsapp"},
-    "categorias": {"kicker": "Mais categorias", "title": "Procura algo específico?", "text": "Além das linhas em destaque, o catálogo tem outras categorias. Estas são as que têm mais produtos.", "cta_label": "Ver todos os produtos →", "cta_url": "/produtos/"},
-    "como_funciona": {"kicker": "Como funciona", "title": "Do primeiro contato à entrega, sem complicação."},
-    "faixa": {"title": "Plantio tem época.", "highlight": "Garanta o seu sistema antes da correria.", "text": "[DEFINIR] Prazos de pedido por safra e região.", "cta_label": "Reservar meu prazo no WhatsApp", "cta_url": "whatsapp"},
+    "categorias": {"kicker": "Mais categorias", "title": "Outras linhas do catálogo", "text": "Além das linhas em destaque, o catálogo tem outras categorias. Estas são as que têm mais produtos.", "cta_label": "Ver todos os produtos →", "cta_url": "/produtos/"},
+    "como_funciona": {"kicker": "Como funciona", "title": "Do pedido à instalação, em quatro etapas."},
+    "faixa": {"title": "Programe a compra antes do plantio.", "highlight": "Evite a alta temporada.", "text": "[DEFINIR] Prazos de pedido por safra e região.", "cta_label": "Combinar o prazo pelo WhatsApp", "cta_url": "whatsapp"},
     "por_que": {"kicker": "Por que a ISF?", "title": "[DEFINIR] Diferenciais da Irrigação Sem Fronteiras.", "text": "[DEFINIR] Texto institucional sobre a empresa, área de atuação e atendimento.", "cta_label": "Falar com a equipe no WhatsApp", "cta_url": "whatsapp"},
-    "depoimentos": {"kicker": "Depoimentos", "title": "O que nossos clientes", "highlight": "dizem"},
-    "faq": {"kicker": "Dúvidas frequentes", "title": "Perguntas que recebemos com frequência", "text": "Não achou o que precisava? Fale com a gente pelo WhatsApp ou e-mail."},
-    "novidades": {"kicker": "Novidades", "title": "Acabou de chegar", "highlight": "no catálogo", "text": "Os produtos mais recentes aparecem primeiro. Veja o que entrou e monte a sua lista de orçamento."},
+    "depoimentos": {"kicker": "Depoimentos", "title": "Quem já irriga com a gente", "highlight": "recomenda"},
+    "faq": {"kicker": "Dúvidas frequentes", "title": "Dúvidas comuns sobre catálogo e orçamento", "text": "Se a sua dúvida não estiver aqui, a equipe responde pelo WhatsApp ou e-mail."},
+    "novidades": {"kicker": "Novidades", "title": "Lançamentos", "highlight": "do catálogo", "text": "Os produtos mais recentes aparecem primeiro. Veja o que entrou e monte a sua lista de orçamento."},
     "novidades_cta": {"kicker": "Não encontrou?", "title": "Procurando um produto específico?", "text": "Conte o que você precisa irrigar e a equipe indica as opções.", "cta_label": "Pedir pelo WhatsApp", "cta_url": "whatsapp"},
-    "contato": {"kicker": "Contato", "title": "Fale com a gente,", "highlight": "uma pessoa responde", "text": "Orçamento, dúvida técnica ou acompanhamento de pedido: chame no WhatsApp, mande um e-mail ou preencha o formulário."},
+    "contato": {"kicker": "Contato", "title": "Converse com a equipe", "highlight": "pelo canal que preferir", "text": "Orçamento, dúvida técnica ou acompanhamento de pedido: chame no WhatsApp, mande um e-mail ou preencha o formulário."},
 }  # fmt: skip
 
 
@@ -68,8 +68,8 @@ def vitrine(por_bloco: int = 10) -> list[dict]:
         blocos.append(
             {
                 "id": "novidades",
-                "titulo": "Acabou de chegar",
-                "texto": "Os últimos produtos que entraram no catálogo.",
+                "titulo": "Recém-chegados",
+                "texto": "Novidades recentes do catálogo.",
                 "url": "/novidades/",
                 "produtos": novos,
             }

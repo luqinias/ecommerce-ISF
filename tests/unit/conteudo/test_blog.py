@@ -62,7 +62,7 @@ def test_post_com_jsonld_e_texto_rico(client, blog):
         for n in json.loads(b)["@graph"]
     ]
     assert "BlogPosting" in tipos and "BreadcrumbList" in tipos
-    assert "Continue lendo" in html
+    assert "Leia também" in html
 
 
 def test_categoria_e_sitemap(client, blog):

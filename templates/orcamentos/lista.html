@@ -13,19 +13,19 @@
 
   {% for m in messages %}<p class="aviso{% if m.tags == 'error' %} aviso--erro{% elif m.tags == 'success' %} aviso--sucesso{% endif %}" role="status">{{ m }}</p>{% endfor %}
 
-  <h1>Vamos preparar seu orçamento?</h1>
+  <h1>Revise sua lista e peça o orçamento</h1>
   <p class="lead">Confira os produtos, ajuste as quantidades e diga como podemos falar com você. Sem preço público: a equipe responde com a proposta.</p>
 
   <div class="orcamento__grade">
     <section class="orcamento__itens" aria-labelledby="itens-titulo">
       <h2 id="itens-titulo" class="h3">1. Seus produtos</h2>
       {% include "orcamentos/_itens.html" %}
-      <a class="btn btn--ghost btn--sm" href="{% url 'catalogo:lista' %}">← Continuar adicionando produtos</a>
+      <a class="btn btn--ghost btn--sm" href="{% url 'catalogo:lista' %}">← Escolher mais produtos</a>
     </section>
 
     {% if itens %}
     <section class="orcamento__dados" aria-labelledby="dados-titulo">
-      <h2 id="dados-titulo" class="h3">2. Como podemos falar com você?</h2>
+      <h2 id="dados-titulo" class="h3">2. Seus dados para contato</h2>
       <form method="post" action="{% url 'orcamentos:lista' %}" novalidate class="form-orcamento">
         {% csrf_token %}
         {% if form.non_field_errors %}<p class="aviso aviso--erro" role="alert">{{ form.non_field_errors|join:" " }}</p>{% endif %}

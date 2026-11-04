@@ -33,6 +33,6 @@ def test_carregar_mais_novidades(base, pagina_desktop):
     page = pagina_desktop
     page.goto(base + "/novidades/")
     expect(page.locator("#lista-novidades > li")).to_have_count(20)
-    page.get_by_role("link", name="Carregar mais novidades").click()
+    page.get_by_role("link", name="Mostrar mais produtos").click()
     expect(page.locator("#lista-novidades > li")).to_have_count(25)
-    expect(page.get_by_role("link", name="Carregar mais novidades")).to_have_count(0)
+    expect(page.get_by_role("link", name="Mostrar mais produtos")).to_have_count(0)

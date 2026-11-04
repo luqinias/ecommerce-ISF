@@ -84,7 +84,7 @@
           </button>
         </div>
         {% if aviso_variacao %}<p class="compra__aviso" data-aviso-variacao role="alert" tabindex="-1" hidden>{{ aviso_variacao }}</p>{% endif %}
-        <p class="compra__minimo">Mínimo de {{ produto.min_quantity }} {% if produto.min_quantity == 1 %}{{ produto.unit_label }}{% else %}{{ produto.unit_plural }}{% endif %}{% if produto.quantity_step > 1 %}, em múltiplos de {{ produto.quantity_step }}{% endif %} · você ajusta tudo antes de enviar</p>
+        <p class="compra__minimo">Mínimo de {{ produto.min_quantity }} {% if produto.min_quantity == 1 %}{{ produto.unit_label }}{% else %}{{ produto.unit_plural }}{% endif %}{% if produto.quantity_step > 1 %}, em múltiplos de {{ produto.quantity_step }}{% endif %}. As quantidades podem ser revistas na lista</p>
         <a class="link-seta compra__rapido" data-wpp-produto
            data-numero="{{ site.whatsapp_number }}" data-modelo="{{ site.product_quick_quote_message }}" data-produto="{{ produto.name }}"
            href="{% whatsapp_url site.product_quick_quote_message produto=produto.name sku=produto.sku quantidade=produto.min_quantity %}" {% if site.whatsapp_number %}target="_blank" rel="noopener"{% endif %}>
@@ -93,7 +93,7 @@
       </form>
 
       <ul class="garantias">
-        <li>{% icone "check" 18 %} Orçamento sem compromisso, com resposta pelo WhatsApp ou e-mail</li>
+        <li>{% icone "check" 18 %} Proposta personalizada e sem compromisso</li>
         <li>{% icone "users" 18 %} Atendimento técnico para dimensionar o seu sistema</li>
         <li>{% icone "truck" 18 %} Entrega: <span class="definir">[DEFINIR] área de atendimento</span></li>
       </ul>

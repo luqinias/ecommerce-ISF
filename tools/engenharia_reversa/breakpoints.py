@@ -48,6 +48,14 @@ PADRAO = {
 }
 
 
+PADRAO_LOCAL = {
+    "grids": [".trilho", ".colecoes__grade", ".portfolio__grade", ".tiles", ".passos-home", ".depoimentos__grade",
+              ".hero__provas", ".hero__midia", ".grade-produtos", ".rodape__grade", ".cabecalho__linha"],
+    "vis": [".faixa-superior__esq", ".navegacao", ".cabecalho__menu-btn", ".busca", ".navegacao__cta", ".hero__midia"],
+    "container": ".container",
+}  # fmt: skip
+
+
 def main():
     base = sys.argv[1] if len(sys.argv) > 1 and sys.argv[1].startswith("http") else BASE
     caminhos = [a for a in sys.argv[1:] if not a.startswith("http")] or [
@@ -55,6 +63,8 @@ def main():
         "/categoria-produto/mochilas/",
         "/produto/kit-talheres-fibra-de-bambu-personalizado/",
     ]
+    if base != BASE and not [a for a in sys.argv[1:] if not a.startswith("http")]:
+        caminhos = ["/", "/categoria-produto/gotejamento/", "/produto/gotejador-autocompensante-de-botao/"]
     saida = {}
     with sync_playwright() as p:
         b = p.chromium.launch()
@@ -65,7 +75,8 @@ def main():
             aguardar()
             page.goto(base.rstrip("/") + caminho, wait_until="domcontentloaded", timeout=90000)
             page.wait_for_timeout(3000)
-            page.evaluate(f"window.__SELS__ = {json.dumps(PADRAO)}")
+            sels = PADRAO if base == BASE else PADRAO_LOCAL
+            page.evaluate(f"window.__SELS__ = {json.dumps(sels)}")
             anterior, mudancas = None, []
             for w in range(320, 1601, 10):
                 page.set_viewport_size({"width": w, "height": 900})
