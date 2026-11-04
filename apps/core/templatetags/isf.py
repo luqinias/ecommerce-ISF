@@ -48,3 +48,25 @@ def e_definir(valor) -> bool:
 @register.filter
 def urlencode_text(valor) -> str:
     return quote(str(valor))
+
+
+@register.simple_tag(takes_context=True)
+def url_absoluta(context, caminho: str = "") -> str:
+    """URL absoluta a partir de BASE_URL (canonical, Open Graph, JSON-LD)."""
+    from django.conf import settings
+
+    if caminho.startswith(("http://", "https://")):
+        return caminho
+    request = context.get("request")
+    caminho = caminho or (request.path if request else "/")
+    return settings.BASE_URL + caminho
+
+
+@register.filter
+def jsonld(valor) -> str:
+    """Serializa um dict como JSON seguro para <script type="application/ld+json">."""
+    import json
+
+    texto = json.dumps(valor, ensure_ascii=False, separators=(",", ":"))
+    texto = texto.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+    return mark_safe(texto)

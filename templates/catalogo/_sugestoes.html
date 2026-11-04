@@ -1,0 +1,13 @@
+{% if produtos %}
+  {% for p in produtos %}
+    {% with img=p.main_image %}
+    <a class="sugestao" href="{{ p.get_absolute_url }}" role="option">
+      {% if img %}<img src="{{ img.card_url }}" alt="" width="44" height="44" loading="lazy">{% else %}<span></span>{% endif %}
+      <span><span class="sugestao__meta">{{ p.primary_category.name }}</span><br><span class="sugestao__nome">{{ p.name }}</span></span>
+    </a>
+    {% endwith %}
+  {% endfor %}
+  <a class="busca__ver-todos" href="{% url 'catalogo:busca' %}?q={{ termo|urlencode }}">Ver todos os resultados para “{{ termo }}” →</a>
+{% elif termo|length >= 2 %}
+  <p class="sugestao texto-suave texto-pequeno">Nenhum produto encontrado para “{{ termo }}”.</p>
+{% endif %}

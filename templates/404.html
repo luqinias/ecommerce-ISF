@@ -7,7 +7,7 @@
     <span class="kicker">Erro 404</span>
     <h1>Esta página não existe.</h1>
     <p class="lead">O link pode estar quebrado ou o produto pode ter saído do catálogo. Tente uma busca ou volte para as categorias.</p>
-    <form class="busca busca--pagina" action="/busca/" method="get" role="search">
+    <form class="busca busca--pagina" action="{% url 'catalogo:busca' %}" method="get" role="search">
       <label class="visualmente-oculto" for="busca-404">Buscar produtos</label>
       <div class="busca__campo">
         <input id="busca-404" type="search" name="q" placeholder="O que você está procurando?">
@@ -15,7 +15,7 @@
       </div>
     </form>
     <div class="pagina-erro__acoes">
-      <a class="btn btn--primario" href="/produtos/">Ver todos os produtos</a>
+      <a class="btn btn--primario" href="{% url 'catalogo:lista' %}">Ver todos os produtos</a>
       <a class="btn btn--ghost" href="/">Ir para a página inicial</a>
     </div>
   </div>

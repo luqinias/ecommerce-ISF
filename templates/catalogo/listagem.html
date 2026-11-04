@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}{% if cfg.titulo_seo %}{{ cfg.titulo_seo }}{% else %}{{ cfg.titulo }}{% endif %}{% if pagina.number > 1 %} · página {{ pagina.number }}{% endif %} | {{ site.site_name }}{% endblock %}
+{% block meta_description %}{% if cfg.meta_descricao %}{{ cfg.meta_descricao }}{% else %}{{ cfg.titulo }}: {{ total_base }} produto{{ total_base|pluralize }} no catálogo da {{ site.site_name }}. Monte sua lista e peça um orçamento.{% endif %}{% endblock %}
+{% block robots %}{% if noindex %}<meta name="robots" content="noindex, follow">{% endif %}{% endblock %}
+{% block seo_head %}{% include "partials/seo_head.html" with url_canonica=canonical og_tipo="website" og_titulo=cfg.titulo %}{% endblock %}
+{% block jsonld %}{% include "partials/jsonld_listagem.html" %}{% endblock %}
+{% block body_class %}pagina-listagem pagina-{{ cfg.tipo }}{% endblock %}
+
+{% block content %}
+<div class="container listagem">
+  {# L01 Hero da categoria #}
+  <section class="hero-lista{% if colecao %} hero-lista--{{ colecao.color }}{% endif %}" aria-labelledby="titulo-lista">
+    {% include "componentes/breadcrumb.html" with trilha=cfg.breadcrumb %}
+    <div class="hero-lista__linha">
+      <div>
+        <span class="kicker">{% if cfg.kicker %}{{ cfg.kicker }}{% else %}{{ site.collections_label }}{% endif %}{% if colecao.period_label %} · {{ colecao.period_label }}{% endif %}</span>
+        <h1 id="titulo-lista">{{ cfg.titulo }}</h1>
+        {% if cfg.descricao %}<p class="lead">{{ cfg.descricao }}</p>{% endif %}
+        {% if colecao.order_deadline and colecao.order_deadline >= hoje %}
+          <p class="hero-lista__prazo">{% icone "calendar" 16 %} Pedidos até <b>{{ colecao.order_deadline|date:"j \d\e F" }}</b>{% if colecao.deadline_note %} · {{ colecao.deadline_note }}{% endif %}</p>
+        {% endif %}
+      </div>
+      <div class="hero-lista__total"><b>{{ total_base }}</b> produto{{ total_base|pluralize }}</div>
+    </div>
+    {% if cfg.tipo == "busca" %}
+      <form class="busca busca--pagina" action="{% url 'catalogo:busca' %}" method="get" role="search">
+        <label class="visualmente-oculto" for="busca-pagina">Buscar produtos</label>
+        <div class="busca__campo">
+          <input id="busca-pagina" type="search" name="q" value="{{ termo }}" placeholder="Nome, código ou tipo de produto">
+          <button type="submit" aria-label="Buscar">{% icone "search" 18 %}</button>
+        </div>
+      </form>
+    {% endif %}
+  </section>
+
+  {# L02 + L03 Chips e ordenação #}
+  {% if total_base %}
+  <div class="barra-lista">
+    <nav class="barra-lista__chips" aria-label="Filtrar por tipo">
+      <ul class="chips">
+        <li><a class="chip" href="{{ url_base }}{% if query_chip %}?{{ query_chip }}{% endif %}" {% if not tipo_ativo %}aria-current="true"{% endif %}>Todos</a></li>
+        {% for chip in chips %}
+          <li><a class="chip" rel="nofollow" href="{{ url_base }}?{% if query_chip %}{{ query_chip }}&amp;{% endif %}tipo={{ chip.slug }}" {% if tipo_ativo.slug == chip.slug %}aria-current="true"{% endif %}>{{ chip.rotulo }} <small>{{ chip.total }}</small></a></li>
+        {% endfor %}
+        {% if todas_categorias %}
+          <li><button type="button" class="chip chip--mais" data-expandir aria-controls="todas-categorias" aria-expanded="false" data-texto-mais="Ver todas as categorias ↓" data-texto-menos="Ocultar categorias ↑"><span data-rotulo>Ver todas as categorias ↓</span></button></li>
+        {% endif %}
+      </ul>
+    </nav>
+    <form class="barra-lista__ordem" method="get" action="{{ url_base }}">
+      <span class="barra-lista__total">{{ total }} produto{{ total|pluralize }}</span>
+      {% if termo %}<input type="hidden" name="q" value="{{ termo }}">{% endif %}
+      {% if tipo_ativo %}<input type="hidden" name="tipo" value="{{ tipo_ativo.slug }}">{% endif %}
+      <label for="ordem">Ordenar</label>
+      <select id="ordem" name="ordem" class="select-pilula" data-auto-submit>
+        {% for chave, rotulo in ordens %}<option value="{{ chave }}" {% if chave == ordem %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}
+      </select>
+      <noscript><button type="submit" class="btn btn--sm btn--claro">Aplicar</button></noscript>
+    </form>
+  </div>
+  {% if todas_categorias %}
+    <div class="todas-categorias" id="todas-categorias">
+      <ul>
+        {% for cat in todas_categorias %}
+          <li><a href="{{ cat.get_absolute_url }}">{% if cat.parent %}<span class="texto-suave">{{ cat.parent.name }} ›</span> {% endif %}{{ cat.name }} <small>{{ cat.total }}</small></a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  {% endif %}
+
+  {# L04 Grade #}
+  {% if produtos %}
+    <ul class="grade-produtos" aria-label="Produtos">
+      {% for p in produtos %}<li>{% include "componentes/card_produto.html" with p=p nivel=2 mostrar_categoria=True %}</li>{% endfor %}
+    </ul>
+    {% include "componentes/paginacao.html" %}
+  {% else %}
+    <div class="vazio">
+      {% if cfg.tipo == "busca" and termo %}
+        <h2>Nenhum produto encontrado para “{{ termo }}”.</h2>
+        <p>Confira a grafia, tente um termo mais curto ou navegue pelas categorias.</p>
+      {% elif cfg.tipo == "busca" %}
+        <h2>O que você procura?</h2>
+        <p>Use a busca acima ou navegue pelas categorias.</p>
+      {% else %}
+        <h2>Ainda não há produtos aqui.</h2>
+        <p>Novos produtos chegam ao catálogo com frequência. Fale com a gente para saber das opções.</p>
+      {% endif %}
+      <a class="btn btn--primario" href="{% url 'catalogo:lista' %}">Ver todos os produtos</a>
+    </div>
+  {% endif %}
+
+  {# L06 Ajuda #}
+  <aside class="ajuda-lista" aria-labelledby="ajuda-titulo">
+    <div>
+      <h2 id="ajuda-titulo" class="h3">Não encontrou o que procura?</h2>
+      <p>Conte o que você precisa irrigar e a equipe sugere as opções para o seu projeto.</p>
+    </div>
+    <a class="btn btn--primario" href="{% if cfg.tipo == 'categoria' %}{% whatsapp_url site.category_help_message categoria=cfg.titulo %}{% else %}{% whatsapp_url %}{% endif %}" {% if site.whatsapp_number %}target="_blank" rel="noopener"{% endif %}>
+      {% icone "whatsapp" 18 %} Falar no WhatsApp
+    </a>
+  </aside>
+
+  {# L07 Texto de SEO #}
+  {% if cfg.texto_seo and pagina.number == 1 %}
+    <section class="texto-seo prosa" aria-label="Sobre {{ cfg.titulo }}">
+      {{ cfg.texto_seo|linebreaks }}
+    </section>
+  {% endif %}
+</div>
+{% endblock %}

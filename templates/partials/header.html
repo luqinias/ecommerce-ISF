@@ -4,12 +4,12 @@
       {% icone "menu" 20 %}
     </button>
     {% include "partials/logo.html" %}
-    <form class="busca" id="busca" action="/busca/" method="get" role="search" data-busca>
+    <form class="busca" id="busca" action="{% url 'catalogo:busca' %}" method="get" role="search" data-busca>
       <label class="visualmente-oculto" for="busca-q">Buscar produtos</label>
       <div class="busca__campo">
         <input id="busca-q" type="search" name="q" placeholder="O que você está procurando?" autocomplete="off"
                value="{{ request.GET.q|default:'' }}"
-               hx-get="/busca/sugestoes/" hx-trigger="input changed delay:300ms, search" hx-target="#busca-sugestoes" hx-sync="this:replace"
+               hx-get="{% url 'catalogo:sugestoes' %}" hx-trigger="input changed delay:300ms, search" hx-target="#busca-sugestoes" hx-sync="this:replace"
                aria-controls="busca-sugestoes" aria-autocomplete="list">
         <button type="submit" aria-label="Buscar">{% icone "search" 18 %}</button>
       </div>

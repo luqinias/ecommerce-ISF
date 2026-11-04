@@ -15,6 +15,7 @@ urlpatterns = [
     path("colecao/<slug:slug>/page/<int:pagina>/", views.colecao, name="colecao_pagina"),
     path("produto/<slug:slug>/", views.produto, name="produto"),
     path("busca/", views.busca, name="busca"),
+    path("busca/page/<int:pagina>/", views.busca, name="busca_pagina"),
     path("busca/sugestoes/", views.sugestoes, name="sugestoes"),
     path("novidades/", views.novidades, name="novidades"),
 ]

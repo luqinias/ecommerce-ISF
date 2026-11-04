@@ -12,7 +12,7 @@
           <li><a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a></li>
           {% for filho in cat.menu_children %}<li><a href="{{ filho.get_absolute_url }}">— {{ filho.name }}</a></li>{% endfor %}
         {% endfor %}
-        <li><a href="/produtos/"><b>Ver todos os produtos</b></a></li>
+        <li><a href="{% url 'catalogo:lista' %}"><b>Ver todos os produtos</b></a></li>
       </ul>
     </details>
     <details>

@@ -1,0 +1,16 @@
+{% if pagina.paginator.num_pages > 1 or total %}
+<nav class="paginacao" aria-label="Paginação">
+  {% if pagina.paginator.num_pages > 1 %}
+  <ul>
+    {% if pagina_anterior %}<li><a href="{{ pagina_anterior }}" rel="prev" aria-label="Página anterior">{% icone "chevron-left" 16 %}</a></li>{% endif %}
+    {% for item in paginas %}
+      {% if item is None %}<li><span class="reticencias" aria-hidden="true">…</span></li>
+      {% elif item.numero == pagina.number %}<li><span aria-current="page">{{ item.numero }}</span></li>
+      {% else %}<li><a href="{{ item.url }}" aria-label="Página {{ item.numero }}">{{ item.numero }}</a></li>{% endif %}
+    {% endfor %}
+    {% if pagina_seguinte %}<li><a href="{{ pagina_seguinte }}" rel="next" aria-label="Próxima página">{% icone "chevron-right" 16 %}</a></li>{% endif %}
+  </ul>
+  {% endif %}
+  {% if total %}<p>Mostrando {{ pagina.start_index }}–{{ pagina.end_index }} de {{ total }} produto{{ total|pluralize }}</p>{% endif %}
+</nav>
+{% endif %}

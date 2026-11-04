@@ -1,0 +1,25 @@
+{% comment %}Card de produto (H03). Parâmetros: p (produto com with_cards), nivel (2, 3 ou 4), mostrar_categoria, mostrar_resumo.{% endcomment %}
+{% with img=p.main_image resumo=p.options_summary %}
+<a class="card-produto" href="{{ p.get_absolute_url }}">
+  <div class="card-produto__img">
+    {% if img %}
+      <img src="{{ img.card_url }}" alt="{{ img.alt_text }}" width="400" height="400" loading="lazy" decoding="async">
+    {% endif %}
+    <span class="card-produto__selos">
+      {% if p.is_new %}<span class="selo selo--novo">Novo</span>{% endif %}
+      {% if p.featured %}<span class="selo selo--destaque">Destaque</span>{% endif %}
+      {% if p.is_demo %}<span class="selo selo--demo">Demo</span>{% endif %}
+    </span>
+    {% if resumo %}
+      <span class="card-produto__opcoes"><b>{{ resumo.total }} {{ resumo.total|pluralize:"opção,opções" }}</b>
+        {% if resumo.valores %}· {{ resumo.valores|join:" · " }}{% if resumo.mais %} …{% endif %} {{ resumo.unidade }}{% endif %}</span>
+    {% endif %}
+  </div>
+  <div class="card-produto__corpo">
+    {% if mostrar_categoria %}<span class="card-produto__cat">{{ p.primary_category.name }}</span>{% endif %}
+    {% if nivel == 3 %}<h3 class="card-produto__nome">{{ p.name }}</h3>{% elif nivel == 4 %}<h4 class="card-produto__nome">{{ p.name }}</h4>{% else %}<h2 class="card-produto__nome">{{ p.name }}</h2>{% endif %}
+    {% if p.short_description and mostrar_resumo %}<p class="card-produto__resumo">{{ p.short_description }}</p>{% endif %}
+    <span class="card-produto__ir">Ver produto →</span>
+  </div>
+</a>
+{% endwith %}

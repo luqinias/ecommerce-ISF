@@ -175,3 +175,9 @@ body.tem-barra-fixa .rolar-topo { bottom: 88px; }
 @keyframes toast-entra { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 
 main { display: block; min-height: 50vh; }
+
+@media (max-width: 639px) {
+  .logo__nome { font-size: 0.875rem; white-space: nowrap; }
+  .logo__marca { width: 32px; height: 32px; }
+  .cabecalho__linha .logo__sub { display: none; }
+}

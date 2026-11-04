@@ -106,8 +106,8 @@ def gerar_placeholder(destino: Path, titulo: str, subtitulo: str, cores: tuple[s
         w = desenho.textlength(linha, font=fonte)
         desenho.text(((lado - w) / 2, y), linha, font=fonte, fill=(17, 37, 26) if not ambiente else (255, 255, 255))
         y += 50
-    desenho.rounded_rectangle([30, 30, 230, 92], radius=31, fill=(17, 37, 26))
-    desenho.text((58, 42), "DEMO", font=_fonte(36), fill=(242, 176, 30))
+    desenho.rounded_rectangle([lado - 230, 30, lado - 30, 92], radius=31, fill=(17, 37, 26))
+    desenho.text((lado - 202, 42), "DEMO", font=_fonte(36), fill=(242, 176, 30))
     pequena = _fonte(28)
     w = desenho.textlength(subtitulo, font=pequena)
     desenho.text(

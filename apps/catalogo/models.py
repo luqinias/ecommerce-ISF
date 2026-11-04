@@ -6,6 +6,8 @@ técnicos são definidos como dados em `Category.attribute_schema`.
 
 from __future__ import annotations
 
+import contextlib
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -319,6 +321,29 @@ class Product(CleanSaveModel, TimeStampedModel, SeoFields):
         """A categoria principal sempre faz parte das categorias do produto."""
         if self.primary_category_id and not self.categories.filter(pk=self.primary_category_id).exists():
             self.categories.add(self.primary_category_id)
+
+    @property
+    def options_summary(self) -> dict | None:
+        """Resumo das variações para o card: '3 opções · 2 · 4 · 8 L/h' (usa o prefetch de with_cards)."""
+        variacoes = [v for v in self.variants.all() if v.active]
+        if not variacoes:
+            return None
+        atributos = self.variant_attributes
+        resumo = {"total": len(variacoes), "valores": [], "unidade": "", "rotulo": "", "mais": False}
+        if atributos:
+            attr = atributos[0]
+            vistos = []
+            for v in variacoes:
+                valor = (v.attributes or {}).get(attr["key"])
+                if valor is not None and valor not in vistos:
+                    vistos.append(valor)
+            with contextlib.suppress(TypeError):
+                vistos.sort()
+            resumo["valores"] = [schema_attrs.formatar_valor(x, {**attr, "unit": ""}) for x in vistos[:4]]
+            resumo["mais"] = len(vistos) > 4
+            resumo["unidade"] = attr.get("unit", "")
+            resumo["rotulo"] = attr["label"]
+        return resumo
 
     @property
     def main_image(self):

@@ -1,0 +1,11 @@
+{% comment %}Canonical e Open Graph. Parâmetros: url_canonica, og_tipo, og_titulo, og_descricao, og_imagem.{% endcomment %}
+{% url_absoluta url_canonica as canonica %}
+<link rel="canonical" href="{{ canonica }}">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="{{ site.site_name }}">
+<meta property="og:type" content="{{ og_tipo|default:'website' }}">
+<meta property="og:title" content="{{ og_titulo|default:site.site_name }}">
+<meta property="og:description" content="{{ og_descricao|default:site.default_meta_description }}">
+<meta property="og:url" content="{{ canonica }}">
+{% if og_imagem %}{% url_absoluta og_imagem as img %}<meta property="og:image" content="{{ img }}">{% elif site.default_og_image %}{% url_absoluta site.default_og_image.url as img %}<meta property="og:image" content="{{ img }}">{% endif %}
+<meta name="twitter:card" content="summary_large_image">

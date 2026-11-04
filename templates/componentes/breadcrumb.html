@@ -1,0 +1,7 @@
+<nav class="breadcrumb" aria-label="Você está em">
+  <ol>
+    {% for rotulo, url in trilha %}
+      <li>{% if url %}<a href="{{ url }}">{{ rotulo }}</a>{% else %}<span aria-current="page">{{ rotulo }}</span>{% endif %}</li>
+    {% endfor %}
+  </ol>
+</nav>
