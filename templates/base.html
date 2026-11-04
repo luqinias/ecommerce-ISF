@@ -1,0 +1,40 @@
+{% load static %}<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site.site_name }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ site.default_meta_description }}{% endblock %}">
+  {% block robots %}{% endblock %}
+  {% block seo_head %}{% endblock %}
+  <meta name="theme-color" content="#11251a">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="preload" href="{% static 'fonts/manrope-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/componentes.css' %}">
+  <link rel="stylesheet" href="{% static 'css/paginas.css' %}">
+  {% block extra_head %}{% endblock %}
+  {% block jsonld %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  {% include "partials/faixa_superior.html" %}
+  {% include "partials/header.html" %}
+  {% include "partials/menu_mobile.html" %}
+
+  <main id="conteudo" tabindex="-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "partials/footer.html" %}
+  {% include "partials/cookies.html" %}
+  <button type="button" class="rolar-topo" data-rolar-topo aria-label="Voltar ao topo da página">{% icone "arrow-up" 20 %}</button>
+  <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+  <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
+  <script src="{% static 'js/app.js' %}" defer></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -4,10 +4,62 @@ version = "0.1.0"
 description = "Catálogo e lista de orçamento da Irrigação Sem Fronteiras."
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = [
+    "dj-database-url>=3.1.2",
+    "django>=6.0,<6.1",
+    "django-anymail[brevo]>=15.2",
+    "django-axes>=9.0.0",
+    "django-jazzmin>=3.0.5",
+    "gunicorn>=26.2.0",
+    "pillow>=13.0.0",
+    "psycopg2-binary>=2.9.13",
+    "python-dotenv>=1.2.4",
+    "whitenoise>=6.12.0",
+]
+
+[project.optional-dependencies]
+s3 = ["django-storages[s3]>=1.14"]
 
 [dependency-groups]
+dev = [
+    "factory-boy>=3.3.3",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+    "pytest-django>=4.14.0",
+    "pytest-playwright>=0.10.0",
+    "ruff>=0.17.3",
+]
 engenharia-reversa = [
     "playwright>=1.50",
     "axe-playwright-python>=0.1.4",
 ]
+
+[tool.uv]
+default-groups = ["dev", "engenharia-reversa"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = [".specify", ".claude", "docs", "staticfiles", "media"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "DJ", "S", "C4", "SIM", "RUF"]
+ignore = ["RUF012", "S308", "RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106"]
+"tools/**" = ["S310", "S311", "E501", "B023"]
+"**/migrations/**" = ["E501", "RUF"]
+"apps/core/icones.py" = ["E501"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["test_*.py"]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers -m 'not e2e'"
+markers = ["e2e: testes ponta a ponta com Playwright (rodar com -m e2e)"]
+filterwarnings = ["ignore::DeprecationWarning:jazzmin.*"]
+
+[tool.coverage.run]
+source = ["apps"]
+omit = ["*/migrations/*"]

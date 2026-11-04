@@ -28,8 +28,21 @@ ASSINATURA_JS = r"""
 """
 
 PADRAO = {
-    "grids": [".cda-track", "#cda-dat-grid", "#cda-port-gal", "#cda-cat-tiles", ".cda-how-steps", ".cda-test-grid", ".cda-proof",
-              ".cda-media", "ul.products", ".products", "[class*=grid]", ".cda-main-row-inner", ".cda-wrap"],
+    "grids": [
+        ".cda-track",
+        "#cda-dat-grid",
+        "#cda-port-gal",
+        "#cda-cat-tiles",
+        ".cda-how-steps",
+        ".cda-test-grid",
+        ".cda-proof",
+        ".cda-media",
+        "ul.products",
+        ".products",
+        "[class*=grid]",
+        ".cda-main-row-inner",
+        ".cda-wrap",
+    ],
     "vis": [".cda-util", ".cda-nav-d", ".cda-burger", "#cda-search-input", ".cda-cta-gold", ".cda-media"],
     "container": ".cda-container",
 }
@@ -37,7 +50,11 @@ PADRAO = {
 
 def main():
     base = sys.argv[1] if len(sys.argv) > 1 and sys.argv[1].startswith("http") else BASE
-    caminhos = [a for a in sys.argv[1:] if not a.startswith("http")] or ["/", "/categoria-produto/mochilas/", "/produto/kit-talheres-fibra-de-bambu-personalizado/"]
+    caminhos = [a for a in sys.argv[1:] if not a.startswith("http")] or [
+        "/",
+        "/categoria-produto/mochilas/",
+        "/produto/kit-talheres-fibra-de-bambu-personalizado/",
+    ]
     saida = {}
     with sync_playwright() as p:
         b = p.chromium.launch()

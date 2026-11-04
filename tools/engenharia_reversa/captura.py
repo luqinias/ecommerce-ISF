@@ -19,17 +19,32 @@ from pathlib import Path
 from comum import BASE, RAIZ, USER_AGENT, aguardar
 from playwright.sync_api import sync_playwright
 
-BLOQUEAR = ("googletagmanager", "google-analytics", "facebook.net", "facebook.com/tr", "fbcdn",
-            "doubleclick", "clarity.ms", "hotjar", "connect.facebook")
+BLOQUEAR = (
+    "googletagmanager",
+    "google-analytics",
+    "facebook.net",
+    "facebook.com/tr",
+    "fbcdn",
+    "doubleclick",
+    "clarity.ms",
+    "hotjar",
+    "connect.facebook",
+)
 VIEWPORTS = {"1440": (1440, 900), "768": (768, 1024), "390": (390, 844)}
 
 AMOSTRAS = {
     "home": ["/"],
     "catalogo": ["/categorias-de-brindes/", "/categorias-de-brindes/page/2/"],
     "categoria": ["/categoria-produto/canetas/", "/categoria-produto/mochilas/"],
-    "subcategoria": ["/categoria-produto/cadernos/agendas/", "/categoria-produto/garrafas-e-squeezes/garrafas-termicas/"],
+    "subcategoria": [
+        "/categoria-produto/cadernos/agendas/",
+        "/categoria-produto/garrafas-e-squeezes/garrafas-termicas/",
+    ],
     "data-especial": ["/categoria-produto/fim-de-ano-natal/", "/categoria-produto/outubro-rosa/"],
-    "produto": ["/produto/kit-talheres-fibra-de-bambu-personalizado/", "/produto/kit-churrasco-premium-estojo-bambu-personalizado/"],
+    "produto": [
+        "/produto/kit-talheres-fibra-de-bambu-personalizado/",
+        "/produto/kit-churrasco-premium-estojo-bambu-personalizado/",
+    ],
     "busca": ["/?s=garrafa&post_type=product"],
     "novidades": ["/novidades/"],
     "sobre": ["/sobre-cia-da-arte-brindes/"],
@@ -116,9 +131,29 @@ ESTRUTURA_JS = r"""
 }
 """
 
-PROPS = ["color", "backgroundColor", "backgroundImage", "fontFamily", "fontSize", "fontWeight", "lineHeight", "letterSpacing",
-         "textTransform", "padding", "margin", "border", "borderRadius", "boxShadow", "transition", "width", "height",
-         "display", "gap", "gridTemplateColumns", "maxWidth"]
+PROPS = [
+    "color",
+    "backgroundColor",
+    "backgroundImage",
+    "fontFamily",
+    "fontSize",
+    "fontWeight",
+    "lineHeight",
+    "letterSpacing",
+    "textTransform",
+    "padding",
+    "margin",
+    "border",
+    "borderRadius",
+    "boxShadow",
+    "transition",
+    "width",
+    "height",
+    "display",
+    "gap",
+    "gridTemplateColumns",
+    "maxWidth",
+]
 
 ESTILOS_JS = r"""
 (props) => {
@@ -199,7 +234,9 @@ def capturar(base: str, amostras: dict, destino: Path, com_axe: bool = True):
         browser = p.chromium.launch()
         for tipo, caminhos in amostras.items():
             for i, caminho in enumerate(caminhos):
-                ctx = browser.new_context(user_agent=USER_AGENT, viewport={"width": 1440, "height": 900}, locale="pt-BR")
+                ctx = browser.new_context(
+                    user_agent=USER_AGENT, viewport={"width": 1440, "height": 900}, locale="pt-BR"
+                )
                 ctx.route("**/*", lambda r: r.abort() if any(x in r.request.url for x in BLOQUEAR) else r.continue_())
                 ctx.add_init_script(PERF_INIT)
                 page = ctx.new_page()
@@ -207,8 +244,14 @@ def capturar(base: str, amostras: dict, destino: Path, com_axe: bool = True):
 
                 def on_req(req, rede=rede):
                     if req.resource_type in ("xhr", "fetch"):
-                        rede.append({"metodo": req.method, "url": req.url[:300], "tipo": req.resource_type,
-                                     "post": (req.post_data or "")[:300]})
+                        rede.append(
+                            {
+                                "metodo": req.method,
+                                "url": req.url[:300],
+                                "tipo": req.resource_type,
+                                "post": (req.post_data or "")[:300],
+                            }
+                        )
 
                 page.on("request", on_req)
                 url = base.rstrip("/") + caminho
@@ -217,24 +260,32 @@ def capturar(base: str, amostras: dict, destino: Path, com_axe: bool = True):
                 try:
                     resp = page.goto(url, wait_until="networkidle", timeout=90000)
                     status = resp.status if resp else None
-                except Exception as e:  # noqa: BLE001
+                except Exception as e:
                     print("  erro", e)
                     ctx.close()
                     continue
                 page.wait_for_timeout(1500)
                 # rola até o fim para disparar lazy-load, volta ao topo
-                page.evaluate("async () => { for (let y = 0; y < document.body.scrollHeight; y += 700) { scrollTo(0, y); await new Promise(r => setTimeout(r, 120)); } scrollTo(0, 0); }")
+                page.evaluate(
+                    "async () => { for (let y = 0; y < document.body.scrollHeight; y += 700) { scrollTo(0, y); await new Promise(r => setTimeout(r, 120)); } scrollTo(0, 0); }"
+                )
                 page.wait_for_timeout(800)
-                perf = page.evaluate("() => ({lcp: Math.round(window.__lcp), cls: +window.__cls.toFixed(4), dcl: Math.round(performance.getEntriesByType('navigation')[0]?.domContentLoadedEventEnd || 0)})")
+                perf = page.evaluate(
+                    "() => ({lcp: Math.round(window.__lcp), cls: +window.__cls.toFixed(4), dcl: Math.round(performance.getEntriesByType('navigation')[0]?.domContentLoadedEventEnd || 0)})"
+                )
                 reg = {"url": url, "status": status, "perf": perf, "rede": rede, "viewports": {}}
                 reg["seo"] = page.evaluate(SEO_JS)
                 if com_axe and i == 0:
                     try:
                         from axe_playwright_python.sync_playwright import Axe
+
                         r = Axe().run(page)
                         viol = r.response.get("violations", [])
-                        reg["axe"] = [{"id": v["id"], "impacto": v["impact"], "nos": len(v["nodes"]), "descricao": v["help"]} for v in viol]
-                    except Exception as e:  # noqa: BLE001
+                        reg["axe"] = [
+                            {"id": v["id"], "impacto": v["impact"], "nos": len(v["nodes"]), "descricao": v["help"]}
+                            for v in viol
+                        ]
+                    except Exception as e:
                         reg["axe"] = f"erro: {e}"
                 for vp, (w, h) in VIEWPORTS.items():
                     page.set_viewport_size({"width": w, "height": h})
@@ -243,7 +294,10 @@ def capturar(base: str, amostras: dict, destino: Path, com_axe: bool = True):
                     pasta.mkdir(parents=True, exist_ok=True)
                     sufixo = "" if i == 0 else f"-{i + 1}"
                     page.screenshot(path=str(pasta / f"{vp}{sufixo}.png"), full_page=True)
-                    reg["viewports"][vp] = {"estrutura": page.evaluate(ESTRUTURA_JS), "estilos": page.evaluate(ESTILOS_JS, PROPS)}
+                    reg["viewports"][vp] = {
+                        "estrutura": page.evaluate(ESTRUTURA_JS),
+                        "estilos": page.evaluate(ESTILOS_JS, PROPS),
+                    }
                 resultados.setdefault(tipo, []).append(reg)
                 ctx.close()
         browser.close()

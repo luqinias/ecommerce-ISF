@@ -12,8 +12,17 @@ import sys
 from comum import BASE, RAW, SAIDA, USER_AGENT, aguardar
 from playwright.sync_api import sync_playwright
 
-BLOQUEAR = ("googletagmanager", "google-analytics", "facebook.net", "facebook.com/tr", "fbcdn",
-            "doubleclick", "clarity.ms", "hotjar", "connect.facebook")
+BLOQUEAR = (
+    "googletagmanager",
+    "google-analytics",
+    "facebook.net",
+    "facebook.com/tr",
+    "fbcdn",
+    "doubleclick",
+    "clarity.ms",
+    "hotjar",
+    "connect.facebook",
+)
 SHOTS = SAIDA / "screenshots" / "comportamentos"
 PRODUTO = "/produto/kit-talheres-fibra-de-bambu-personalizado/"
 LISTA = "/categoria-produto/mochilas/"
@@ -22,13 +31,15 @@ R = {}
 
 def passo(nome):
     """Executa o passo imediatamente e guarda o resultado (ou o erro) em R[nome]."""
+
     def deco(fn):
         try:
             R[nome] = fn()
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             R[nome] = {"erro": str(e)[:400]}
         print(nome, json.dumps(R[nome], ensure_ascii=False)[:300], flush=True)
         return fn
+
     return deco
 
 
@@ -59,8 +70,14 @@ def main():
         ctx.route("**/*", lambda r: r.abort() if any(x in r.request.url for x in BLOQUEAR) else r.continue_())
         page = ctx.new_page()
         rede = []
-        page.on("request", lambda q: rede.append({"m": q.method, "u": q.url[:250], "t": q.resource_type, "post": (q.post_data or "")[:400]})
-                if q.resource_type in ("xhr", "fetch") else None)
+        page.on(
+            "request",
+            lambda q: (
+                rede.append({"m": q.method, "u": q.url[:250], "t": q.resource_type, "post": (q.post_data or "")[:400]})
+                if q.resource_type in ("xhr", "fetch")
+                else None
+            ),
+        )
         nav(page, "/")
         (RAW / "home.html").write_text(page.content())
 
@@ -84,13 +101,25 @@ def main():
                 page.wait_for_timeout(800)
             depois = estado(page, "#cda-dd-cats .cda-dd-panel")
             shot(page, "dropdown-categorias")
-            itens = page.evaluate("() => [...document.querySelectorAll('#cda-dd-cats .cda-dd-link')].map(a => ({t: a.innerText.trim().replace(/\\s+/g,' '), href: a.getAttribute('href')}))")
-            painel = page.evaluate("() => { const p = document.querySelector('#cda-dd-cats .cda-dd-panel'); if(!p) return null; const cs = getComputedStyle(p); const r = p.getBoundingClientRect(); return {w: r.width, h: r.height, x: r.x, y: r.y, grid: cs.gridTemplateColumns, display: cs.display, radius: cs.borderRadius, shadow: cs.boxShadow, padding: cs.padding, viewall: [...p.querySelectorAll('.cda-dd-viewall')].map(a => a.innerText.trim())}; }")
+            itens = page.evaluate(
+                "() => [...document.querySelectorAll('#cda-dd-cats .cda-dd-link')].map(a => ({t: a.innerText.trim().replace(/\\s+/g,' '), href: a.getAttribute('href')}))"
+            )
+            painel = page.evaluate(
+                "() => { const p = document.querySelector('#cda-dd-cats .cda-dd-panel'); if(!p) return null; const cs = getComputedStyle(p); const r = p.getBoundingClientRect(); return {w: r.width, h: r.height, x: r.x, y: r.y, grid: cs.gridTemplateColumns, display: cs.display, radius: cs.borderRadius, shadow: cs.boxShadow, padding: cs.padding, viewall: [...p.querySelectorAll('.cda-dd-viewall')].map(a => a.innerText.trim())}; }"
+            )
             page.mouse.move(700, 600)
             page.keyboard.press("Escape")
             page.wait_for_timeout(500)
             fechado = estado(page, "#cda-dd-cats .cda-dd-panel")
-            return {"antes": antes, "apos_hover": hover, "aberto": depois, "apos_esc_e_sair": fechado, "itens": itens[:60], "n_itens": len(itens), "painel": painel}
+            return {
+                "antes": antes,
+                "apos_hover": hover,
+                "aberto": depois,
+                "apos_esc_e_sair": fechado,
+                "itens": itens[:60],
+                "n_itens": len(itens),
+                "painel": painel,
+            }
 
         @passo("dropdown_datas")
         def _():
@@ -101,7 +130,9 @@ def main():
                 page.click("#cda-dd-dates .cda-dd-trigger")
                 page.wait_for_timeout(800)
             shot(page, "dropdown-datas")
-            itens = page.evaluate("() => [...document.querySelectorAll('#cda-dd-dates .cda-dd-panel a')].map(a => ({t: a.innerText.trim().replace(/\\s+/g,' '), href: a.getAttribute('href')}))")
+            itens = page.evaluate(
+                "() => [...document.querySelectorAll('#cda-dd-dates .cda-dd-panel a')].map(a => ({t: a.innerText.trim().replace(/\\s+/g,' '), href: a.getAttribute('href')}))"
+            )
             page.mouse.move(700, 600)
             page.wait_for_timeout(400)
             return {"apos_hover": st, "itens": itens}
@@ -110,8 +141,12 @@ def main():
         def _():
             page.fill("#cda-search-input", "garr")
             page.wait_for_timeout(2500)
-            sug = page.evaluate("() => { const s = [...document.querySelectorAll('[class*=search] [class*=result], [class*=sugg], [class*=autocomplete], [class*=search-res]')].filter(e => e.getBoundingClientRect().height > 10); return s.map(e => ({cls: e.className.toString(), txt: e.innerText.slice(0,200)})); }")
-            form = page.evaluate("() => { const f = document.querySelector('#cda-search-form'); return {action: f.getAttribute('action'), method: f.method, campos: [...f.elements].map(e => [e.name, e.type, e.value])}; }")
+            sug = page.evaluate(
+                "() => { const s = [...document.querySelectorAll('[class*=search] [class*=result], [class*=sugg], [class*=autocomplete], [class*=search-res]')].filter(e => e.getBoundingClientRect().height > 10); return s.map(e => ({cls: e.className.toString(), txt: e.innerText.slice(0,200)})); }"
+            )
+            form = page.evaluate(
+                "() => { const f = document.querySelector('#cda-search-form'); return {action: f.getAttribute('action'), method: f.method, campos: [...f.elements].map(e => [e.name, e.type, e.value])}; }"
+            )
             shot(page, "busca-digitando")
             page.fill("#cda-search-input", "")
             return {"sugestoes": sug, "form": form}
@@ -124,28 +159,40 @@ def main():
             page.wait_for_timeout(500)
             depois = estado(page, ".cda-pc")
             img = estado(page, ".cda-pc-img img, .cda-pc-img")
-            card = page.evaluate("() => { const c = document.querySelector('.cda-pc'); return {html: c.outerHTML.slice(0, 1500)}; }")
+            card = page.evaluate(
+                "() => { const c = document.querySelector('.cda-pc'); return {html: c.outerHTML.slice(0, 1500)}; }"
+            )
             shot(page, "hover-card")
             return {"antes": antes, "hover": depois, "img": img, "card": card}
 
         @passo("carrossel_vitrine")
         def _():
-            return page.evaluate("() => { const t = document.querySelector('.cda-track'); const cs = getComputedStyle(t); return {overflowX: cs.overflowX, snap: cs.scrollSnapType, scrollW: t.scrollWidth, clientW: t.clientWidth, gap: cs.gap, display: cs.display, setas: [...t.parentElement.querySelectorAll('button')].map(b => b.getAttribute('aria-label') || b.innerText)}; }")
+            return page.evaluate(
+                "() => { const t = document.querySelector('.cda-track'); const cs = getComputedStyle(t); return {overflowX: cs.overflowX, snap: cs.scrollSnapType, scrollW: t.scrollWidth, clientW: t.clientWidth, gap: cs.gap, display: cs.display, setas: [...t.parentElement.querySelectorAll('button')].map(b => b.getAttribute('aria-label') || b.innerText)}; }"
+            )
 
         @passo("portfolio_ver_mais")
         def _():
-            botoes = page.evaluate("() => [...document.querySelectorAll('#cda-feito-aqui button, #cda-feito-aqui a')].map(b => ({t: b.innerText.trim(), href: b.getAttribute('href'), tag: b.tagName}))")
-            n = page.evaluate("() => [...document.querySelectorAll('#cda-port-gal .cda-g')].filter(e => e.offsetParent !== null).length")
+            botoes = page.evaluate(
+                "() => [...document.querySelectorAll('#cda-feito-aqui button, #cda-feito-aqui a')].map(b => ({t: b.innerText.trim(), href: b.getAttribute('href'), tag: b.tagName}))"
+            )
+            n = page.evaluate(
+                "() => [...document.querySelectorAll('#cda-port-gal .cda-g')].filter(e => e.offsetParent !== null).length"
+            )
             out = {"botoes": botoes, "itens_visiveis": n}
             alvo = page.locator("#cda-feito-aqui button:has-text('Ver mais'), #cda-feito-aqui button:has-text('mais')")
             if alvo.count():
                 alvo.first.click()
                 page.wait_for_timeout(800)
-                out["itens_apos_ver_mais"] = page.evaluate("() => [...document.querySelectorAll('#cda-port-gal .cda-g')].filter(e => e.offsetParent !== null).length")
+                out["itens_apos_ver_mais"] = page.evaluate(
+                    "() => [...document.querySelectorAll('#cda-port-gal .cda-g')].filter(e => e.offsetParent !== null).length"
+                )
             # clique em item da galeria (lightbox?)
             page.locator("#cda-port-gal .cda-g").first.click()
             page.wait_for_timeout(800)
-            out["lightbox"] = page.evaluate("() => { const d = [...document.querySelectorAll('dialog[open], [class*=lightbox], [class*=modal]')].filter(e => e.getBoundingClientRect().height > 100); return d.map(e => e.className.toString()); }")
+            out["lightbox"] = page.evaluate(
+                "() => { const d = [...document.querySelectorAll('dialog[open], [class*=lightbox], [class*=modal]')].filter(e => e.getBoundingClientRect().height > 100); return d.map(e => e.className.toString()); }"
+            )
             page.keyboard.press("Escape")
             return out
 
@@ -158,8 +205,16 @@ def main():
             apos = page.evaluate("() => [...document.querySelectorAll('.cda-faq-item')].map(d => d.open)")
             icone = estado(page, ".cda-faq-item[open] .cda-faq-icon")
             shot(page, "faq-aberto")
-            perguntas = page.evaluate("() => [...document.querySelectorAll('.cda-faq-item summary')].map(s => s.innerText.trim())")
-            return {"inicial": inicial, "apos_clicar_2": apos, "exclusivo": sum(apos) == 1, "icone_aberto": icone, "n": len(perguntas)}
+            perguntas = page.evaluate(
+                "() => [...document.querySelectorAll('.cda-faq-item summary')].map(s => s.innerText.trim())"
+            )
+            return {
+                "inicial": inicial,
+                "apos_clicar_2": apos,
+                "exclusivo": sum(apos) == 1,
+                "icone_aberto": icone,
+                "n": len(perguntas),
+            }
 
         @passo("rolar_para_cima")
         def _():
@@ -167,14 +222,20 @@ def main():
             page.wait_for_timeout(900)
             fixos = page.evaluate("""() => [...document.querySelectorAll('body *')].filter(e => { const cs = getComputedStyle(e); return cs.position === 'fixed' && e.getBoundingClientRect().height > 20 && cs.display !== 'none' && +cs.opacity > 0; })
               .map(e => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e); return {tag: e.tagName, id: e.id, cls: e.className.toString().slice(0, 80), aria: e.getAttribute('aria-label'), href: e.getAttribute('href'), x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height), bg: cs.backgroundColor, radius: cs.borderRadius}; })""")
-            sticky = page.evaluate("() => { const s = document.querySelector('.cda-sticky-wrap'); const cs = getComputedStyle(s); return {position: cs.position, top: cs.top, y: s.getBoundingClientRect().y, shadow: cs.boxShadow, cls: s.className}; }")
+            sticky = page.evaluate(
+                "() => { const s = document.querySelector('.cda-sticky-wrap'); const cs = getComputedStyle(s); return {position: cs.position, top: cs.top, y: s.getBoundingClientRect().y, shadow: cs.boxShadow, cls: s.className}; }"
+            )
             shot(page, "rolado")
             topo = [f for f in fixos if "top" in (f["cls"] + f["id"] + str(f["aria"])).lower()]
             if topo:
                 sel = "#" + topo[0]["id"] if topo[0]["id"] else "." + topo[0]["cls"].split()[0]
                 page.click(sel)
                 page.wait_for_timeout(1200)
-            return {"fixos_apos_rolar": fixos, "header_sticky": sticky, "scrollY_apos_clicar_topo": page.evaluate("scrollY")}
+            return {
+                "fixos_apos_rolar": fixos,
+                "header_sticky": sticky,
+                "scrollY_apos_clicar_topo": page.evaluate("scrollY"),
+            }
 
         @passo("foco_teclado")
         def _():
@@ -183,7 +244,11 @@ def main():
             focos = []
             for _ in range(6):
                 page.keyboard.press("Tab")
-                focos.append(page.evaluate("() => { const e = document.activeElement; const cs = getComputedStyle(e); return {tag: e.tagName, txt: (e.innerText || e.value || '').trim().slice(0, 40), cls: e.className.toString().slice(0, 50), outline: cs.outline, outlineOffset: cs.outlineOffset, boxShadow: cs.boxShadow}; }"))
+                focos.append(
+                    page.evaluate(
+                        "() => { const e = document.activeElement; const cs = getComputedStyle(e); return {tag: e.tagName, txt: (e.innerText || e.value || '').trim().slice(0, 40), cls: e.className.toString().slice(0, 50), outline: cs.outline, outlineOffset: cs.outlineOffset, boxShadow: cs.boxShadow}; }"
+                    )
+                )
             shot(page, "foco")
             return focos
 
@@ -192,7 +257,9 @@ def main():
             page.evaluate("scrollTo(0,0)")
             page.click("#cda-cart-btn")
             page.wait_for_timeout(900)
-            st = page.evaluate("() => { const p = document.querySelector('.cda-cart-panel'); if(!p) return null; const r = p.getBoundingClientRect(); const cs = getComputedStyle(p); return {txt: p.innerText.slice(0, 400), x: r.x, y: r.y, w: r.width, h: r.height, display: cs.display, position: cs.position, shadow: cs.boxShadow, radius: cs.borderRadius}; }")
+            st = page.evaluate(
+                "() => { const p = document.querySelector('.cda-cart-panel'); if(!p) return null; const r = p.getBoundingClientRect(); const cs = getComputedStyle(p); return {txt: p.innerText.slice(0, 400), x: r.x, y: r.y, w: r.width, h: r.height, display: cs.display, position: cs.position, shadow: cs.boxShadow, radius: cs.borderRadius}; }"
+            )
             shot(page, "carrinho-vazio")
             page.keyboard.press("Escape")
             page.mouse.click(700, 700)
@@ -200,7 +267,9 @@ def main():
 
         @passo("links_contato_home")
         def _():
-            return page.evaluate("() => [...new Set([...document.querySelectorAll('a[href*=\"wa.me\"], a[href*=\"whatsapp\"], a[href^=\"mailto:\"], a[href^=\"tel:\"]')].map(a => a.innerText.trim().slice(0,50) + ' -> ' + decodeURIComponent(a.href).slice(0, 300)))]")
+            return page.evaluate(
+                '() => [...new Set([...document.querySelectorAll(\'a[href*="wa.me"], a[href*="whatsapp"], a[href^="mailto:"], a[href^="tel:"]\')].map(a => a.innerText.trim().slice(0,50) + \' -> \' + decodeURIComponent(a.href).slice(0, 300)))]'
+            )
 
         R["rede_home"] = list(rede)
         rede.clear()
@@ -234,13 +303,23 @@ def main():
                 aguardar()
                 sel.select_option(opcoes[-1])
                 page.wait_for_timeout(4000)
-                return {"antes": antes, "depois": page.url, "opcao": opcoes[-1], "xhr": [r for r in rede if r["t"] in ("xhr", "fetch")][-5:]}
+                return {
+                    "antes": antes,
+                    "depois": page.url,
+                    "opcao": opcoes[-1],
+                    "xhr": [r for r in rede if r["t"] in ("xhr", "fetch")][-5:],
+                }
             btn = page.locator("[class*=sort] button, [class*=order] button, [class*=sort] a").first
             if btn.count():
                 btn.click()
                 page.wait_for_timeout(1000)
                 shot(page, "ordenacao-aberta")
-                return {"tipo": "botao", "menu": page.evaluate("() => [...document.querySelectorAll('[class*=sort] li, [class*=sort] a, [class*=sort] button')].map(e => e.innerText.trim()).filter(Boolean)")}
+                return {
+                    "tipo": "botao",
+                    "menu": page.evaluate(
+                        "() => [...document.querySelectorAll('[class*=sort] li, [class*=sort] a, [class*=sort] button')].map(e => e.innerText.trim()).filter(Boolean)"
+                    ),
+                }
             return None
 
         shot(page, "listagem-desktop")
@@ -273,12 +352,18 @@ def main():
         def _():
             out = {}
             btn = page.locator("main button:has-text('orçamento'), .single_add_to_cart_button").first
-            out["botao_antes"] = btn.evaluate("b => ({txt: b.innerText.trim(), disabled: b.disabled, cls: b.className.toString(), aria: b.getAttribute('aria-disabled'), cursor: getComputedStyle(b).cursor, opacity: getComputedStyle(b).opacity, bg: getComputedStyle(b).backgroundColor})")
+            out["botao_antes"] = btn.evaluate(
+                "b => ({txt: b.innerText.trim(), disabled: b.disabled, cls: b.className.toString(), aria: b.getAttribute('aria-disabled'), cursor: getComputedStyle(b).cursor, opacity: getComputedStyle(b).opacity, bg: getComputedStyle(b).backgroundColor})"
+            )
             btn.click(force=True)
             page.wait_for_timeout(800)
-            out["msg_apos_click_sem_cor"] = page.evaluate("() => [...document.querySelectorAll('main *')].filter(e => e.children.length === 0 && e.getBoundingClientRect().height > 0 && /escolha|selecione/i.test(e.innerText)).map(e => e.innerText.trim().slice(0,100))")
+            out["msg_apos_click_sem_cor"] = page.evaluate(
+                "() => [...document.querySelectorAll('main *')].filter(e => e.children.length === 0 && e.getBoundingClientRect().height > 0 && /escolha|selecione/i.test(e.innerText)).map(e => e.innerText.trim().slice(0,100))"
+            )
             select = page.locator("main select").first
-            swatch = page.locator("main [class*=swatch] button, main [class*=swatch] li, main .variable-item, main [class*=cor] button, main [data-value]").first
+            swatch = page.locator(
+                "main [class*=swatch] button, main [class*=swatch] li, main .variable-item, main [class*=cor] button, main [data-value]"
+            ).first
             if swatch.count():
                 out["metodo"] = "swatch"
                 swatch.click()
@@ -287,8 +372,12 @@ def main():
                 vals = select.evaluate("s => [...s.options].map(o => o.value).filter(Boolean)")
                 select.select_option(vals[0])
             page.wait_for_timeout(1200)
-            out["botao_depois"] = btn.evaluate("b => ({txt: b.innerText.trim(), disabled: b.disabled, cls: b.className.toString(), cursor: getComputedStyle(b).cursor, opacity: getComputedStyle(b).opacity, bg: getComputedStyle(b).backgroundColor})")
-            out["imagem_trocou"] = page.evaluate("() => (document.querySelector('main [class*=gallery] img, main img') || {}).currentSrc")
+            out["botao_depois"] = btn.evaluate(
+                "b => ({txt: b.innerText.trim(), disabled: b.disabled, cls: b.className.toString(), cursor: getComputedStyle(b).cursor, opacity: getComputedStyle(b).opacity, bg: getComputedStyle(b).backgroundColor})"
+            )
+            out["imagem_trocou"] = page.evaluate(
+                "() => (document.querySelector('main [class*=gallery] img, main img') || {}).currentSrc"
+            )
             shot(page, "produto-cor-escolhida")
             return out
 
@@ -296,12 +385,16 @@ def main():
         def _():
             q = page.locator("main input[type=number], main input.qty").first
             out = {"inicial": q.evaluate("i => ({value: i.value, min: i.min, max: i.max, step: i.step, name: i.name})")}
-            mais = page.locator("main button:has-text('+'), main .plus, main [class*=plus], main [aria-label*=umentar]").first
+            mais = page.locator(
+                "main button:has-text('+'), main .plus, main [class*=plus], main [aria-label*=umentar]"
+            ).first
             if mais.count():
                 mais.click()
                 page.wait_for_timeout(400)
                 out["apos_mais"] = q.input_value()
-            menos = page.locator("main button:has-text('−'), main button:has-text('-'), main .minus, main [class*=minus], main [aria-label*=iminuir]").first
+            menos = page.locator(
+                "main button:has-text('−'), main button:has-text('-'), main .minus, main [class*=minus], main [aria-label*=iminuir]"
+            ).first
             if menos.count():
                 for _ in range(3):
                     menos.click()
@@ -312,7 +405,9 @@ def main():
             page.wait_for_timeout(600)
             out["apos_digitar_1"] = q.input_value()
             out["validacao"] = q.evaluate("i => i.validationMessage")
-            out["msgs"] = page.evaluate("() => [...document.querySelectorAll('main *')].filter(e => e.children.length === 0 && e.getBoundingClientRect().height > 0 && /m[ií]nim/i.test(e.innerText)).map(e => e.innerText.trim().slice(0,120))")
+            out["msgs"] = page.evaluate(
+                "() => [...document.querySelectorAll('main *')].filter(e => e.children.length === 0 && e.getBoundingClientRect().height > 0 && /m[ií]nim/i.test(e.innerText)).map(e => e.innerText.trim().slice(0,120))"
+            )
             shot(page, "produto-quantidade")
             return out
 
@@ -321,17 +416,23 @@ def main():
             b = page.locator("main :text-matches('Ler descri|Ver descri|Leia mais|completa', 'i')").first
             if not b.count():
                 return None
-            antes = page.evaluate("() => { const d = document.querySelector('[class*=desc]'); return d ? {h: d.getBoundingClientRect().height, cls: d.className.toString()} : null; }")
+            antes = page.evaluate(
+                "() => { const d = document.querySelector('[class*=desc]'); return d ? {h: d.getBoundingClientRect().height, cls: d.className.toString()} : null; }"
+            )
             tag = b.evaluate("e => ({tag: e.tagName, href: e.getAttribute('href'), txt: e.innerText})")
             b.click()
             page.wait_for_timeout(1200)
-            depois = page.evaluate("() => { const d = document.querySelector('[class*=desc]'); return d ? {h: d.getBoundingClientRect().height} : null; }")
+            depois = page.evaluate(
+                "() => { const d = document.querySelector('[class*=desc]'); return d ? {h: d.getBoundingClientRect().height} : null; }"
+            )
             return {"gatilho": tag, "antes": antes, "depois": depois, "scrollY": page.evaluate("scrollY")}
 
         @passo("produto_galeria")
         def _():
             page.evaluate("scrollTo(0,0)")
-            thumbs = page.locator("main [class*=thumb] img, main .flex-control-thumbs img, main [class*=gallery] button")
+            thumbs = page.locator(
+                "main [class*=thumb] img, main .flex-control-thumbs img, main [class*=gallery] button"
+            )
             out = {"n_thumbs": thumbs.count()}
             principal = "main [class*=gallery] img, main [class*=main-img] img, main img"
             out["antes"] = page.evaluate(f"() => document.querySelector('{principal}').currentSrc")
@@ -353,9 +454,17 @@ def main():
             btn.click()
             page.wait_for_timeout(5000)
             contador = page.evaluate("() => (document.querySelector('#cda-cart-btn') || {}).innerText")
-            feedback = page.evaluate("() => [...document.querySelectorAll('.woocommerce-message, [class*=toast], [class*=notice], [class*=added], .cda-cart-panel')].filter(e => e.getBoundingClientRect().height > 0).map(e => ({cls: e.className.toString().slice(0, 80), txt: e.innerText.trim().slice(0, 300)}))")
+            feedback = page.evaluate(
+                "() => [...document.querySelectorAll('.woocommerce-message, [class*=toast], [class*=notice], [class*=added], .cda-cart-panel')].filter(e => e.getBoundingClientRect().height > 0).map(e => ({cls: e.className.toString().slice(0, 80), txt: e.innerText.trim().slice(0, 300)}))"
+            )
             shot(page, "produto-adicionado")
-            return {"contador_antes": contador_antes, "contador_depois": contador, "url": page.url, "feedback": feedback, "rede": list(rede)}
+            return {
+                "contador_antes": contador_antes,
+                "contador_depois": contador,
+                "url": page.url,
+                "feedback": feedback,
+                "rede": list(rede),
+            }
 
         @passo("carrinho_com_item")
         def _():
@@ -363,7 +472,9 @@ def main():
             page.click("#cda-cart-btn")
             page.wait_for_timeout(1000)
             shot(page, "carrinho-com-item")
-            return page.evaluate("() => { const p = document.querySelector('.cda-cart-panel'); return p ? {txt: p.innerText.slice(0, 600), links: [...p.querySelectorAll('a,button')].map(a => [a.innerText.trim(), a.getAttribute('href')])} : null; }")
+            return page.evaluate(
+                "() => { const p = document.querySelector('.cda-cart-panel'); return p ? {txt: p.innerText.slice(0, 600), links: [...p.querySelectorAll('a,button')].map(a => [a.innerText.trim(), a.getAttribute('href')])} : null; }"
+            )
 
         R["rede_produto"] = list(rede)
         rede.clear()
@@ -391,7 +502,13 @@ def main():
         ctx.close()
 
         # ---------- mobile ----------
-        ctx = b.new_context(user_agent=USER_AGENT, viewport={"width": 390, "height": 844}, locale="pt-BR", is_mobile=True, has_touch=True)
+        ctx = b.new_context(
+            user_agent=USER_AGENT,
+            viewport={"width": 390, "height": 844},
+            locale="pt-BR",
+            is_mobile=True,
+            has_touch=True,
+        )
         ctx.route("**/*", lambda r: r.abort() if any(x in r.request.url for x in BLOQUEAR) else r.continue_())
         page = ctx.new_page()
         nav(page, "/")
@@ -414,7 +531,9 @@ def main():
                       bodyOverflow: getComputedStyle(document.body).overflow}; }""")
             page.click(".cda-mobile-close")
             page.wait_for_timeout(600)
-            info["fechado_x"] = page.evaluate("() => document.querySelector('.cda-mobile-panel').getBoundingClientRect().x")
+            info["fechado_x"] = page.evaluate(
+                "() => document.querySelector('.cda-mobile-panel').getBoundingClientRect().x"
+            )
             return info
 
         ctx.close()

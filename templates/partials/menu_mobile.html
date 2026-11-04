@@ -1,0 +1,34 @@
+<div class="menu-mobile" id="menu-mobile" hidden data-menu-mobile>
+  <div class="menu-mobile__fundo" data-menu-fechar></div>
+  <div class="menu-mobile__painel" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="menu-mobile__topo">
+      {% include "partials/logo.html" %}
+      <button type="button" class="botao-icone" data-menu-fechar aria-label="Fechar menu">{% icone "x" 20 %}</button>
+    </div>
+    <details>
+      <summary>Todas as Categorias {% icone "chevron-down" 18 %}</summary>
+      <ul class="menu-mobile__lista">
+        {% for cat in menu_categorias %}
+          <li><a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a></li>
+          {% for filho in cat.menu_children %}<li><a href="{{ filho.get_absolute_url }}">— {{ filho.name }}</a></li>{% endfor %}
+        {% endfor %}
+        <li><a href="/produtos/"><b>Ver todos os produtos</b></a></li>
+      </ul>
+    </details>
+    <details>
+      <summary>{{ site.collections_label }} {% icone "chevron-down" 18 %}</summary>
+      <ul class="menu-mobile__lista">
+        {% for col in menu_colecoes %}<li><a href="{{ col.get_absolute_url }}">{{ col.name }}</a></li>
+        {% empty %}<li><span class="texto-suave texto-pequeno">Nenhuma ativa no momento.</span></li>{% endfor %}
+      </ul>
+    </details>
+    <a class="menu-mobile__link" href="/novidades/">Novidades</a>
+    <a class="menu-mobile__link" href="/sobre/">Sobre nós</a>
+    {% if site.blog_enabled %}<a class="menu-mobile__link" href="/blog/">Blog</a>{% endif %}
+    <a class="menu-mobile__link" href="/contato/">Contato</a>
+    <a class="menu-mobile__link" href="/orcamento/">Minha lista de orçamento ({{ lista_orcamento_total }})</a>
+    <a class="btn btn--acento btn--bloco" href="{% whatsapp_url site.quick_quote_message %}" {% if site.whatsapp_number %}target="_blank" rel="noopener"{% endif %}>
+      {% icone "whatsapp" 18 %} Solicitar orçamento rápido
+    </a>
+  </div>
+</div>

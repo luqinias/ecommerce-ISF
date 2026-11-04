@@ -1,0 +1,36 @@
+<header class="site-header" data-cabecalho>
+  <div class="container cabecalho__linha">
+    <button type="button" class="botao-icone cabecalho__menu-btn" data-menu-abrir aria-controls="menu-mobile" aria-expanded="false" aria-label="Abrir menu">
+      {% icone "menu" 20 %}
+    </button>
+    {% include "partials/logo.html" %}
+    <form class="busca" id="busca" action="/busca/" method="get" role="search" data-busca>
+      <label class="visualmente-oculto" for="busca-q">Buscar produtos</label>
+      <div class="busca__campo">
+        <input id="busca-q" type="search" name="q" placeholder="O que você está procurando?" autocomplete="off"
+               value="{{ request.GET.q|default:'' }}"
+               hx-get="/busca/sugestoes/" hx-trigger="input changed delay:300ms, search" hx-target="#busca-sugestoes" hx-sync="this:replace"
+               aria-controls="busca-sugestoes" aria-autocomplete="list">
+        <button type="submit" aria-label="Buscar">{% icone "search" 18 %}</button>
+      </div>
+      <div class="busca__sugestoes" id="busca-sugestoes" role="listbox" aria-label="Sugestões de produtos"></div>
+    </form>
+    <div class="cabecalho__acoes">
+      <button type="button" class="botao-icone botao-icone--busca" data-busca-alternar aria-controls="busca" aria-expanded="false" aria-label="Mostrar busca">
+        {% icone "search" 20 %}
+      </button>
+      <div class="dd" data-dd>
+        <button type="button" class="botao-icone" data-dd-gatilho aria-expanded="false" aria-controls="mini-lista"
+                hx-get="/orcamento/mini/" hx-target="#mini-lista" hx-trigger="click" hx-swap="innerHTML"
+                aria-label="Lista de orçamento ({{ lista_orcamento_total }} {{ lista_orcamento_total|pluralize:'item,itens' }})">
+          {% icone "clipboard" 20 %}
+          {% include "partials/contador_lista.html" %}
+        </button>
+        <div class="mini-lista" id="mini-lista" data-dd-painel hidden>
+          <p class="mini-lista__vazio">Carregando…</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include "partials/navegacao.html" %}
+</header>

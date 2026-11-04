@@ -1,0 +1,49 @@
+<footer class="rodape">
+  <div class="container rodape__grade">
+    <div class="rodape__marca">
+      {% include "partials/logo.html" %}
+      <p>{{ site.footer_about|definir }}</p>
+      <div class="rodape__redes">
+        {% if site.whatsapp_number %}<a href="{% whatsapp_url %}" target="_blank" rel="noopener" aria-label="WhatsApp">{% icone "whatsapp" 18 %}</a>{% endif %}
+        {% for nome, url in site.social_links %}<a href="{{ url }}" target="_blank" rel="noopener" aria-label="{{ nome|capfirst }}">{% icone nome 18 %}</a>{% endfor %}
+        {% if site.contact_email %}<a href="mailto:{{ site.contact_email }}" aria-label="E-mail">{% icone "mail" 18 %}</a>{% endif %}
+      </div>
+    </div>
+    <div>
+      <h2 class="rodape__titulo">Navegue</h2>
+      <ul class="rodape__links">
+        <li><a href="/produtos/">Todos os produtos</a></li>
+        <li><a href="/novidades/">Novidades</a></li>
+        <li><a href="/sobre/">Sobre a {{ site.short_name }}</a></li>
+        <li><a href="/orcamento/">Solicitar orçamento</a></li>
+        <li><a href="/contato/">Contato</a></li>
+        {% if site.blog_enabled %}<li><a href="/blog/">Blog</a></li>{% endif %}
+      </ul>
+    </div>
+    <div>
+      <h2 class="rodape__titulo">Atendimento</h2>
+      <ul class="rodape__contatos">
+        <li><span class="icone-redondo">{% icone "whatsapp" 16 %}</span>
+          <div><span class="rodape__rotulo">WhatsApp</span>
+            {% if site.whatsapp_number %}<a class="rodape__valor" href="{% whatsapp_url %}" target="_blank" rel="noopener">{{ site.phone_display|definir }}</a>{% else %}<span class="rodape__valor">[DEFINIR]</span>{% endif %}
+          </div></li>
+        <li><span class="icone-redondo">{% icone "mail" 16 %}</span>
+          <div><span class="rodape__rotulo">E-mail</span>
+            {% if site.contact_email %}<a class="rodape__valor" href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a>{% else %}<span class="rodape__valor">[DEFINIR]</span>{% endif %}
+          </div></li>
+        <li><span class="icone-redondo">{% icone "map-pin" 16 %}</span>
+          <div><span class="rodape__rotulo">Endereço</span><span class="rodape__valor">{{ site.address|definir|linebreaksbr }}</span></div></li>
+      </ul>
+    </div>
+  </div>
+  <div class="rodape__base">
+    <div class="container rodape__base-linha">
+      <span>© {% now "Y" %} {{ site.site_name }} · CNPJ {{ site.cnpj|definir }}</span>
+      <nav aria-label="Links legais">
+        <a href="/termos-de-uso/">Termos de uso</a>
+        <a href="/politica-de-privacidade/">Política de privacidade</a>
+        <button type="button" data-cookies-abrir>Preferências de cookies</button>
+      </nav>
+    </div>
+  </div>
+</footer>

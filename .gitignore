@@ -14,3 +14,7 @@ htmlcov/
 # material de estudo da engenharia reversa (screenshots/HTML da referência)
 docs/engenharia-reversa/screenshots/
 docs/engenharia-reversa/raw/
+.env.*
+!.env.example
+/test-results/
+/playwright-report/

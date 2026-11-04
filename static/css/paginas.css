@@ -1,0 +1,7 @@
+/* Estilos por página. Seções da home, listagens, produto, orçamento e institucionais. */
+
+/* 404 */
+.pagina-erro { padding-block: var(--s-16); }
+.pagina-erro h1 { font-size: var(--fs-display); }
+.busca--pagina { display: block; max-width: 560px; margin: var(--s-6) 0; padding: 0; }
+.pagina-erro__acoes { display: flex; flex-wrap: wrap; gap: var(--s-3); }
