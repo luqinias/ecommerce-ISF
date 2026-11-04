@@ -21,7 +21,7 @@
       </button>
       <div class="dd" data-dd>
         <button type="button" class="botao-icone" data-dd-gatilho aria-expanded="false" aria-controls="mini-lista"
-                hx-get="/orcamento/mini/" hx-target="#mini-lista" hx-trigger="click" hx-swap="innerHTML"
+                hx-get="{% url 'orcamentos:mini' %}" hx-target="#mini-lista" hx-trigger="click" hx-swap="innerHTML"
                 aria-label="Lista de orçamento ({{ lista_orcamento_total }} {{ lista_orcamento_total|pluralize:'item,itens' }})">
           {% icone "clipboard" 20 %}
           {% include "partials/contador_lista.html" %}

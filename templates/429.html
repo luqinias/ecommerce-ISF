@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Muitas tentativas | {{ site.site_name }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+{% block content %}
+<section class="secao secao--creme pagina-erro">
+  <div class="container container--estreito">
+    <span class="kicker">Aguarde um pouco</span>
+    <h1>Recebemos muitos envios seguidos.</h1>
+    <p class="lead">Para proteger o site, limitamos o número de pedidos em sequência. Tente de novo em alguns minutos ou fale com a gente direto.</p>
+    <div class="pagina-erro__acoes">
+      <a class="btn btn--primario" href="{% whatsapp_url %}">{% icone "whatsapp" 18 %} Falar no WhatsApp</a>
+      <a class="btn btn--ghost" href="{% url 'orcamentos:lista' %}">Voltar à lista</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

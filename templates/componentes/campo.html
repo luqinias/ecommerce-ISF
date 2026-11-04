@@ -1,0 +1,7 @@
+{% comment %}Campo de formulário acessível: label, dica e erro ligados por aria-describedby.{% endcomment %}
+<div class="campo{% if campo.errors %} campo--erro{% endif %}">
+  <label for="{{ campo.id_for_label }}">{{ campo.label }}{% if campo.field.required %} <span class="obrigatorio" aria-hidden="true">*</span>{% endif %}</label>
+  {{ campo }}
+  {% if campo.help_text %}<span class="campo__dica" id="{{ campo.id_for_label }}_helptext">{{ campo.help_text }}</span>{% endif %}
+  {% if campo.errors %}<span class="campo__erro" id="{{ campo.id_for_label }}_error" role="alert">{{ campo.errors.0 }}</span>{% endif %}
+</div>

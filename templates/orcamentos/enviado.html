@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Pedido {{ quote.code }} recebido | {{ site.site_name }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block body_class %}pagina-orcamento{% endblock %}
+{% block content %}
+<div class="container orcamento orcamento--enviado">
+  <ol class="passos" aria-label="Etapas do orçamento">
+    <li class="passos__item passos__item--feito"><span class="passos__num">{% icone "check" 14 %}</span> Seus produtos</li>
+    <li class="passos__item passos__item--feito"><span class="passos__num">{% icone "check" 14 %}</span> Seus dados</li>
+    <li class="passos__item passos__item--atual" aria-current="step"><span class="passos__num">3</span> Confirmação</li>
+  </ol>
+  <div class="confirmacao">
+    <span class="confirmacao__icone">{% icone "check" 32 %}</span>
+    <h1>Sua solicitação foi recebida!</h1>
+    <p class="lead">Pedido <b class="mono">{{ quote.code }}</b>. {% if quote.email %}Enviamos uma confirmação para <b>{{ quote.email }}</b>. {% endif %}A equipe responde com a proposta o mais rápido possível.</p>
+    {% if link_whatsapp %}
+      <a class="btn btn--acento btn--lg" href="{{ link_whatsapp }}" data-whatsapp-auto="{% if abrir %}1{% endif %}">{% icone "whatsapp" 20 %} Abrir o WhatsApp com meu orçamento</a>
+      {% if abrir %}<p class="texto-suave texto-pequeno" data-whatsapp-aviso>Abrindo o WhatsApp em instantes… Se não abrir, use o botão acima.</p>{% endif %}
+    {% else %}
+      <p class="aviso">Em breve a equipe entra em contato pelos dados informados.</p>
+    {% endif %}
+  </div>
+  <section class="confirmacao__resumo cartao" aria-labelledby="resumo-titulo">
+    <h2 id="resumo-titulo" class="h3">Resumo do pedido</h2>
+    <ul>
+      {% for i in itens %}<li><b>{{ i.quantity }} {{ i.unit }}</b> — {{ i.product_name }}{% if i.variant_label %} <span class="texto-suave">({{ i.variant_label }})</span>{% endif %} <span class="mono texto-suave texto-pequeno">{{ i.sku }}</span></li>{% endfor %}
+    </ul>
+    <a class="link-seta" href="{% url 'catalogo:lista' %}">Voltar ao catálogo →</a>
+  </section>
+</div>
+{% endblock %}
+{% block extra_js %}
+{% if abrir and link_whatsapp %}
+<script>
+  setTimeout(function () {
+    var a = document.querySelector("[data-whatsapp-auto='1']");
+    if (a) window.location.href = a.href;
+  }, 1800);
+</script>
+{% endif %}
+{% endblock %}

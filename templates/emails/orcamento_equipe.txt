@@ -1,0 +1,15 @@
+Novo pedido de orçamento {{ quote.code }} ({{ quote.get_source_display }})
+
+Nome: {{ quote.name|default:"—" }}
+Empresa/propriedade: {{ quote.company|default:"—" }}
+E-mail: {{ quote.email|default:"—" }}
+Telefone/WhatsApp: {{ quote.phone|default:"—" }}
+Cidade/UF: {{ quote.city|default:"—" }}{% if quote.state %}/{{ quote.state }}{% endif %}
+
+Itens:
+{% for i in itens %}- {{ i.quantity }} {{ i.unit }} — {{ i.product_name }}{% if i.variant_label %} ({{ i.variant_label }}){% endif %} [{{ i.sku }}]
+{% endfor %}
+Mensagem:
+{{ quote.message|default:"—" }}
+
+Abrir no admin: {{ url_admin }}

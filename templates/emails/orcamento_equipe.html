@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="pt-BR"><body style="margin:0;padding:24px;background:#f5f4ef;font-family:Arial,Helvetica,sans-serif;color:#1a1f1b">
+<table role="presentation" width="100%" style="max-width:640px;margin:0 auto;background:#fff;border-radius:16px;padding:24px">
+<tr><td>
+  <p style="margin:0 0 4px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9a6400;font-weight:bold">Novo pedido de orçamento</p>
+  <h1 style="margin:0 0 16px;font-size:22px">{{ quote.code }} — {{ quote.name|default:quote.get_source_display }}</h1>
+  <table role="presentation" style="font-size:14px;line-height:1.6">
+    <tr><td style="color:#555d56;padding-right:12px">Empresa</td><td>{{ quote.company|default:"—" }}</td></tr>
+    <tr><td style="color:#555d56;padding-right:12px">E-mail</td><td>{{ quote.email|default:"—" }}</td></tr>
+    <tr><td style="color:#555d56;padding-right:12px">Telefone</td><td>{{ quote.phone|default:"—" }}</td></tr>
+    <tr><td style="color:#555d56;padding-right:12px">Cidade/UF</td><td>{{ quote.city|default:"—" }}{% if quote.state %}/{{ quote.state }}{% endif %}</td></tr>
+    <tr><td style="color:#555d56;padding-right:12px">Origem</td><td>{{ quote.get_source_display }}</td></tr>
+  </table>
+  <h2 style="font-size:16px;margin:20px 0 8px">Itens</h2>
+  <table role="presentation" width="100%" style="font-size:14px;border-collapse:collapse">
+    {% for i in itens %}<tr><td style="border-top:1px solid #dedad0;padding:8px 0"><b>{{ i.quantity }} {{ i.unit }}</b></td><td style="border-top:1px solid #dedad0;padding:8px">{{ i.product_name }}{% if i.variant_label %}<br><span style="color:#555d56">{{ i.variant_label }}</span>{% endif %}</td><td style="border-top:1px solid #dedad0;padding:8px 0;font-family:monospace;color:#555d56">{{ i.sku }}</td></tr>{% endfor %}
+  </table>
+  {% if quote.message %}<h2 style="font-size:16px;margin:20px 0 8px">Mensagem</h2><p style="font-size:14px;white-space:pre-line">{{ quote.message }}</p>{% endif %}
+  <p style="margin-top:24px"><a href="{{ url_admin }}" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#1d6a44;color:#fff;text-decoration:none;font-weight:bold">Abrir no admin</a></p>
+</td></tr></table>
+</body></html>

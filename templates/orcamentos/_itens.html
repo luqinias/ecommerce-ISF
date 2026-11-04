@@ -1,0 +1,49 @@
+<div id="itens-orcamento" class="itens-orcamento">
+{% if itens %}
+  <table class="tabela-itens">
+    <caption class="visualmente-oculto">Produtos da sua lista de orçamento</caption>
+    <thead><tr><th scope="col"><span class="visualmente-oculto">Remover</span></th><th scope="col">Produto</th><th scope="col">Quantidade</th></tr></thead>
+    <tbody>
+    {% for i in itens %}
+      <tr>
+        <td class="tabela-itens__remover">
+          <form method="post" action="{% url 'orcamentos:item' i.chave %}" hx-post="{% url 'orcamentos:item' i.chave %}" hx-target="#itens-orcamento" hx-swap="outerHTML">
+            {% csrf_token %}<input type="hidden" name="remover" value="1">
+            <button type="submit" class="botao-icone" aria-label="Remover {{ i.produto.name }}">{% icone "x" 16 %}</button>
+          </form>
+        </td>
+        <td>
+          <div class="tabela-itens__produto">
+            {% with img=i.produto.main_image %}{% if img %}<img src="{{ img.card_url }}" alt="" width="64" height="64" loading="lazy">{% endif %}{% endwith %}
+            <div>
+              <a href="{{ i.produto.get_absolute_url }}"><b>{{ i.produto.name }}</b></a>
+              {% if i.rotulo_variacao %}<div class="texto-pequeno">{{ i.rotulo_variacao }}</div>{% endif %}
+              <div class="texto-pequeno texto-suave">SKU: <span class="mono">{{ i.sku }}</span> · mínimo {{ i.produto.min_quantity }}{% if i.produto.quantity_step > 1 %}, múltiplos de {{ i.produto.quantity_step }}{% endif %}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <form method="post" action="{% url 'orcamentos:item' i.chave %}" hx-post="{% url 'orcamentos:item' i.chave %}" hx-target="#itens-orcamento" hx-swap="outerHTML" hx-trigger="change delay:400ms">
+            {% csrf_token %}
+            <div class="quantidade quantidade--sm" data-quantidade>
+              <button type="button" data-qtd-menos aria-label="Diminuir quantidade de {{ i.produto.name }}">{% icone "minus" 16 %}</button>
+              <label class="visualmente-oculto" for="qtd-{{ forloop.counter }}">Quantidade de {{ i.produto.name }}</label>
+              <input id="qtd-{{ forloop.counter }}" type="number" name="quantidade" value="{{ i.quantidade }}" min="{{ i.produto.min_quantity }}" step="{{ i.produto.quantity_step }}" inputmode="numeric">
+              <button type="button" data-qtd-mais aria-label="Aumentar quantidade de {{ i.produto.name }}">{% icone "plus" 16 %}</button>
+            </div>
+            <span class="texto-pequeno texto-suave">{{ i.unidade }}</span>
+            <noscript><button type="submit" class="btn btn--sm btn--claro">Atualizar</button></noscript>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="vazio">
+    <h2>Sua lista está vazia.</h2>
+    <p>Navegue pelo catálogo e use "Adicionar ao orçamento" nos produtos que interessam.</p>
+    <a class="btn btn--primario" href="{% url 'catalogo:lista' %}">Ver produtos</a>
+  </div>
+{% endif %}
+</div>

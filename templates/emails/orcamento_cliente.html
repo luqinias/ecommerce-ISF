@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="pt-BR"><body style="margin:0;padding:24px;background:#f5f4ef;font-family:Arial,Helvetica,sans-serif;color:#1a1f1b">
+<table role="presentation" width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:16px;padding:28px">
+<tr><td>
+  <p style="margin:0 0 12px;font-weight:bold;color:#1d6a44">{{ site.site_name }}</p>
+  <h1 style="margin:0 0 12px;font-size:22px">Recebemos o seu pedido de orçamento</h1>
+  <p style="font-size:15px;line-height:1.6">Olá{% if quote.name %}, {{ quote.name }}{% endif %}! O pedido <b>{{ quote.code }}</b> chegou à nossa equipe. Vamos analisar os itens e responder com a proposta pelo WhatsApp ou por este e-mail.</p>
+  <table role="presentation" width="100%" style="font-size:14px;border-collapse:collapse;margin:16px 0">
+    {% for i in itens %}<tr><td style="border-top:1px solid #dedad0;padding:8px 0;width:110px"><b>{{ i.quantity }} {{ i.unit }}</b></td><td style="border-top:1px solid #dedad0;padding:8px">{{ i.product_name }}{% if i.variant_label %}<br><span style="color:#555d56">{{ i.variant_label }}</span>{% endif %}</td></tr>{% endfor %}
+  </table>
+  {% if link_whatsapp %}<p><a href="{{ link_whatsapp }}" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#f2b01e;color:#11251a;text-decoration:none;font-weight:bold">Conversar pelo WhatsApp</a></p>{% endif %}
+  <p style="font-size:12px;color:#676e67;margin-top:24px">Você recebeu este e-mail porque pediu um orçamento no nosso site. Seus dados são usados só para responder a este pedido.</p>
+</td></tr></table>
+</body></html>

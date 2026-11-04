@@ -26,7 +26,7 @@
     <a class="menu-mobile__link" href="/sobre/">Sobre nós</a>
     {% if site.blog_enabled %}<a class="menu-mobile__link" href="/blog/">Blog</a>{% endif %}
     <a class="menu-mobile__link" href="/contato/">Contato</a>
-    <a class="menu-mobile__link" href="/orcamento/">Minha lista de orçamento ({{ lista_orcamento_total }})</a>
+    <a class="menu-mobile__link" href="{% url 'orcamentos:lista' %}">Minha lista de orçamento ({{ lista_orcamento_total }})</a>
     <a class="btn btn--acento btn--bloco" href="{% whatsapp_url site.quick_quote_message %}" {% if site.whatsapp_number %}target="_blank" rel="noopener"{% endif %}>
       {% icone "whatsapp" 18 %} Solicitar orçamento rápido
     </a>

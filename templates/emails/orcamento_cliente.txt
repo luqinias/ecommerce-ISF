@@ -1,0 +1,13 @@
+Olá{% if quote.name %}, {{ quote.name }}{% endif %}!
+
+Recebemos o seu pedido de orçamento {{ quote.code }} na {{ site.site_name }}.
+A equipe vai analisar os itens e responder com a proposta pelo WhatsApp ou por este e-mail.
+
+Itens do pedido:
+{% for i in itens %}- {{ i.quantity }} {{ i.unit }} — {{ i.product_name }}{% if i.variant_label %} ({{ i.variant_label }}){% endif %}
+{% endfor %}{% if link_whatsapp %}
+Quer adiantar a conversa? {{ link_whatsapp }}
+{% endif %}
+Você recebeu este e-mail porque pediu um orçamento no nosso site. Seus dados são usados só para responder a este pedido.
+
+{{ site.site_name }}

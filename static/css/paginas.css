@@ -121,3 +121,43 @@
 @media (min-width: 960px) { .barra-fixa { display: none; } body.tem-barra-fixa .rolar-topo { bottom: var(--s-4); } }
 @media (max-width: 959px) { body.tem-barra-fixa { padding-bottom: 72px; } }
 .barra-fixa .btn { white-space: nowrap; flex: none; }
+
+/* ---------- Orçamento (O01–O04) ---------- */
+.orcamento { padding-block: var(--s-6) var(--s-16); }
+.orcamento h1 { margin-top: var(--s-6); }
+.passos { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-2); margin: var(--s-4) 0 0; padding: 0; list-style: none; font-size: var(--fs-label); font-weight: 700; color: var(--fg-muted); }
+.passos__item { display: flex; align-items: center; gap: var(--s-2); padding-bottom: var(--s-3); border-bottom: 3px solid var(--border); }
+.passos__num { display: inline-grid; place-items: center; width: 28px; height: 28px; flex: none; border-radius: 50%; border: 1.5px solid var(--border-strong); background: var(--surface); }
+.passos__item--atual { color: var(--fg); border-color: var(--brand-gold); }
+.passos__item--atual .passos__num { background: var(--brand-gold); border-color: var(--brand-gold); color: var(--dark); }
+.passos__item--feito { color: var(--primary); border-color: var(--primary); }
+.passos__item--feito .passos__num { background: var(--primary); border-color: var(--primary); color: #fff; }
+@media (max-width: 639px) { .passos { font-size: var(--fs-micro); } }
+.orcamento__grade { display: grid; gap: var(--s-8); margin-top: var(--s-6); }
+@media (min-width: 960px) { .orcamento__grade { grid-template-columns: minmax(0, 1.25fr) minmax(340px, 1fr); align-items: start; } .orcamento__dados { position: sticky; top: calc(var(--header-h) + var(--nav-h) + var(--s-4)); } }
+.orcamento__itens > .btn { margin-top: var(--s-4); }
+.orcamento__dados { padding: var(--s-6); border: 1px solid var(--border); border-radius: var(--r-xl); background: var(--surface-card); }
+.orcamento__rapido { margin-top: var(--s-4); text-align: center; }
+.orcamento__rapido button { background: none; border: 0; }
+.grade-campos--cidade { display: grid; grid-template-columns: 1fr 96px; gap: 0 var(--s-4); }
+.tabela-itens { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: var(--r-xl); overflow: hidden; background: var(--surface); }
+.tabela-itens thead th { padding: var(--s-3); background: var(--bg); font-size: var(--fs-label); text-align: left; }
+.tabela-itens td { padding: var(--s-3); border-top: 1px solid var(--border); vertical-align: middle; }
+.tabela-itens__remover { width: 56px; }
+.tabela-itens__remover .botao-icone { width: 36px; height: 36px; }
+.tabela-itens__produto { display: flex; gap: var(--s-3); align-items: center; }
+.tabela-itens__produto img { width: 64px; height: 64px; object-fit: cover; border-radius: var(--r-md); border: 1px solid var(--border); flex: none; }
+.tabela-itens__produto a { color: var(--fg); text-decoration: none; }
+.tabela-itens td form { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+@media (max-width: 639px) {
+  .tabela-itens thead { display: none; }
+  .tabela-itens tr { display: grid; grid-template-columns: 44px 1fr; border-top: 1px solid var(--border); }
+  .tabela-itens td { border: 0; padding: var(--s-2); }
+  .tabela-itens td:last-child { grid-column: 2; padding-top: 0; }
+  .tabela-itens__produto img { width: 48px; height: 48px; }
+}
+.confirmacao { margin: var(--s-10) auto var(--s-8); max-width: 640px; text-align: center; }
+.confirmacao__icone { display: inline-grid; place-items: center; width: 72px; height: 72px; border-radius: 50%; background: var(--success-soft); color: var(--success); margin-bottom: var(--s-4); }
+.confirmacao .lead { margin-inline: auto; }
+.confirmacao__resumo { max-width: 640px; margin: 0 auto; }
+.confirmacao__resumo ul { padding-left: 1.1em; }

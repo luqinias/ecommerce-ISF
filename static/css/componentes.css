@@ -129,3 +129,4 @@
 /* Card genérico */
 .cartao { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); padding: var(--s-6); }
 .cartao--creme { background: var(--bg); border-color: transparent; }
+.grade-campos { align-items: start; }

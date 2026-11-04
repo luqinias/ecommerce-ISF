@@ -52,8 +52,8 @@
       <p class="resumo__codigo">Cód. <span class="mono" data-sku>{{ produto.sku }}</span></p>
       {% if produto.short_description %}<p class="resumo__curta">{{ produto.short_description }}</p>{% endif %}
 
-      <form class="compra" method="post" action="/orcamento/adicionar/" data-seletor-variacao data-variacoes="{{ variacoes_json }}"
-            hx-post="/orcamento/adicionar/" hx-swap="none">
+      <form class="compra" method="post" action="{% url 'orcamentos:adicionar' %}" data-seletor-variacao data-variacoes="{{ variacoes_json }}"
+            hx-post="{% url 'orcamentos:adicionar' %}" hx-swap="none">
         {% csrf_token %}
         <input type="hidden" name="product" value="{{ produto.pk }}">
         <input type="hidden" name="variant" value="">

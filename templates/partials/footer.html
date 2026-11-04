@@ -15,7 +15,7 @@
         <li><a href="{% url 'catalogo:lista' %}">Todos os produtos</a></li>
         <li><a href="/novidades/">Novidades</a></li>
         <li><a href="/sobre/">Sobre a {{ site.short_name }}</a></li>
-        <li><a href="/orcamento/">Solicitar orçamento</a></li>
+        <li><a href="{% url 'orcamentos:lista' %}">Solicitar orçamento</a></li>
         <li><a href="/contato/">Contato</a></li>
         {% if site.blog_enabled %}<li><a href="/blog/">Blog</a></li>{% endif %}
       </ul>

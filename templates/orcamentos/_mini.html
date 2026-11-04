@@ -1,0 +1,13 @@
+{% if itens %}
+  {% for i in itens|slice:":5" %}
+    <div class="mini-lista__item">
+      {% with img=i.produto.main_image %}{% if img %}<img src="{{ img.card_url }}" alt="" width="44" height="44">{% else %}<span></span>{% endif %}{% endwith %}
+      <div><b>{{ i.produto.name }}</b>{% if i.rotulo_variacao %}<span class="texto-suave">{{ i.rotulo_variacao }}</span><br>{% endif %}<span class="texto-suave">{{ i.quantidade }} {{ i.unidade }}</span></div>
+    </div>
+  {% endfor %}
+  {% if itens|length > 5 %}<p class="texto-suave texto-pequeno">+ {{ itens|length|add:"-5" }} item(ns)</p>{% endif %}
+  <a class="btn btn--acento btn--sm" href="{% url 'orcamentos:lista' %}">Ver lista e pedir orçamento</a>
+{% else %}
+  <p class="mini-lista__vazio">Sua lista de orçamento está vazia.</p>
+  <a class="btn btn--claro btn--sm" href="{% url 'catalogo:lista' %}">Ver produtos</a>
+{% endif %}
