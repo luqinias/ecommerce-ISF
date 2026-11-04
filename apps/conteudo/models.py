@@ -214,3 +214,59 @@ class PageSection(Ordered):
 
     def __str__(self):
         return self.title
+
+
+class PostCategory(Ordered):
+    name = models.CharField(_("nome"), max_length=80)
+    slug = models.SlugField(_("endereço"), max_length=90, unique=True)
+
+    class Meta(Ordered.Meta):
+        verbose_name = _("categoria do blog")
+        verbose_name_plural = _("categorias do blog")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("conteudo:blog_categoria", args=[self.slug])
+
+
+class PostQuerySet(models.QuerySet):
+    def published(self):
+        from django.utils import timezone
+
+        return self.filter(published=True, published_at__lte=timezone.now())
+
+
+class Post(TimeStampedModel):
+    title = models.CharField(_("título"), max_length=160)
+    slug = models.SlugField(_("endereço"), max_length=180, unique=True)
+    category = models.ForeignKey(
+        PostCategory, verbose_name=_("categoria"), on_delete=models.PROTECT, related_name="posts"
+    )
+    excerpt = models.CharField(_("resumo"), max_length=280)
+    body = models.TextField(
+        _("texto"), help_text=_("Linha em branco separa parágrafos; '- ' no início vira lista; '## ' vira subtítulo.")
+    )
+    cover = models.ImageField(_("capa"), upload_to="blog/", blank=True)
+    author_name = models.CharField(_("autor"), max_length=80, blank=True)
+    published = models.BooleanField(_("publicado"), default=False)
+    published_at = models.DateTimeField(_("data de publicação"))
+    meta_description = models.CharField(_("meta description"), max_length=160, blank=True)
+
+    objects = PostQuerySet.as_manager()
+
+    class Meta:
+        verbose_name = _("post do blog")
+        verbose_name_plural = _("posts do blog")
+        ordering = ["-published_at"]
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("conteudo:post", args=[self.slug])
+
+    @property
+    def reading_minutes(self) -> int:
+        return max(1, round(len(self.body.split()) / 200))

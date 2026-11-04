@@ -133,5 +133,25 @@ def colecao_pagina(titulo: str, url: str, produtos) -> dict:
     }
 
 
+def artigo(post, site) -> dict:
+    dados = {
+        "@type": "BlogPosting",
+        "headline": post.title,
+        "description": post.excerpt,
+        "datePublished": post.published_at.isoformat(),
+        "dateModified": post.updated_at.isoformat(),
+        "url": absoluta(post.get_absolute_url()),
+        "inLanguage": "pt-BR",
+        "articleSection": post.category.name,
+        "publisher": {"@id": absoluta("/#organizacao")},
+        "author": {"@type": "Person", "name": post.author_name}
+        if post.author_name
+        else {"@id": absoluta("/#organizacao")},
+    }
+    if post.cover:
+        dados["image"] = absoluta(post.cover.url)
+    return dados
+
+
 def grafo(*nos) -> dict:
     return {"@context": CONTEXTO, "@graph": [n for n in nos if n]}

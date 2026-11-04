@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} | {{ site.site_name }}{% endblock %}
+{% block meta_description %}{{ post.meta_description|default:post.excerpt|truncatechars:160 }}{% endblock %}
+{% block seo_head %}{% if post.cover %}{% include "partials/seo_head.html" with url_canonica=post.get_absolute_url og_tipo="article" og_titulo=post.title og_descricao=post.excerpt og_imagem=post.cover.url %}{% else %}{% include "partials/seo_head.html" with url_canonica=post.get_absolute_url og_tipo="article" og_titulo=post.title og_descricao=post.excerpt %}{% endif %}{% endblock %}
+{% block jsonld %}{% load seo %}{% jsonld_post post site trilha %}{% endblock %}
+{% block content %}
+<article class="artigo">
+  <header class="hero-pagina">
+    <div class="container container--estreito">
+      {% include "componentes/breadcrumb.html" %}
+      <span class="kicker">{{ post.category.name }}</span>
+      <h1>{{ post.title }}</h1>
+      <p class="lead">{{ post.excerpt }}</p>
+      <p class="texto-suave texto-pequeno"><time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"j \d\e F \d\e Y" }}</time>{% if post.author_name %} · {{ post.author_name }}{% endif %} · {{ post.reading_minutes }} min de leitura</p>
+    </div>
+  </header>
+  <div class="container container--estreito artigo__corpo">
+    {% if post.cover %}<img class="artigo__capa" src="{{ post.cover.url }}" alt="" width="900" height="540">{% endif %}
+    <div class="prosa">{{ post.body|texto_rico }}</div>
+  </div>
+</article>
+{% if relacionados %}
+<section class="secao secao--creme" aria-labelledby="continue">
+  <div class="container"><h2 id="continue">Continue lendo</h2>
+    <ul class="grade-posts">{% for p in relacionados %}<li>{% include "conteudo/_card_post.html" %}</li>{% endfor %}</ul>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

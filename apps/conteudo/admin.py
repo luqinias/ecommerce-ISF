@@ -8,6 +8,8 @@ from apps.conteudo.models import (
     Page,
     PageSection,
     PortfolioItem,
+    Post,
+    PostCategory,
     SectionText,
     Testimonial,
 )  # fmt: skip
@@ -71,3 +73,18 @@ class PageAdmin(admin.ModelAdmin):
     list_filter = ("kind", "active")
     prepopulated_fields = {"slug": ("title",)}
     inlines = (PageSectionInline,)
+
+
+@admin.register(PostCategory)
+class PostCategoryAdmin(admin.ModelAdmin):
+    list_display = ("name", "slug", "order")
+    prepopulated_fields = {"slug": ("name",)}
+
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ("title", "category", "published", "published_at")
+    list_filter = ("published", "category")
+    search_fields = ("title", "excerpt", "body")
+    prepopulated_fields = {"slug": ("title",)}
+    date_hierarchy = "published_at"

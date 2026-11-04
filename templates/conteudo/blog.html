@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{% if categoria %}{{ categoria.name }} · {% endif %}Blog{% if pagina.number > 1 %} · página {{ pagina.number }}{% endif %} | {{ site.site_name }}{% endblock %}
+{% block meta_description %}Artigos e guias sobre irrigação da {{ site.site_name }}.{% endblock %}
+{% block seo_head %}{% include "partials/seo_head.html" with og_titulo="Blog" %}{% endblock %}
+{% block jsonld %}{% load seo %}{% jsonld_breadcrumb trilha %}{% endblock %}
+{% block content %}
+<section class="hero-pagina">
+  <div class="container">
+    {% include "componentes/breadcrumb.html" %}
+    <span class="kicker">Blog da {{ site.short_name }}</span>
+    <h1>{% if categoria %}{{ categoria.name }}{% else %}Ideias para irrigar <em>melhor</em>{% endif %}</h1>
+    {% if destaque %}
+      <a class="post-destaque" href="{{ destaque.get_absolute_url }}">
+        <span class="post-destaque__img">{% if destaque.cover %}<img src="{{ destaque.cover.url }}" alt="" width="800" height="480">{% else %}{% icone "sprout" 56 %}{% endif %}</span>
+        <span class="post-destaque__texto"><span class="kicker">Mais recente · {{ destaque.category.name }}</span><h2>{{ destaque.title }}</h2><p>{{ destaque.excerpt }}</p><small>{{ destaque.published_at|date:"j \d\e F \d\e Y" }}</small></span>
+      </a>
+    {% endif %}
+  </div>
+</section>
+<div class="container listagem">
+  <h2>Todos os artigos</h2>
+  <ul class="chips">
+    <li><a class="chip" href="{% url 'conteudo:blog' %}" {% if not categoria %}aria-current="true"{% endif %}>Todos</a></li>
+    {% for c in categorias %}<li><a class="chip" href="{{ c.get_absolute_url }}" {% if categoria == c %}aria-current="true"{% endif %}>{{ c.name }}</a></li>{% endfor %}
+  </ul>
+  {% if posts %}
+    <ul class="grade-posts">{% for p in posts %}<li>{% include "conteudo/_card_post.html" %}</li>{% endfor %}</ul>
+  {% elif not destaque %}
+    <div class="vazio"><h2>Nenhum artigo publicado ainda.</h2></div>
+  {% endif %}
+  {% if anterior or proxima %}
+    <nav class="paginacao" aria-label="Paginação"><ul>
+      {% if anterior %}<li><a href="{{ anterior }}" rel="prev">← Anteriores</a></li>{% endif %}
+      {% if proxima %}<li><a href="{{ proxima }}" rel="next">Mais artigos →</a></li>{% endif %}
+    </ul></nav>
+  {% endif %}
+</div>
+{% endblock %}

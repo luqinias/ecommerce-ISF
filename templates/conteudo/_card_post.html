@@ -1,0 +1,9 @@
+<a class="card-post" href="{{ p.get_absolute_url }}">
+  <span class="card-post__img">{% if p.cover %}<img src="{{ p.cover.url }}" alt="" width="600" height="360" loading="lazy">{% else %}{% icone "sprout" 40 %}{% endif %}</span>
+  <span class="card-post__corpo">
+    <span class="kicker">{{ p.category.name }}</span>
+    <h3>{{ p.title }}</h3>
+    <span class="texto-suave texto-pequeno">{{ p.excerpt|truncatechars:150 }}</span>
+    <small>{{ p.published_at|date:"j M Y" }} · {{ p.reading_minutes }} min de leitura</small>
+  </span>
+</a>

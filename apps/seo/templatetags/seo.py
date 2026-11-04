@@ -36,3 +36,8 @@ def jsonld_faq(perguntas):
 @register.simple_tag
 def jsonld_breadcrumb(trilha):
     return _script(jsonld.grafo(jsonld.breadcrumb(trilha)))
+
+
+@register.simple_tag
+def jsonld_post(post, site, trilha):
+    return _script(jsonld.grafo(jsonld.artigo(post, site), jsonld.breadcrumb(trilha)))

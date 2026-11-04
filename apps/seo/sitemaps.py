@@ -2,7 +2,8 @@ from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
 from apps.catalogo.models import Category, Collection, Product
-from apps.conteudo.models import Page
+from apps.conteudo.models import Page, Post
+from apps.core.models import SiteConfiguration
 
 
 class BaseSitemap(Sitemap):
@@ -77,10 +78,24 @@ class PaginasSitemap(BaseSitemap):
         return obj.updated_at
 
 
+class PostsSitemap(BaseSitemap):
+    changefreq = "monthly"
+    priority = 0.5
+
+    def items(self):
+        if not SiteConfiguration.load().blog_enabled:
+            return Post.objects.none()
+        return Post.objects.published()
+
+    def lastmod(self, obj):
+        return obj.updated_at
+
+
 SITEMAPS = {
     "estaticas": EstaticasSitemap,
     "categorias": CategoriasSitemap,
     "colecoes": ColecoesSitemap,
     "produtos": ProdutosSitemap,
     "paginas": PaginasSitemap,
+    "blog": PostsSitemap,
 }

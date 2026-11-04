@@ -8,7 +8,8 @@ from django.views.decorators.http import require_http_methods
 from apps.catalogo import selectors as catalogo
 from apps.conteudo import selectors
 from apps.conteudo.forms import ContatoForm
-from apps.conteudo.models import FAQItem, Page
+from apps.conteudo.models import FAQItem, Page, Post, PostCategory
+from apps.core.models import SiteConfiguration
 from apps.core.ratelimit import limite_de_taxa
 from apps.orcamentos import services as orcamentos
 from apps.orcamentos.choices import QuoteSource
@@ -94,3 +95,63 @@ def novidades(request, pagina: int = 1):
         "noindex": bool(request.GET.get("tipo")) or pagina_obj.number > 1,
     }
     return render(request, "conteudo/novidades.html", contexto)
+
+
+POR_PAGINA_BLOG = 12
+
+
+def _exigir_blog():
+    if not SiteConfiguration.load().blog_enabled:
+        raise Http404
+
+
+def blog(request, pagina: int = 1, categoria: str | None = None):
+    _exigir_blog()
+    posts = Post.objects.published().select_related("category")
+    cat = None
+    if categoria:
+        cat = get_object_or_404(PostCategory, slug=categoria)
+        posts = posts.filter(category=cat)
+    # o mais recente fica em destaque (só exibido na página 1) e nunca se repete na grade
+    mais_recente = posts.first() if not cat else None
+    restantes = posts.exclude(pk=mais_recente.pk) if mais_recente else posts
+    destaque = mais_recente if pagina == 1 else None
+    try:
+        pagina_obj = Paginator(restantes, POR_PAGINA_BLOG).page(pagina)
+    except EmptyPage as erro:
+        if pagina == 1:
+            pagina_obj = Paginator(restantes, POR_PAGINA_BLOG).page(1) if restantes.exists() else None
+        else:
+            raise Http404 from erro
+    base = reverse("conteudo:blog_categoria", args=[cat.slug]) if cat else reverse("conteudo:blog")
+    contexto = {
+        "destaque": destaque,
+        "pagina": pagina_obj,
+        "posts": list(pagina_obj.object_list) if pagina_obj else [],
+        "categorias": PostCategory.objects.filter(posts__in=Post.objects.published()).distinct(),
+        "categoria": cat,
+        "proxima": (base + f"page/{pagina_obj.number + 1}/") if pagina_obj and pagina_obj.has_next() else "",
+        "anterior": (base + (f"page/{pagina_obj.number - 1}/" if pagina_obj.number > 2 else ""))
+        if pagina_obj and pagina_obj.has_previous()
+        else "",
+        "trilha": [("Início", "/"), ("Blog", reverse("conteudo:blog") if cat else None)]
+        + ([(cat.name, None)] if cat else []),
+    }
+    return render(request, "conteudo/blog.html", contexto)
+
+
+def blog_categoria(request, slug: str, pagina: int = 1):
+    return blog(request, pagina=pagina, categoria=slug)
+
+
+def post(request, slug: str):
+    _exigir_blog()
+    obj = get_object_or_404(Post.objects.published().select_related("category"), slug=slug)
+    relacionados = list(Post.objects.published().filter(category=obj.category).exclude(pk=obj.pk)[:3])
+    trilha = [
+        ("Início", "/"),
+        ("Blog", reverse("conteudo:blog")),
+        (obj.category.name, obj.category.get_absolute_url()),
+        (obj.title, None),
+    ]
+    return render(request, "conteudo/post.html", {"post": obj, "relacionados": relacionados, "trilha": trilha})

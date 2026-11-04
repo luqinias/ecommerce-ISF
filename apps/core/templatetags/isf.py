@@ -104,7 +104,15 @@ def texto_rico(texto: str):
     for bloco in blocos:
         paragrafo, lista = [], []
         for linha in bloco.split("\n"):
-            if linha.strip().startswith("- "):
+            if linha.strip().startswith("## "):
+                if paragrafo:
+                    html.append("<p>" + "<br>".join(paragrafo) + "</p>")
+                    paragrafo = []
+                if lista:
+                    html.append("<ul>" + "".join(lista) + "</ul>")
+                    lista = []
+                html.append(f"<h2>{escape(linha.strip()[3:])}</h2>")
+            elif linha.strip().startswith("- "):
                 if paragrafo:
                     html.append("<p>" + "<br>".join(paragrafo) + "</p>")
                     paragrafo = []
