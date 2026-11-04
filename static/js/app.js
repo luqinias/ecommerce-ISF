@@ -334,8 +334,25 @@
           const msg = $("[data-barra-msg]", barra);
           if (msg) msg.textContent = liberado ? "Pronto para adicionar" : msg.dataset.vazio;
         }
+        atualizarWhatsapp(variacao);
         form.dispatchEvent(new CustomEvent("isf:variacao", { detail: variacao, bubbles: true }));
       };
+
+      // orçamento rápido: mensagem com produto, SKU (da variação) e quantidade
+      const wpp = $("[data-wpp-produto]", form);
+      const qtd = $("input[name=quantity]", form);
+      let variacaoAtual = null;
+      function atualizarWhatsapp(variacao) {
+        variacaoAtual = variacao === undefined ? variacaoAtual : variacao;
+        if (!wpp || !wpp.dataset.numero) return;
+        const sku = variacaoAtual ? variacaoAtual.sku : (skuPadrao || "").trim();
+        const texto = (wpp.dataset.modelo || "")
+          .replace("{produto}", wpp.dataset.produto || "")
+          .replace("{sku}", sku)
+          .replace("{quantidade}", qtd ? qtd.value : "");
+        wpp.href = "https://wa.me/" + wpp.dataset.numero + "?text=" + encodeURIComponent(texto);
+      }
+      if (qtd) qtd.addEventListener("input", () => atualizarWhatsapp());
 
       grupos.forEach((g) => $$("input", g).forEach((inp) => inp.addEventListener("change", atualizar)));
       const limpar = $("[data-limpar-variacao]", form);

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import contextlib
+import json
 from dataclasses import dataclass, field
 
 from django.conf import settings
@@ -13,6 +15,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_GET
 
+from apps.catalogo import schema as schema_attrs
 from apps.catalogo import selectors
 from apps.catalogo.models import Category, Collection, Product
 
@@ -229,8 +232,56 @@ def sugestoes(request):
     return render(request, "catalogo/_sugestoes.html", {"produtos": produtos, "termo": termo})
 
 
-def produto(request, slug: str):  # implementado na feature 004
-    raise Http404
+@require_GET
+def produto(request, slug: str):
+    obj = get_object_or_404(
+        Product.objects.active()
+        .select_related("primary_category", "primary_category__parent")
+        .prefetch_related("images", "variants"),
+        slug=slug,
+    )
+    variacoes = [v for v in obj.variants.all() if v.active]
+    atributos = obj.variant_attributes if variacoes else []
+    grupos = []
+    for attr in atributos:
+        valores = []
+        for v in variacoes:
+            valor = (v.attributes or {}).get(attr["key"])
+            if valor is not None and valor not in valores:
+                valores.append(valor)
+        if attr["type"] == "choice":
+            ordem = {str(c): i for i, c in enumerate(attr["choices"])}
+            valores.sort(key=lambda x: ordem.get(str(x), 999))
+        else:
+            with contextlib.suppress(TypeError):
+                valores.sort()
+        grupos.append(
+            {
+                "attr": attr,
+                "opcoes": [{"valor": str(x), "rotulo": schema_attrs.formatar_valor(x, attr)} for x in valores],
+            }
+        )
+    dados_variacoes = [
+        {"id": v.pk, "sku": v.sku, "atributos": {k: str(x) for k, x in v.attributes.items()}, "imagem": v.image_id}
+        for v in variacoes
+    ]
+    trilha = [("Início", "/")]
+    cat = obj.primary_category
+    if cat.parent_id:
+        trilha.append((cat.parent.name, cat.parent.get_absolute_url()))
+    trilha += [(cat.name, cat.get_absolute_url()), (obj.name, None)]
+    nomes_attr = [g["attr"]["label"].lower() for g in grupos]
+    contexto = {
+        "produto": obj,
+        "imagens": list(obj.images.all()),
+        "grupos": grupos,
+        "variacoes_json": json.dumps(dados_variacoes),
+        "trilha": trilha,
+        "aviso_variacao": "Escolha " + " e ".join(nomes_attr) + " para continuar." if nomes_attr else "",
+        "relacionados": selectors.relacionados(obj),
+        "valores_variacao": [(g["attr"]["label"], ", ".join(o["rotulo"] for o in g["opcoes"])) for g in grupos],
+    }
+    return render(request, "catalogo/produto.html", contexto)
 
 
 def novidades(request):  # implementado na feature 006

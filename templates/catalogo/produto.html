@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}{% if produto.meta_title %}{{ produto.meta_title }}{% else %}{{ produto.name }}{% endif %} | {{ site.site_name }}{% endblock %}
+{% block meta_description %}{% if produto.meta_description %}{{ produto.meta_description }}{% elif produto.short_description %}{{ produto.short_description|truncatechars:160 }}{% else %}{{ produto.name }} no catálogo da {{ site.site_name }}. Peça um orçamento.{% endif %}{% endblock %}
+{% block seo_head %}{% with img=imagens.0 %}{% include "partials/seo_head.html" with url_canonica=produto.get_absolute_url og_tipo="product" og_titulo=produto.name og_descricao=produto.short_description og_imagem=img.large_url %}{% endwith %}{% endblock %}
+{% block jsonld %}{% include "partials/jsonld_produto.html" %}{% endblock %}
+{% block body_class %}pagina-produto tem-barra-fixa{% endblock %}
+
+{% block content %}
+<div class="container produto">
+  <div class="produto__topo">
+    {# P01 Galeria #}
+    <div class="galeria" data-galeria>
+      <div class="galeria__principal">
+        {% with img=imagens.0 %}
+        {% if img %}
+          <img data-galeria-principal src="{{ img.large_url }}" alt="{{ img.alt_text }}" width="900" height="900" fetchpriority="high">
+        {% else %}
+          <div class="galeria__vazia" role="img" aria-label="Imagem não disponível">{% icone "image" 48 %}</div>
+        {% endif %}
+        {% endwith %}
+        {% if imagens %}
+          <button type="button" class="galeria__ampliar botao-icone" data-galeria-ampliar aria-label="Ampliar imagem">{% icone "zoom" 18 %}</button>
+        {% endif %}
+        {% if imagens|length > 1 %}
+          <button type="button" class="galeria__seta galeria__seta--ant botao-icone" data-galeria-anterior aria-label="Foto anterior">{% icone "chevron-left" 18 %}</button>
+          <button type="button" class="galeria__seta galeria__seta--prox botao-icone" data-galeria-proxima aria-label="Próxima foto">{% icone "chevron-right" 18 %}</button>
+        {% endif %}
+      </div>
+      {% if imagens|length > 1 %}
+        <ul class="galeria__miniaturas" aria-label="Fotos do produto">
+          {% for img in imagens %}
+            <li><button type="button" data-galeria-mini data-imagem-id="{{ img.pk }}" data-src="{{ img.large_url }}" data-grande="{{ img.image.url }}" data-alt="{{ img.alt_text }}"
+                        aria-label="Ver foto {{ forloop.counter }}{% if img.kind == 'environment' %} (aplicação em campo){% endif %}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}">
+              <img src="{{ img.card_url }}" alt="" width="80" height="80" loading="lazy">
+            </button></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      <dialog class="galeria__dialogo" data-galeria-dialogo aria-label="Imagem ampliada">
+        <button type="button" class="botao-icone galeria__fechar" data-galeria-fechar aria-label="Fechar">{% icone "x" 20 %}</button>
+        <img src="" alt="">
+      </dialog>
+    </div>
+
+    {# P02–P06 Resumo #}
+    <div class="resumo">
+      {% include "componentes/breadcrumb.html" with trilha=trilha %}
+      <a class="selo resumo__categoria" href="{{ produto.primary_category.get_absolute_url }}">{{ produto.primary_category.name }}</a>
+      {% if produto.is_new %}<span class="selo selo--novo">Novo</span>{% endif %}
+      {% if produto.is_demo %}<span class="selo selo--demo">Produto de demonstração</span>{% endif %}
+      <h1 class="resumo__titulo">{{ produto.name }}</h1>
+      <p class="resumo__codigo">Cód. <span class="mono" data-sku>{{ produto.sku }}</span></p>
+      {% if produto.short_description %}<p class="resumo__curta">{{ produto.short_description }}</p>{% endif %}
+
+      <form class="compra" method="post" action="/orcamento/adicionar/" data-seletor-variacao data-variacoes="{{ variacoes_json }}"
+            hx-post="/orcamento/adicionar/" hx-swap="none">
+        {% csrf_token %}
+        <input type="hidden" name="product" value="{{ produto.pk }}">
+        <input type="hidden" name="variant" value="">
+        {% for g in grupos %}
+          <fieldset class="opcoes" data-atributo="{{ g.attr.key }}">
+            <legend>{{ g.attr.label }}: <span data-valor-escolhido data-vazio="escolha uma opção">escolha uma opção</span></legend>
+            <div class="opcoes__lista">
+              {% for o in g.opcoes %}
+                <label class="opcao">
+                  <input type="radio" name="attr_{{ g.attr.key }}" value="{{ o.valor }}" data-rotulo="{{ o.rotulo }}">
+                  <span>{{ o.rotulo }}</span>
+                </label>
+              {% endfor %}
+            </div>
+          </fieldset>
+        {% endfor %}
+        {% if grupos %}<button type="button" class="link-limpar" data-limpar-variacao>Limpar escolha</button>{% endif %}
+
+        <div class="compra__linha">
+          <div class="quantidade" data-quantidade>
+            <button type="button" data-qtd-menos aria-label="Diminuir quantidade">{% icone "minus" 18 %}</button>
+            <label class="visualmente-oculto" for="quantidade">Quantidade ({{ produto.unit_plural }})</label>
+            <input id="quantidade" type="number" name="quantity" inputmode="numeric" value="{{ produto.min_quantity }}" min="{{ produto.min_quantity }}" step="{{ produto.quantity_step }}">
+            <button type="button" data-qtd-mais aria-label="Aumentar quantidade">{% icone "plus" 18 %}</button>
+          </div>
+          <button type="submit" class="btn btn--acento btn--lg compra__botao" data-adicionar {% if grupos %}aria-disabled="true"{% endif %}>
+            {% icone "clipboard" 18 %} Adicionar ao orçamento
+          </button>
+        </div>
+        {% if aviso_variacao %}<p class="compra__aviso" data-aviso-variacao role="alert" tabindex="-1" hidden>{{ aviso_variacao }}</p>{% endif %}
+        <p class="compra__minimo">Mínimo de {{ produto.min_quantity }} {% if produto.min_quantity == 1 %}{{ produto.unit_label }}{% else %}{{ produto.unit_plural }}{% endif %}{% if produto.quantity_step > 1 %}, em múltiplos de {{ produto.quantity_step }}{% endif %} · você ajusta tudo antes de enviar</p>
+        <a class="link-seta compra__rapido" data-wpp-produto
+           data-numero="{{ site.whatsapp_number }}" data-modelo="{{ site.product_quick_quote_message }}" data-produto="{{ produto.name }}"
+           href="{% whatsapp_url site.product_quick_quote_message produto=produto.name sku=produto.sku quantidade=produto.min_quantity %}" {% if site.whatsapp_number %}target="_blank" rel="noopener"{% endif %}>
+          {% icone "whatsapp" 16 %} Orçamento rápido pelo WhatsApp
+        </a>
+      </form>
+
+      <ul class="garantias">
+        <li>{% icone "check" 18 %} Orçamento sem compromisso, com resposta pelo WhatsApp ou e-mail</li>
+        <li>{% icone "users" 18 %} Atendimento técnico para dimensionar o seu sistema</li>
+        <li>{% icone "truck" 18 %} Entrega: <span class="definir">[DEFINIR] área de atendimento</span></li>
+      </ul>
+    </div>
+  </div>
+
+  {# P07–P08 Descrição e ficha técnica #}
+  <section class="produto__corpo" aria-label="Detalhes do produto">
+    <div class="descricao">
+      <h2>Sobre o produto</h2>
+      <div class="descricao__texto prosa" id="descricao-texto">
+        {% if produto.description %}{{ produto.description|linebreaks }}{% else %}<p>{{ produto.short_description|default:"Descrição em breve." }}</p>{% endif %}
+      </div>
+      {% if produto.description|length > 600 %}
+        <button type="button" class="link-seta descricao__mais" data-expandir aria-controls="descricao-texto" aria-expanded="false"
+                data-texto-mais="Ler descrição completa ↓" data-texto-menos="Mostrar menos ↑"><span data-rotulo>Ler descrição completa ↓</span></button>
+      {% endif %}
+    </div>
+    <aside class="ficha" aria-labelledby="ficha-titulo">
+      <h2 id="ficha-titulo">Especificações</h2>
+      <dl>
+        {% for rotulo, valor in produto.spec_rows %}<div><dt>{{ rotulo }}</dt><dd>{{ valor }}</dd></div>{% endfor %}
+        {% for rotulo, valores in valores_variacao %}<div><dt>{{ rotulo }}</dt><dd>{{ valores }}</dd></div>{% endfor %}
+        <div><dt>Unidade de venda</dt><dd>{{ produto.unit_label|capfirst }}</dd></div>
+        <div><dt>Quantidade mínima</dt><dd>{{ produto.min_quantity }}{% if produto.quantity_step > 1 %} (múltiplos de {{ produto.quantity_step }}){% endif %}</dd></div>
+        <div><dt>Código</dt><dd class="mono">{{ produto.sku }}</dd></div>
+      </dl>
+    </aside>
+  </section>
+
+  {# P10 Relacionados #}
+  {% if relacionados %}
+  <section class="relacionados" aria-labelledby="rel-titulo">
+    <h2 id="rel-titulo">Você também pode gostar</h2>
+    <ul class="grade-produtos grade-produtos--relacionados">
+      {% for p in relacionados %}<li>{% include "componentes/card_produto.html" with p=p nivel=3 %}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</div>
+
+{# P11 Barra fixa no mobile #}
+<div class="barra-fixa" data-barra-fixa>
+  <small><b>{{ produto.name|truncatechars:34 }}</b><br><span data-barra-msg data-vazio="{% if grupos %}Escolha {{ grupos.0.attr.label|lower }}{% else %}Pronto para adicionar{% endif %}">{% if grupos %}Escolha {{ grupos.0.attr.label|lower }}{% else %}Pronto para adicionar{% endif %}</span></small>
+  <button type="button" class="btn btn--acento btn--sm">Adicionar ao orçamento</button>
+</div>
+{% endblock %}

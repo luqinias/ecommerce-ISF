@@ -8,6 +8,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import tempfile
+import unicodedata
 from datetime import timedelta
 from pathlib import Path
 
@@ -93,6 +94,9 @@ def gerar_placeholder(destino: Path, titulo: str, subtitulo: str, cores: tuple[s
     desenho.polygon([(cx, cy - 170), (cx - r + 8, cy + 30), (cx + r - 8, cy + 30)], fill=e)
     desenho.ellipse([cx - 40, cy + 40, cx + 10, cy + 90], fill=c)
     fonte = _fonte(40)
+    # a fonte embutida do Pillow não tem todos os acentos: só na imagem, texto sem acento
+    titulo = unicodedata.normalize("NFKD", titulo).encode("ascii", "ignore").decode()
+    subtitulo = unicodedata.normalize("NFKD", subtitulo).encode("ascii", "ignore").decode()
     linhas, atual = [], ""
     for palavra in titulo.split():
         if len(atual) + len(palavra) > 26:
