@@ -34,6 +34,7 @@
   <button type="button" class="rolar-topo" data-rolar-topo aria-label="Voltar ao topo da página">{% icone "arrow-up" 20 %}</button>
   <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
 
+  {% if site.gtm_id or site.meta_pixel_id %}<script type="application/json" id="isf-analytics">{"gtm": "{{ site.gtm_id|escapejs }}", "pixel": "{{ site.meta_pixel_id|escapejs }}"}</script>{% endif %}
   <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
   <script src="{% static 'js/app.js' %}" defer></script>
   {% block extra_js %}{% endblock %}

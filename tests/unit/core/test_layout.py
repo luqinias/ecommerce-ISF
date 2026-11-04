@@ -41,3 +41,19 @@ def test_banner_de_cookies_some_com_consentimento(client):
     client.cookies["isf_consent"] = "necessarios"
     html = client.get("/").content.decode()
     assert re.search(r'id="aviso-cookies"[^>]*hidden', html)
+
+
+def test_sem_ids_nao_ha_bloco_de_analytics(client):
+    assert "isf-analytics" not in client.get("/").content.decode()
+
+
+def test_ids_configurados_viram_dado_inerte(client, site_config):
+    site_config.gtm_id = "GTM-ABC1234"
+    site_config.meta_pixel_id = "1234567890"
+    site_config.save()
+    html = client.get("/").content.decode()
+    import json
+
+    bloco = re.search(r'<script type="application/json" id="isf-analytics">(.*?)</script>', html).group(1)
+    assert json.loads(bloco) == {"gtm": "GTM-ABC1234", "pixel": "1234567890"}
+    assert "googletagmanager.com/gtm.js" not in html and 'fbevents.js"' not in html  # nada carregado no HTML

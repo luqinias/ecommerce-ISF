@@ -137,6 +137,49 @@
     const seguro = location.protocol === "https:" ? "; Secure" : "";
     document.cookie = `${COOKIE}=${encodeURIComponent(valor)}; Max-Age=${umAno}; Path=/; SameSite=Lax${seguro}`;
   }
+  /* Rastreadores: só depois do consentimento "todos" (LGPD, princípio VIII). */
+  let analyticsCarregado = false;
+  function carregarAnalytics() {
+    if (analyticsCarregado) return;
+    const bloco = document.getElementById("isf-analytics");
+    if (!bloco) return;
+    let cfg = {};
+    try { cfg = JSON.parse(bloco.textContent); } catch (e) { return; }
+    analyticsCarregado = true;
+    if (/^GTM-[A-Z0-9]+$/.test(cfg.gtm || "")) {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+      const s = document.createElement("script");
+      s.async = true;
+      s.src = "https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(cfg.gtm);
+      document.head.appendChild(s);
+    }
+    if (/^\d+$/.test(cfg.pixel || "")) {
+      /* snippet oficial do Meta Pixel, reescrito sem eval */
+      const fbq = function () { fbq.callMethod ? fbq.callMethod.apply(fbq, arguments) : fbq.queue.push(arguments); };
+      if (!window.fbq) {
+        window.fbq = window._fbq = fbq;
+        fbq.push = fbq; fbq.loaded = true; fbq.version = "2.0"; fbq.queue = [];
+        const s = document.createElement("script");
+        s.async = true;
+        s.src = "https://connect.facebook.net/en_US/fbevents.js";
+        document.head.appendChild(s);
+      }
+      window.fbq("init", cfg.pixel);
+      window.fbq("track", "PageView");
+    }
+  }
+  function apagarCookiesDeMedicao() {
+    const dominio = location.hostname.split(".").slice(-2).join(".");
+    document.cookie.split(";").map((c) => c.split("=")[0].trim())
+      .filter((n) => /^(_ga|_gid|_gcl_au|_fbp|_fbc)/.test(n))
+      .forEach((n) => {
+        document.cookie = `${n}=; Max-Age=0; Path=/`;
+        document.cookie = `${n}=; Max-Age=0; Path=/; Domain=.${dominio}`;
+      });
+  }
+  document.addEventListener("isf:consentimento", (e) => { if (e.detail === "todos") carregarAnalytics(); });
+
   function iniciarCookies() {
     const banner = $("[data-cookies]");
     if (!banner) return;
@@ -149,7 +192,7 @@
       gravarConsentimento(valor);
       banner.hidden = true;
       if (valor === "todos") document.dispatchEvent(new CustomEvent("isf:consentimento", { detail: "todos" }));
-      else if (anterior === "todos") location.reload(); // revoga: recarrega sem os rastreadores
+      else if (anterior === "todos") { apagarCookiesDeMedicao(); location.reload(); } // revoga: recarrega sem os rastreadores
     }));
     $$("[data-cookies-abrir]").forEach((b) => b.addEventListener("click", () => {
       banner.hidden = false;
