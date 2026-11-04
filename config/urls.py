@@ -9,6 +9,7 @@ admin.site.site_title = "ISF · Admin"
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("apps.core.urls")),
+    path("", include("apps.catalogo.urls")),
 ]
 
 if settings.DEBUG:

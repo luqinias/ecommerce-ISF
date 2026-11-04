@@ -1,0 +1,4 @@
+sku_produto;nome;categoria;categorias_extras;colecoes;descricao_curta;descricao;quantidade_minima;multiplo;unidade_venda;destaque;novidade_ate;relevancia;imagens;sku_variacao;imagem_variacao;attr:Material;attr:Autocompensante;attr:Pressão máxima [bar];var:Vazão [L/h]
+EX-GOT-01;Gotejador autocompensante (exemplo);Gotejamento;;Lançamentos;Texto curto que aparece no card e abaixo do nome.;Parágrafo 1.\n\nParágrafo 2.;100;100;peça;sim;2027-06-30;90;https://exemplo.com/fotos/gotejador.jpg|ambiente:https://exemplo.com/fotos/gotejador-campo.jpg;EX-GOT-01-2;;PE;sim;3.5;2
+EX-GOT-01;;;;;;;;;;;;;;EX-GOT-01-4;https://exemplo.com/fotos/gotejador-4lh.jpg;;;;4
+EX-KIT-01;Kit horta (exemplo, sem variação);Kits;Gotejamento;;Kit pronto.;;1;1;kit;não;;50;kit-horta.jpg;;;;;;

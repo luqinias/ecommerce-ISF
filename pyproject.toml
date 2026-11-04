@@ -11,6 +11,8 @@ dependencies = [
     "django-axes>=9.0.0",
     "django-jazzmin>=3.0.5",
     "gunicorn>=26.2.0",
+    "jsonschema>=4.26.0",
+    "openpyxl>=3.1.5",
     "pillow>=13.0.0",
     "psycopg2-binary>=2.9.13",
     "python-dotenv>=1.2.4",
@@ -44,7 +46,7 @@ extend-exclude = [".specify", ".claude", "docs", "staticfiles", "media"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "DJ", "S", "C4", "SIM", "RUF"]
-ignore = ["RUF012", "S308", "RUF001", "RUF002", "RUF003"]
+ignore = ["E501", "RUF012", "S308", "RUF001", "RUF002", "RUF003"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "S105", "S106"]
