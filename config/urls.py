@@ -17,3 +17,9 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+elif settings.SERVE_MEDIA:
+    # Instalações pequenas sem Nginx/S3 (ex.: docker compose local). Em produção, prefira Nginx ou S3.
+    from django.urls import re_path
+    from django.views.static import serve
+
+    urlpatterns += [re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT})]

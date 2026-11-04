@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from django.conf import settings
+from django.templatetags.static import static
 from django.urls import reverse
 
 CONTEXTO = "https://schema.org"
@@ -20,7 +21,7 @@ def organizacao(site) -> dict:
         "@id": absoluta("/#organizacao"),
         "name": site.site_name,
         "url": absoluta("/"),
-        "logo": absoluta("/static/img/favicon.svg"),
+        "logo": absoluta(static("img/favicon.svg")),
     }
     redes = [url for _, url in site.social_links]
     if redes:

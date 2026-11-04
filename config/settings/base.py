@@ -4,12 +4,17 @@ Valores sensíveis vêm de variáveis de ambiente (`.env` em dev, lido por pytho
 Defaults são seguros: sem `DEBUG`, sem hosts liberados.
 """
 
+import mimetypes
 import os
 from pathlib import Path
 
 import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
+
+# Imagens base slim nem sempre conhecem estes tipos (usados nas miniaturas e fontes).
+mimetypes.add_type("image/webp", ".webp")
+mimetypes.add_type("font/woff2", ".woff2")
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv(BASE_DIR / ".env")
@@ -138,6 +143,7 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 USE_S3 = env_bool("USE_S3", False)
+SERVE_MEDIA = env_bool("SERVE_MEDIA", False)
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},

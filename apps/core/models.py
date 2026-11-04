@@ -153,7 +153,7 @@ class SiteConfiguration(CleanSaveModel):
         obj = cache.get(cls.CACHE_KEY)
         if obj is None:
             obj = cls.objects.filter(pk=1).first() or cls(pk=1)
-            cache.set(cls.CACHE_KEY, obj, 300)
+            cache.set(cls.CACHE_KEY, obj, 60)  # curto: com LocMem cada worker tem o seu cache
         return obj
 
     @property

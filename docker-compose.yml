@@ -23,6 +23,12 @@ services:
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
       SECURE_SSL_REDIRECT: "False"
       LOAD_DEMO_DATA: ${LOAD_DEMO_DATA:-True}
+      # Valores fixos para o ambiente local em HTTP (o .env também é usado na interpolação do compose).
+      # Em produção, use docs/deploy.md: HTTPS, SECURE_COOKIES=True e mídia no Nginx ou S3.
+      SERVE_MEDIA: "True"
+      SECURE_COOKIES: "False"
+      BASE_URL: ${BASE_URL:-http://localhost:8000}
+      CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-http://localhost:8000}
     ports:
       - "8000:8000"
     volumes:

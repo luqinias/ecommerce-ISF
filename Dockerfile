@@ -18,7 +18,8 @@ RUN uv sync --frozen --no-install-project --no-default-groups
 
 COPY . .
 
-RUN DJANGO_SETTINGS_MODULE=config.settings.dev SECRET_KEY=build-only python manage.py collectstatic --noinput \
+# collectstatic com as settings de produção: gera o manifest com hash usado pelo WhiteNoise
+RUN DJANGO_SETTINGS_MODULE=config.settings.prod SECRET_KEY=build-only ALLOWED_HOSTS=build python manage.py collectstatic --noinput \
     && useradd --create-home --uid 1000 app \
     && mkdir -p /app/media \
     && chown -R app:app /app/media
