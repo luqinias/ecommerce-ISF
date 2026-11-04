@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+db.sqlite3
+media/
+staticfiles/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.ruff_cache/
+# material de estudo da engenharia reversa (screenshots/HTML da referência)
+docs/engenharia-reversa/screenshots/
+docs/engenharia-reversa/raw/
