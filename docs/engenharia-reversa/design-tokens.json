@@ -1,0 +1,127 @@
+{
+  "$descricao": "Tokens extraídos da referência (estilos computados, Fase 1) e o mapeamento adotado no projeto ISF. 'referencia' = medido; 'isf' = valor usado no CSS (identidade 'Campo' da Fase 0 + métricas de layout da referência).",
+  "cor": {
+    "referencia": {
+      "escuro": "#1E2530",
+      "escuro_2": "#262E3B",
+      "texto": "#1E2530",
+      "texto_corpo": "#0F172A",
+      "texto_suave": "#5A6270",
+      "texto_breadcrumb": "#5F6670",
+      "primaria_petroleo": "#4E8E9E",
+      "primaria_petroleo_escura": "#3A7382",
+      "acento_ouro": "#C9A76B",
+      "creme": "#F4F1E9",
+      "areia_nav": "#EDE8DC",
+      "card_fundo": "#FBFAF6",
+      "borda_clara": "#EDE8DC",
+      "borda_painel": "#EEE6D6",
+      "borda_ghost": "#CFC8B8",
+      "borda_input": "#A6A08E",
+      "fundo_stepper": "#F1ECE2",
+      "rodape_texto": "#C7CBD2",
+      "rodape_sub": "#8E95A1",
+      "card_data_azul": "#E3EBF7",
+      "branco": "#FFFFFF"
+    },
+    "isf": {
+      "bg": "#f5f4ef",
+      "surface": "#ffffff",
+      "surface_2": "#efede6",
+      "surface_3": "#e6e3da",
+      "border": "#dedad0",
+      "border_strong": "#c7c2b5",
+      "fg": "#1a1f1b",
+      "fg_muted": "#555d56",
+      "fg_subtle": "#676e67",
+      "primary": "#1d6a44",
+      "primary_hover": "#17573a",
+      "primary_soft": "#e2efe7",
+      "primary_soft_fg": "#145033",
+      "brand_gold": "#f2b01e",
+      "accent": "#9a6400",
+      "dark": "#11251a",
+      "dark_2": "#1a3326",
+      "on_dark": "#e7ece8",
+      "on_dark_muted": "#a3aea6",
+      "danger": "#b42318",
+      "info": "#1d5fa8",
+      "success": "#1b7a45",
+      "ring": "#2f8a5c"
+    },
+    "mapeamento": {
+      "escuro (faixa superior, rodapé, faixa de prazos, botão 'Todas as Categorias')": "dark (#11251a, 'Mata Noturna')",
+      "primaria_petroleo (botões, links, números)": "primary (#1d6a44)",
+      "acento_ouro (CTA, kicker, traços)": "brand_gold (#f2b01e) como fundo; accent (#9a6400) quando é texto sobre claro",
+      "creme (fundos de seção)": "bg (#f5f4ef)",
+      "areia_nav": "surface_3 (#e6e3da)",
+      "card_fundo": "surface_2 em 40 % / #faf9f5",
+      "bordas": "border / border_strong"
+    }
+  },
+  "tipografia": {
+    "referencia": {
+      "titulos": "Fraunces, serif (600)",
+      "corpo": "Inter, sans-serif (400)",
+      "h1_hero": {"size": "56px", "line": "62.7px", "weight": 600, "tracking": "-0.5px"},
+      "h1_pagina": {"size": "40px", "line": "46px", "weight": 600},
+      "h2": {"size": "40px", "line": "46px", "weight": 600},
+      "h3": {"size": "22px", "line": "28.6px", "weight": 600},
+      "h4_rodape": {"size": "18px", "line": "21.6px", "weight": 600},
+      "corpo": {"size": "16px", "line": "26.4px"},
+      "subtitulo": {"size": "17px", "line": "28px"},
+      "nav": {"size": "14.5px", "weight": 700},
+      "botao": {"size": "15px", "weight": 600},
+      "kicker": {"size": "13px", "weight": 700, "tracking": "2.5px", "transform": "uppercase"},
+      "breadcrumb": {"size": "13px"},
+      "badge": {"size": "11px", "weight": 700}
+    },
+    "isf": {
+      "titulos": "Manrope (800, tracking -0.025em)",
+      "corpo": "Manrope (400)",
+      "mono": "JetBrains Mono (SKU, códigos)",
+      "escala": {"display": "clamp(2.25rem, 4vw + 1rem, 3.5rem)", "h1": "clamp(1.875rem, 2vw + 1rem, 2.5rem)", "h2": "clamp(1.625rem, 1.5vw + 1rem, 2.5rem)", "h3": "1.375rem", "body": "1rem", "lead": "1.0625rem", "small": "0.875rem", "label": "0.8125rem", "micro": "0.6875rem"}
+    }
+  },
+  "espacamento": {
+    "referencia": {"secao_vertical": "56–80px", "gap_cards": "14px", "gap_grade_produtos": "16px (10px mobile)", "gap_datas": "22px", "gap_rodape": "48px", "padding_card_passo": "30px 22px", "padding_depoimento": "26px 24px"},
+    "isf": {"1": "4px", "2": "8px", "3": "12px", "4": "16px", "5": "20px", "6": "24px", "8": "32px", "10": "40px", "12": "48px", "14": "56px", "20": "80px"}
+  },
+  "raio": {
+    "referencia": {"pilula": "100px/999px", "card": "16px", "card_grande": "20px", "cookie": "18px", "input": "4px", "swatch": "50%"},
+    "isf": {"sm": "6px", "md": "8px", "lg": "12px", "xl": "16px", "2xl": "20px", "pill": "999px"}
+  },
+  "sombra": {
+    "referencia": {"nav": "0 6px 18px rgba(30,37,48,.22)", "painel": "0 16px 40px rgba(30,37,48,.16)", "banner": "0 24px 50px rgba(30,37,48,.18)", "cookie": "0 18px 40px rgba(0,0,0,.28)", "botao": "0 1px 2px rgba(0,0,0,.05)"},
+    "isf": {"sm": "0 1px 2px rgb(26 31 27 / .06)", "md": "0 12px 32px -8px rgb(26 31 27 / .16)", "lg": "0 24px 48px -12px rgb(26 31 27 / .22)", "nav": "0 6px 18px rgb(17 37 26 / .18)"}
+  },
+  "movimento": {"referencia": {"hover_card": "transform .25s, box-shadow .25s (translateY -4px)", "links": ".2s linear", "menu_mobile": "transform .3s"}, "isf": {"rapido": "150ms", "base": "250ms", "lento": "300ms", "reduced_motion": "desliga transições"}},
+  "layout": {
+    "container": {"referencia": "1220px (header e listagens) / 1320px (seções da home, padding 32) / 1200px (rodapé) / 900px (FAQ)", "isf": {"max": "1256px de conteúdo (1220–1320 na referência)", "gutter_mobile": "16px", "gutter_tablet": "24px", "gutter_desktop": "32px", "estreito": "900px"}},
+    "alturas": {"faixa_superior": "46px", "header_principal": "65px", "barra_nav": "72px", "header_mobile": "105px", "botao": "59px (hero) / 46px (CTA nav) / 34px (dropdown)", "controle": "40–52px"},
+    "grids": {
+      "produtos": {"390": 2, "768": 3, "1024": 4, "1440": 5},
+      "trilho_vitrine": {"visiveis_1440": 6, "visiveis_768": 4.5, "visiveis_390": 2.1, "overflow": "scroll-snap x"},
+      "tiles_categoria": {"390": 2, "768": 4, "1440": 6},
+      "portfolio": {"390": 2, "768": 2, "1440": 4},
+      "datas": {"390": 1, "768": 1, "1440": 3},
+      "como_funciona": {"390": 2, "768": 2, "1440": 4},
+      "depoimentos": {"390": 1, "768": 3, "1440": 3},
+      "rodape": {"390": 1, "768": 2, "1440": 3},
+      "produto_detalhe": {"390": 1, "768": 1, "1440": 2}
+    }
+  },
+  "breakpoints": {
+    "referencia_detectados": [640, 680, 820, 920, 960, 1080, 1100],
+    "significado": {
+      "640": "grade de produtos 2→3; tiles 2→4; mosaico do hero aparece",
+      "680": "busca do header aparece",
+      "820": "grade de produtos 3→4",
+      "920": "como funciona 2→4; relacionados 3→5",
+      "960": "rodapé 1→3 colunas",
+      "1080": "barra de navegação desktop e CTA aparecem; hambúrguer some",
+      "1100": "grade 4→5; datas 1→3; portfólio 2→4; tiles 4→6"
+    },
+    "isf": {"sm": "640px", "md": "768px", "lg": "960px", "xl": "1100px"}
+  }
+}

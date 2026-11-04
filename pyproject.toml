@@ -1,0 +1,13 @@
+[project]
+name = "ecommerce-isf"
+version = "0.1.0"
+description = "Catálogo e lista de orçamento da Irrigação Sem Fronteiras."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[dependency-groups]
+engenharia-reversa = [
+    "playwright>=1.50",
+    "axe-playwright-python>=0.1.4",
+]
