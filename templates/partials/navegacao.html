@@ -31,10 +31,10 @@
       </div>
     </div>
     <ul class="navegacao__links">
-      <li><a href="/novidades/" {% if request.path == '/novidades/' %}aria-current="page"{% endif %}>Novidades</a></li>
-      <li><a href="/sobre/" {% if request.path == '/sobre/' %}aria-current="page"{% endif %}>Sobre nós</a></li>
+      <li><a href="{% url 'conteudo:novidades' %}" {% if request.path == '/novidades/' %}aria-current="page"{% endif %}>Novidades</a></li>
+      <li><a href="{% url 'conteudo:sobre' %}" {% if request.path == '/sobre/' %}aria-current="page"{% endif %}>Sobre nós</a></li>
       {% if site.blog_enabled %}<li><a href="/blog/" {% if request.path|slice:':6' == '/blog/' %}aria-current="page"{% endif %}>Blog</a></li>{% endif %}
-      <li><a href="/contato/" {% if request.path == '/contato/' %}aria-current="page"{% endif %}>Contato</a></li>
+      <li><a href="{% url 'conteudo:contato' %}" {% if request.path == '/contato/' %}aria-current="page"{% endif %}>Contato</a></li>
     </ul>
     <a class="btn btn--acento btn--sm navegacao__cta" href="{% whatsapp_url site.quick_quote_message %}" {% if site.whatsapp_number %}target="_blank" rel="noopener"{% endif %} data-orcamento-rapido>
       {% icone "whatsapp" 16 %} Solicitar orçamento rápido

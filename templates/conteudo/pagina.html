@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ pagina.title }} | {{ site.site_name }}{% endblock %}
+{% block meta_description %}{{ pagina.meta_description|default:pagina.lead|truncatechars:160 }}{% endblock %}
+{% block seo_head %}{% include "partials/seo_head.html" with url_canonica=pagina.get_absolute_url og_titulo=pagina.title og_descricao=pagina.lead %}{% endblock %}
+{% block body_class %}pagina-institucional{% endblock %}
+{% block content %}
+<section class="hero-pagina">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Você está em"><ol><li><a href="/">Início</a></li><li><span aria-current="page">{{ pagina.title }}</span></li></ol></nav>
+    {% if pagina.kicker %}<span class="kicker">{{ pagina.kicker }}</span>{% endif %}
+    <h1>{% titulo_destacado pagina.title pagina.highlight %}</h1>
+    {% if pagina.lead %}<p class="lead">{{ pagina.lead }}</p>{% endif %}
+  </div>
+</section>
+{% for s in secoes %}
+<section class="secao{% cycle '' ' secao--creme' %}" {% if s.anchor %}id="{{ s.anchor }}"{% endif %} aria-labelledby="secao-{{ forloop.counter }}">
+  <div class="container secao-texto">
+    <h2 id="secao-{{ forloop.counter }}">{{ s.title }}</h2>
+    <div class="prosa">{{ s.body|texto_rico }}</div>
+  </div>
+</section>
+{% endfor %}
+<section class="secao secao--escura cta-final">
+  <div class="container cta-final__grade">
+    <div><span class="kicker">Vamos conversar</span><h2>Conte o que você precisa irrigar e a equipe monta a proposta.</h2></div>
+    <div class="cta-final__acoes">
+      <a class="btn btn--acento" href="{% whatsapp_url site.quick_quote_message %}">{% icone "whatsapp" 18 %} Pedir orçamento no WhatsApp</a>
+      <a class="btn btn--contorno-escuro" href="{% url 'conteudo:contato' %}">Outras formas de contato</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

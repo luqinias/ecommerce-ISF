@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ site.site_name }} | Catálogo de produtos de irrigação{% endblock %}
+{% block seo_head %}{% include "partials/seo_head.html" with url_canonica="/" og_tipo="website" og_titulo=site.site_name %}{% endblock %}
+{% block jsonld %}{% include "partials/jsonld_home.html" %}{% endblock %}
+{% block body_class %}pagina-home{% endblock %}
+{% block content %}
+
+{# H01 Hero #}
+<section class="hero" aria-labelledby="hero-titulo">
+  <div class="container hero__grade">
+    <div class="hero__texto">
+      {% if selo_colecoes %}
+      <p class="hero__selo"><span class="hero__selo-rotulo">{{ banner.badge_label|default:site.collections_label }}</span>
+        {% for c in selo_colecoes %}<a href="{{ c.get_absolute_url }}" class="hero__selo-item hero__selo-item--{{ c.color }}"><span class="selo__ponto"></span>{{ c.name }}</a>{% endfor %}
+      </p>
+      {% endif %}
+      <h1 id="hero-titulo">{% if banner %}{% titulo_destacado banner.title banner.highlight %}{% else %}Produtos de irrigação com <em>orçamento rápido</em>.{% endif %}</h1>
+      <p class="hero__sub">{% if banner.subtitle %}{{ banner.subtitle }}{% else %}Monte a sua lista com os produtos e as quantidades e receba a proposta pelo WhatsApp ou e-mail. [DEFINIR] proposta de valor da empresa.{% endif %}</p>
+      <div class="hero__ctas">
+        <a class="btn btn--primario btn--lg" href="{% cta_href banner.cta_url|default:'whatsapp' %}">{% icone "whatsapp" 18 %} {{ banner.cta_label|default:"Pedir orçamento" }}</a>
+        <a class="btn btn--ghost btn--lg" href="{{ banner.cta2_url|default:'#vitrine' }}">{{ banner.cta2_label|default:"Ver produtos ↓" }}</a>
+      </div>
+      {% if provas %}
+      <ul class="hero__provas">
+        {% for h in provas %}<li class="prova"><span class="prova__icone">{% icone h.icon 18 %}</span><b>{{ h.title }}</b><span>{{ h.text }}</span></li>{% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    <div class="hero__midia" aria-hidden="{% if banner.image_main %}false{% else %}true{% endif %}">
+      {% if banner.image_main %}
+        <figure class="hero__foto hero__foto--alta"><img src="{{ banner.image_main.url }}" alt="{{ banner.caption_main }}" width="640" height="1100" fetchpriority="high">{% if banner.caption_main %}<figcaption>{{ banner.caption_main }}</figcaption>{% endif %}</figure>
+        {% if banner.image_2 %}<figure class="hero__foto"><img src="{{ banner.image_2.url }}" alt="{{ banner.caption_2 }}" width="520" height="520" loading="lazy">{% if banner.caption_2 %}<figcaption>{{ banner.caption_2 }}</figcaption>{% endif %}</figure>{% endif %}
+        {% if banner.image_3 %}<figure class="hero__foto"><img src="{{ banner.image_3.url }}" alt="{{ banner.caption_3 }}" width="520" height="520" loading="lazy">{% if banner.caption_3 %}<figcaption>{{ banner.caption_3 }}</figcaption>{% endif %}</figure>{% endif %}
+      {% else %}
+        <div class="hero__foto hero__foto--alta hero__foto--vazia">{% icone "droplet" 64 %}</div>
+        <div class="hero__foto hero__foto--vazia">{% icone "sprout" 48 %}</div>
+        <div class="hero__foto hero__foto--vazia">{% icone "gauge" 48 %}</div>
+      {% endif %}
+      {% for c in colecoes_destaque|slice:":2" %}
+        <a class="hero__flutuante hero__flutuante--{{ forloop.counter }}" href="{{ c.get_absolute_url }}"><span class="icone-redondo">{% icone "calendar" 16 %}</span><span><b>{{ c.name }}</b><small>{% if c.order_deadline %}pedidos até {{ c.order_deadline|date:"j/m" }}{% else %}{{ c.total }} produtos{% endif %}</small></span></a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# H02 Vitrine #}
+{% if blocos %}
+<section class="secao vitrine" id="vitrine" aria-labelledby="vitrine-titulo">
+  <div class="container">
+    {% include "conteudo/_cabecalho_secao.html" with t=textos.vitrine id_titulo="vitrine-titulo" %}
+    {% for b in blocos %}
+      <div class="vitrine__bloco" id="vb-{{ b.id }}">
+        <div class="vitrine__cabecalho">
+          <div><h3>{{ b.titulo }}</h3>{% if b.texto %}<p>{{ b.texto|truncatechars:110 }}</p>{% endif %}</div>
+          <a class="link-seta" href="{{ b.url }}">Ver todos →</a>
+        </div>
+        <ul class="trilho" aria-label="{{ b.titulo }}">
+          {% for p in b.produtos %}<li>{% include "componentes/card_produto.html" with p=p nivel=4 %}</li>{% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+    <div class="secao__rodape"><a class="btn btn--ghost" href="{% url 'catalogo:lista' %}">Ver todos os {{ total_produtos }} produtos</a></div>
+  </div>
+</section>
+{% endif %}
+
+{# H04 Próximas coleções #}
+{% if colecoes_destaque or colecao_principal %}
+<section class="secao secao--creme colecoes" aria-labelledby="colecoes-titulo">
+  <div class="container">
+    {% include "conteudo/_cabecalho_secao.html" with t=textos.datas id_titulo="colecoes-titulo" %}
+    {% if colecoes_destaque %}
+    <ul class="colecoes__grade">
+      {% for c in colecoes_destaque %}
+        <li><a class="card-colecao card-colecao--{{ c.color }}" href="{{ c.get_absolute_url }}">
+          <div class="card-colecao__img">{% if c.image %}<img src="{{ c.image.url }}" alt="" width="600" height="400" loading="lazy">{% else %}{% icone "calendar" 40 %}{% endif %}
+            {% if c.period_label %}<span class="selo selo--escuro">{{ c.period_label }}</span>{% endif %}</div>
+          <div class="card-colecao__corpo">
+            <h3>{{ c.name }}</h3>
+            {% if c.description %}<p>{{ c.description|truncatechars:140 }}</p>{% endif %}
+            <div class="card-colecao__rodape"><span><b>{{ c.total }}</b> produto{{ c.total|pluralize }}</span><span class="link-seta">Ver {{ c.name }} →</span></div>
+          </div>
+        </a></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% if colecao_principal %}
+      {% with c=colecao_principal %}
+      <a class="banner-colecao" href="{{ c.get_absolute_url }}">
+        <div class="banner-colecao__img">{% if c.image %}<img src="{{ c.image.url }}" alt="" width="700" height="520" loading="lazy">{% else %}{% icone "sprout" 72 %}{% endif %}</div>
+        <div class="banner-colecao__texto">
+          <span class="kicker">{% if c.period_label %}{{ c.period_label }} · {% endif %}{{ site.collections_label }} em destaque</span>
+          <h3>{{ c.name }}</h3>
+          {% if c.description %}<p>{{ c.description }}</p>{% endif %}
+          <div class="banner-colecao__rodape">
+            <span><b>{{ c.total }}</b> produto{{ c.total|pluralize }}{% if c.order_deadline %} · pedidos até <b>{{ c.order_deadline|date:"j \d\e F" }}</b>{% endif %}</span>
+            <span class="btn btn--acento btn--sm">Ver {{ c.name }} →</span>
+          </div>
+        </div>
+      </a>
+      {% endwith %}
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{# H05 Portfólio #}
+{% if portfolio %}
+<section class="secao portfolio" aria-labelledby="portfolio-titulo">
+  <div class="container">
+    {% include "conteudo/_cabecalho_secao.html" with t=textos.portfolio id_titulo="portfolio-titulo" sem_cta=True %}
+    <ul class="portfolio__grade" id="portfolio-grade">
+      {% for item in portfolio %}
+        <li class="portfolio__item{% if item.tall %} portfolio__item--alto{% endif %}{% if forloop.counter > 8 %} portfolio__item--extra{% endif %}">
+          <img src="{{ item.image.url }}" alt="{{ item.title }}" loading="lazy" width="600" height="{% if item.tall %}820{% else %}400{% endif %}">
+          {% if item.featured %}<span class="selo selo--destaque">Destaque</span>{% endif %}
+          <div class="portfolio__legenda"><b>{{ item.title }}</b>{% if item.subtitle %}<span>{{ item.subtitle }}</span>{% endif %}</div>
+        </li>
+      {% endfor %}
+    </ul>
+    <div class="secao__rodape portfolio__rodape">
+      {% if portfolio|length > 8 %}
+        <button type="button" class="btn btn--ghost" data-expandir aria-controls="portfolio-grade" aria-expanded="false"
+          data-texto-mais="Ver mais projetos ({{ portfolio|length|add:'-8' }}) ↓" data-texto-menos="Ver menos ↑"><span data-rotulo>Ver mais projetos ({{ portfolio|length|add:"-8" }}) ↓</span></button>
+      {% endif %}
+      {% if textos.portfolio.cta_label %}<a class="link-seta" href="{% cta_href textos.portfolio.cta_url %}">{{ textos.portfolio.cta_label }}</a>{% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# H06 Categorias #}
+{% if categorias %}
+<section class="secao secao--creme" aria-labelledby="categorias-titulo">
+  <div class="container">
+    {% include "conteudo/_cabecalho_secao.html" with t=textos.categorias id_titulo="categorias-titulo" sem_cta=True %}
+    <ul class="tiles">
+      {% for c in categorias %}
+        <li><a class="tile" href="{{ c.get_absolute_url }}">
+          <span class="tile__img">{% if c.tile_url %}<img src="{{ c.tile_url }}" alt="" width="400" height="400" loading="lazy">{% else %}{% icone c.icon 40 %}{% endif %}</span>
+          <span class="tile__corpo"><b>{{ c.name }}</b><small>{{ c.total }} produto{{ c.total|pluralize }}</small></span>
+        </a></li>
+      {% endfor %}
+    </ul>
+    <div class="secao__rodape"><a class="btn btn--ghost" href="{% cta_href textos.categorias.cta_url %}">{{ textos.categorias.cta_label }}</a></div>
+  </div>
+</section>
+{% endif %}
+
+{# H07 Como funciona #}
+{% if passos %}
+<section class="secao secao--creme como-funciona" aria-labelledby="como-titulo">
+  <div class="container">
+    {% include "conteudo/_cabecalho_secao.html" with t=textos.como_funciona id_titulo="como-titulo" %}
+    <ol class="passos-home">
+      {% for p in passos %}<li class="passo"><span class="passo__num">{{ forloop.counter|stringformat:"02d" }}</span><h3>{{ p.title }}</h3><p>{{ p.text }}</p></li>{% endfor %}
+    </ol>
+  </div>
+</section>
+{% endif %}
+
+{# H08 Faixa de prazos #}
+<section class="secao secao--escura faixa" aria-labelledby="faixa-titulo">
+  <div class="container faixa__grade">
+    <div>
+      <h2 id="faixa-titulo">{% titulo_destacado textos.faixa.title textos.faixa.highlight %}</h2>
+      {% if textos.faixa.text %}<p>{{ textos.faixa.text }}</p>{% endif %}
+      {% if textos.faixa.cta_label %}<a class="btn btn--acento" href="{% cta_href textos.faixa.cta_url %}">{% icone "whatsapp" 18 %} {{ textos.faixa.cta_label }}</a>{% endif %}
+    </div>
+    {% if prazos %}
+    <ul class="faixa__prazos">
+      {% for c in prazos %}<li class="prazo prazo--{{ c.color }}"><b>{{ c.name }}</b><span>Pedidos até <strong>{{ c.order_deadline|date:"j \d\e F" }}</strong></span>{% if c.deadline_note %}<small>{{ c.deadline_note }}</small>{% endif %}</li>{% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+</section>
+
+{# H09 + H10 Por que nós e depoimentos #}
+<section class="secao por-que" aria-labelledby="porque-titulo">
+  <div class="container por-que__grade">
+    <div>
+      {% if textos.por_que.kicker %}<span class="kicker">{{ textos.por_que.kicker }}</span>{% endif %}
+      <h2 id="porque-titulo">{% titulo_destacado textos.por_que.title textos.por_que.highlight %}</h2>
+      {% if textos.por_que.text %}<p class="lead">{{ textos.por_que.text }}</p>{% endif %}
+      {% if textos.por_que.cta_label %}<a class="btn btn--primario" href="{% cta_href textos.por_que.cta_url %}">{{ textos.por_que.cta_label }}</a>{% endif %}
+    </div>
+    {% if por_que %}
+    <ul class="diferenciais">
+      {% for h in por_que %}<li class="diferencial"><span class="diferencial__icone">{% icone h.icon 20 %}</span><h3>{{ h.title }}</h3><p>{{ h.text }}</p></li>{% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  {% if depoimentos %}
+  <div class="container depoimentos">
+    <hr>
+    {% include "conteudo/_cabecalho_secao.html" with t=textos.depoimentos id_titulo="depoimentos-titulo" %}
+    <ul class="depoimentos__grade">
+      {% for d in depoimentos %}<li class="depoimento"><span class="depoimento__aspas">{% icone "quote" 24 %}</span>
+        <span class="depoimento__estrelas" aria-label="{{ d.rating }} de 5 estrelas">{{ "★★★★★"|slice:d.rating }}</span>
+        <blockquote>{{ d.text }}</blockquote><p><b>{{ d.author }}</b>{% if d.role %}<br><span class="texto-suave">{{ d.role }}</span>{% endif %}</p></li>{% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</section>
+
+{# H11 FAQ #}
+{% if faq %}
+<section class="secao secao--creme faq" aria-labelledby="faq-titulo">
+  <div class="container container--estreito">
+    {% include "conteudo/_cabecalho_secao.html" with t=textos.faq id_titulo="faq-titulo" %}
+    {% include "conteudo/_faq.html" with perguntas=faq %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

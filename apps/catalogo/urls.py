@@ -17,5 +17,4 @@ urlpatterns = [
     path("busca/", views.busca, name="busca"),
     path("busca/page/<int:pagina>/", views.busca, name="busca_pagina"),
     path("busca/sugestoes/", views.sugestoes, name="sugestoes"),
-    path("novidades/", views.novidades, name="novidades"),
 ]

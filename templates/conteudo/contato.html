@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Contato | {{ site.site_name }}{% endblock %}
+{% block meta_description %}Fale com a {{ site.site_name }}: WhatsApp, e-mail e formulário para orçamentos e dúvidas técnicas.{% endblock %}
+{% block seo_head %}{% include "partials/seo_head.html" with url_canonica="/contato/" og_titulo="Contato" %}{% endblock %}
+{% block body_class %}pagina-contato{% endblock %}
+{% block content %}
+<section class="hero-pagina">
+  <div class="container contato__topo">
+    <div>
+      <nav class="breadcrumb" aria-label="Você está em"><ol><li><a href="/">Início</a></li><li><span aria-current="page">Contato</span></li></ol></nav>
+      <span class="kicker">{{ texto.kicker }}</span>
+      <h1>{% titulo_destacado texto.title texto.highlight %}</h1>
+      <p class="lead">{{ texto.text }}</p>
+    </div>
+    <div class="cartao contato__horario">
+      <span class="kicker">Horário de atendimento</span>
+      <p>{{ site.business_hours|definir|linebreaksbr }}</p>
+    </div>
+  </div>
+</section>
+<div class="container">
+  <ul class="canais">
+    <li class="canal canal--destaque">
+      <span class="icone-redondo">{% icone "whatsapp" 20 %}</span>
+      <span class="kicker">Mais rápido · WhatsApp</span>
+      <b>{{ site.phone_display|definir }}</b>
+      <p>Mande fotos da área, a lista de materiais ou só a ideia. É por aqui que a maioria dos pedidos começa.</p>
+      <a class="btn btn--acento btn--sm" href="{% whatsapp_url %}" {% if site.whatsapp_number %}target="_blank" rel="noopener"{% endif %}>Chamar no WhatsApp</a>
+    </li>
+    <li class="canal">
+      <span class="icone-redondo">{% icone "mail" 20 %}</span>
+      <span class="kicker">E-mail</span>
+      <b>{{ site.contact_email|definir }}</b>
+      <p>Para propostas formais, projetos e documentos.</p>
+      {% if site.contact_email %}<a class="btn btn--claro btn--sm" href="mailto:{{ site.contact_email }}">Enviar e-mail</a>{% endif %}
+    </li>
+    <li class="canal">
+      <span class="icone-redondo">{% icone "map-pin" 20 %}</span>
+      <span class="kicker">Endereço</span>
+      <b>{{ site.address|definir|linebreaksbr }}</b>
+      <p>CNPJ {{ site.cnpj|definir }}</p>
+      {% if site.address and "[DEFINIR]" not in site.address %}<a class="btn btn--claro btn--sm" href="https://www.google.com/maps/search/?api=1&amp;query={{ site.address|urlencode }}" target="_blank" rel="noopener">Abrir rota no mapa</a>{% endif %}
+    </li>
+  </ul>
+
+  <section class="contato__form secao" aria-labelledby="form-titulo">
+    <div>
+      <span class="kicker">Orçamento mais rápido</span>
+      <h2 id="form-titulo">Com estas informações, a proposta sai na primeira resposta</h2>
+      <ul class="checklist">
+        <li>{% icone "check" 18 %} <span><b>O produto ou a ideia</b> — link do catálogo, foto ou descrição.</span></li>
+        <li>{% icone "check" 18 %} <span><b>Cultura e área</b> — o que vai irrigar e o tamanho.</span></li>
+        <li>{% icone "check" 18 %} <span><b>Fonte de água</b> — poço, represa, rede; vazão se souber.</span></li>
+        <li>{% icone "check" 18 %} <span><b>Cidade de entrega</b> — para calcular prazo e frete.</span></li>
+      </ul>
+    </div>
+    <div class="cartao cartao--creme">
+      {% for m in messages %}<p class="aviso{% if m.tags == 'success' %} aviso--sucesso{% endif %}" role="status">{{ m }}</p>{% endfor %}
+      <h3>Mande sua mensagem</h3>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="grade-campos grade-campos--2">
+          {% include "componentes/campo.html" with campo=form.name %}
+          {% include "componentes/campo.html" with campo=form.company %}
+          {% include "componentes/campo.html" with campo=form.email %}
+          {% include "componentes/campo.html" with campo=form.phone %}
+          {% include "componentes/campo.html" with campo=form.city %}
+          {% include "componentes/campo.html" with campo=form.state %}
+        </div>
+        {% include "componentes/campo.html" with campo=form.message %}
+        <div class="honeypot" aria-hidden="true">{{ form.website.label_tag }}{{ form.website }}</div>
+        <div class="campo campo--check{% if form.consent.errors %} campo--erro{% endif %}">
+          {{ form.consent }}<label for="{{ form.consent.id_for_label }}">{{ form.consent.label }} <a href="{% url 'conteudo:privacidade' %}">Ler a política</a>.</label>
+          {% if form.consent.errors %}<span class="campo__erro">{{ form.consent.errors.0 }}</span>{% endif %}
+        </div>
+        <button type="submit" class="btn btn--primario btn--bloco">Enviar mensagem</button>
+      </form>
+    </div>
+  </section>
+</div>
+{% if faq %}
+<section class="secao secao--creme" aria-labelledby="faq-contato">
+  <div class="container container--estreito">
+    <span class="kicker">Antes de chamar</span>
+    <h2 id="faq-contato">Dúvidas que chegam todo dia</h2>
+    {% include "conteudo/_faq.html" with perguntas=faq %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

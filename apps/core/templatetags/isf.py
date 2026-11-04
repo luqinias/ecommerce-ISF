@@ -70,3 +70,52 @@ def jsonld(valor) -> str:
     texto = json.dumps(valor, ensure_ascii=False, separators=(",", ":"))
     texto = texto.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
     return mark_safe(texto)
+
+
+@register.simple_tag(takes_context=True)
+def cta_href(context, url: str, mensagem: str = "") -> str:
+    """Link de CTA editável: 'whatsapp' abre o WhatsApp; o resto é usado como está."""
+    if (url or "").strip().lower() == "whatsapp":
+        site = context.get("site") or SiteConfiguration.load()
+        return whatsapp_link(site, mensagem or site.quick_quote_message)
+    return url or "#"
+
+
+@register.simple_tag
+def titulo_destacado(titulo: str, destaque: str = ""):
+    """Título com um trecho em destaque (<em>). Se o trecho não está no título, é anexado ao fim."""
+    from django.utils.html import escape
+
+    titulo, destaque = escape(titulo or ""), escape(destaque or "")
+    if not destaque:
+        return mark_safe(titulo)
+    if destaque in titulo:
+        return mark_safe(titulo.replace(destaque, f"<em>{destaque}</em>", 1))
+    return mark_safe(f"{titulo} <em>{destaque}</em>")
+
+
+@register.filter
+def texto_rico(texto: str):
+    """Texto simples → parágrafos e listas ('- ' no início da linha). Tudo escapado."""
+    from django.utils.html import escape
+
+    blocos = [b.strip() for b in (texto or "").replace("\r\n", "\n").split("\n\n") if b.strip()]
+    html = []
+    for bloco in blocos:
+        paragrafo, lista = [], []
+        for linha in bloco.split("\n"):
+            if linha.strip().startswith("- "):
+                if paragrafo:
+                    html.append("<p>" + "<br>".join(paragrafo) + "</p>")
+                    paragrafo = []
+                lista.append(f"<li>{escape(linha.strip()[2:])}</li>")
+            else:
+                if lista:
+                    html.append("<ul>" + "".join(lista) + "</ul>")
+                    lista = []
+                paragrafo.append(escape(linha))
+        if paragrafo:
+            html.append("<p>" + "<br>".join(paragrafo) + "</p>")
+        if lista:
+            html.append("<ul>" + "".join(lista) + "</ul>")
+    return mark_safe("".join(html))

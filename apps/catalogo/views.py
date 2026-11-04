@@ -282,7 +282,3 @@ def produto(request, slug: str):
         "valores_variacao": [(g["attr"]["label"], ", ".join(o["rotulo"] for o in g["opcoes"])) for g in grupos],
     }
     return render(request, "catalogo/produto.html", contexto)
-
-
-def novidades(request):  # implementado na feature 006
-    raise Http404

@@ -1,13 +1,7 @@
 from django.db import connection
 from django.http import JsonResponse
-from django.shortcuts import render
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET
-
-
-def home(request):
-    """Home provisória da fundação. Substituída pela home de conteúdo na feature 006."""
-    return render(request, "core/home.html")
 
 
 @never_cache

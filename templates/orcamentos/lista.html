@@ -43,7 +43,7 @@
         <div class="honeypot" aria-hidden="true">{{ form.website.label_tag }}{{ form.website }}</div>
         <div class="campo campo--check{% if form.consent.errors %} campo--erro{% endif %}">
           {{ form.consent }}
-          <label for="{{ form.consent.id_for_label }}">{{ form.consent.label }} <a href="/politica-de-privacidade/" target="_blank">Ler a política</a>.</label>
+          <label for="{{ form.consent.id_for_label }}">{{ form.consent.label }} <a href="{% url 'conteudo:privacidade' %}" target="_blank">Ler a política</a>.</label>
           {% if form.consent.errors %}<span class="campo__erro" id="{{ form.consent.id_for_label }}-erro">{{ form.consent.errors.0 }}</span>{% endif %}
         </div>
         <p class="aviso texto-pequeno">{% icone "whatsapp" 16 %} Ao enviar, gravamos o pedido, enviamos uma confirmação para o seu e-mail e abrimos o WhatsApp com o orçamento pronto para conversar com a equipe.</p>

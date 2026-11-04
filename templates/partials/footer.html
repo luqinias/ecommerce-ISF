@@ -13,10 +13,10 @@
       <h2 class="rodape__titulo">Navegue</h2>
       <ul class="rodape__links">
         <li><a href="{% url 'catalogo:lista' %}">Todos os produtos</a></li>
-        <li><a href="/novidades/">Novidades</a></li>
-        <li><a href="/sobre/">Sobre a {{ site.short_name }}</a></li>
+        <li><a href="{% url 'conteudo:novidades' %}">Novidades</a></li>
+        <li><a href="{% url 'conteudo:sobre' %}">Sobre a {{ site.short_name }}</a></li>
         <li><a href="{% url 'orcamentos:lista' %}">Solicitar orçamento</a></li>
-        <li><a href="/contato/">Contato</a></li>
+        <li><a href="{% url 'conteudo:contato' %}">Contato</a></li>
         {% if site.blog_enabled %}<li><a href="/blog/">Blog</a></li>{% endif %}
       </ul>
     </div>
@@ -40,8 +40,8 @@
     <div class="container rodape__base-linha">
       <span>© {% now "Y" %} {{ site.site_name }} · CNPJ {{ site.cnpj|definir }}</span>
       <nav aria-label="Links legais">
-        <a href="/termos-de-uso/">Termos de uso</a>
-        <a href="/politica-de-privacidade/">Política de privacidade</a>
+        <a href="{% url 'conteudo:termos' %}">Termos de uso</a>
+        <a href="{% url 'conteudo:privacidade' %}">Política de privacidade</a>
         <button type="button" data-cookies-abrir>Preferências de cookies</button>
       </nav>
     </div>

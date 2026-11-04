@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Novidades{% if pagina.number > 1 %} · página {{ pagina.number }}{% endif %} | {{ site.site_name }}{% endblock %}
+{% block meta_description %}Os produtos de irrigação que acabaram de entrar no catálogo da {{ site.site_name }}.{% endblock %}
+{% block robots %}{% if noindex %}<meta name="robots" content="noindex, follow">{% endif %}{% endblock %}
+{% block seo_head %}{% include "partials/seo_head.html" with url_canonica="/novidades/" og_titulo="Novidades" %}{% endblock %}
+{% block body_class %}pagina-novidades{% endblock %}
+{% block content %}
+<section class="hero-pagina">
+  <div class="container novidades-hero">
+    <div>
+      <nav class="breadcrumb" aria-label="Você está em"><ol><li><a href="/">Início</a></li><li><span aria-current="page">Novidades</span></li></ol></nav>
+      <span class="kicker">{{ texto.kicker }}</span>
+      <h1>{% titulo_destacado texto.title texto.highlight %}</h1>
+      <p class="lead">{{ texto.text }}</p>
+    </div>
+    {% if ultimos %}
+    <div class="ultimos" aria-label="Últimos lançamentos">
+      <div class="ultimos__topo"><span>Últimos lançamentos</span><span class="selo"><span class="selo__ponto"></span>Atualizado</span></div>
+      <ul>{% for p in ultimos %}{% with img=p.main_image %}<li><a href="{{ p.get_absolute_url }}">{% if img %}<img src="{{ img.card_url }}" alt="" width="56" height="56">{% else %}<span></span>{% endif %}<span>{{ p.name }}<small>{{ p.primary_category.name }}</small></span></a></li>{% endwith %}{% endfor %}</ul>
+    </div>
+    {% endif %}
+  </div>
+</section>
+<div class="container listagem">
+  <div class="cabecalho-secao">
+    <div><span class="kicker">Filtre por tipo</span><h2>Os mais recentes primeiro</h2></div>
+    <span class="texto-suave texto-pequeno">{{ total }} produto{{ total|pluralize }}</span>
+  </div>
+  <nav class="barra-lista__chips" aria-label="Filtrar por tipo">
+    <ul class="chips">
+      <li><a class="chip" href="{% url 'conteudo:novidades' %}" {% if not tipo_ativo %}aria-current="true"{% endif %}>Todos</a></li>
+      {% for chip in chips %}<li><a class="chip" rel="nofollow" href="{% url 'conteudo:novidades' %}?tipo={{ chip.slug }}" {% if tipo_ativo.slug == chip.slug %}aria-current="true"{% endif %}>{{ chip.rotulo }} <small>{{ chip.total }}</small></a></li>{% endfor %}
+    </ul>
+  </nav>
+  <ul class="grade-produtos" id="lista-novidades" style="margin-top: var(--s-5)">
+    {% for p in produtos %}<li>{% include "componentes/card_produto.html" with p=p nivel=3 mostrar_categoria=True %}</li>{% endfor %}
+  </ul>
+  <div class="carregar-mais" id="carregar-mais">
+    {% if proxima %}
+      <a class="btn btn--ghost" href="{{ proxima }}" hx-get="{{ proxima }}" hx-target="#lista-novidades" hx-swap="beforeend"
+         hx-select="#lista-novidades > li" hx-select-oob="#carregar-mais" hx-push-url="false">Carregar mais novidades</a>
+    {% endif %}
+  </div>
+  <aside class="cta-escuro">
+    <div><span class="kicker">{{ cta.kicker }}</span><h2>{{ cta.title }}</h2><p>{{ cta.text }}</p></div>
+    <a class="btn btn--acento" href="{% cta_href cta.cta_url %}">{% icone "whatsapp" 18 %} {{ cta.cta_label }}</a>
+  </aside>
+  {% if colecoes %}
+  <section class="texto-seo" aria-label="Coleções">
+    <h2 class="h3">Lançamentos e coleções</h2>
+    <ul class="chips">{% for c in colecoes %}<li><a class="chip" href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>{% endfor %}<li><a class="chip" href="{% url 'catalogo:lista' %}">Catálogo completo</a></li></ul>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

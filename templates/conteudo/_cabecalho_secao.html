@@ -1,0 +1,9 @@
+{% comment %}Cabeçalho de seção: t (Texto), id_titulo, sem_cta{% endcomment %}
+<div class="cabecalho-secao">
+  <div>
+    {% if t.kicker %}<span class="kicker">{{ t.kicker }}</span>{% endif %}
+    <h2 id="{{ id_titulo }}">{% titulo_destacado t.title t.highlight %}</h2>
+    {% if t.text %}<p>{{ t.text }}</p>{% endif %}
+  </div>
+  {% if t.cta_label and not sem_cta %}<a class="link-seta" href="{% cta_href t.cta_url %}">{{ t.cta_label }}</a>{% endif %}
+</div>

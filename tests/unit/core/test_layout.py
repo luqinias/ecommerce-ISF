@@ -7,14 +7,14 @@ pytestmark = pytest.mark.django_db
 
 
 def test_home_tem_moldura_completa(client):
-    resp = client.get(reverse("core:home"))
+    resp = client.get(reverse("conteudo:home"))
     html = resp.content.decode()
     assert resp.status_code == 200
     assert html.count("<h1") == 1
     for marco in ("<header", "<nav", "<main", "<footer"):
         assert marco in html
     assert 'class="pular-conteudo"' in html
-    assert 'id="cookies"' in html
+    assert 'id="aviso-cookies"' in html
     assert "Todas as Categorias" in html
 
 
@@ -40,4 +40,4 @@ def test_menus_vazios_nao_quebram(client):
 def test_banner_de_cookies_some_com_consentimento(client):
     client.cookies["isf_consent"] = "necessarios"
     html = client.get("/").content.decode()
-    assert re.search(r'id="cookies"[^>]*hidden', html)
+    assert re.search(r'id="aviso-cookies"[^>]*hidden', html)
