@@ -22,7 +22,7 @@ class ImagemInvalida(Exception):
     pass
 
 
-def _webp(imagem: Image.Image, lado: int) -> ContentFile:
+def para_webp(imagem: Image.Image, lado: int) -> ContentFile:
     copia = imagem.copy()
     copia.thumbnail((lado, lado), Image.Resampling.LANCZOS)
     buffer = io.BytesIO()
@@ -42,7 +42,7 @@ def gerar_miniaturas(produto_imagem) -> None:
             imagem = imagem.convert("RGBA" if imagem.mode in ("RGBA", "LA", "P") else "RGB")
             nome = Path(produto_imagem.image.name).stem
             for campo, lado in TAMANHOS.items():
-                getattr(produto_imagem, campo).save(f"{nome}-{lado}.webp", _webp(imagem, lado), save=False)
+                getattr(produto_imagem, campo).save(f"{nome}-{lado}.webp", para_webp(imagem, lado), save=False)
     except (UnidentifiedImageError, OSError) as erro:
         logger.warning("Não foi possível gerar miniaturas de %s: %s", produto_imagem.image.name, erro)
     finally:

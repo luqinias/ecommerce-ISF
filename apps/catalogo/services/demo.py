@@ -13,11 +13,15 @@ from datetime import timedelta
 from pathlib import Path
 
 from django.conf import settings
+from django.core.files import File
+from django.core.files.storage import default_storage
 from django.db import transaction
 from django.utils import timezone
 from PIL import Image, ImageDraw, ImageFont
 
-from apps.catalogo.models import Category, Collection, Product
+from apps.catalogo.choices import ImageKind
+from apps.catalogo.models import Category, Collection, Product, ProductImage
+from apps.catalogo.services.imagens import TAMANHOS, para_webp
 from apps.catalogo.services.importacao import Relatorio, importar
 
 ARQUIVO = Path(settings.BASE_DIR) / "docs" / "exemplos" / "catalogo-demo.csv"
@@ -159,6 +163,65 @@ def _aplicar_metadados() -> None:
             for campo, valor in meta.items():
                 setattr(col, campo, valor)
             col.save()
+
+
+def _cores_do_produto(produto: Product) -> tuple[str, str]:
+    categoria = produto.primary_category
+    return CATEGORIAS.get(categoria.name if categoria else "", {}).get("cor", ("#1d6a44", "#e2efe7"))
+
+
+def recriar_arquivo(nome: str, titulo: str, subtitulo: str, cores: tuple[str, str], ambiente: bool) -> bool:
+    """Gera o placeholder e grava em `nome` no storage padrão, se o arquivo não existir. Retorna se gravou."""
+    if default_storage.exists(nome):
+        return False
+    with tempfile.TemporaryDirectory(prefix="isf-midia-") as tmp:
+        caminho = Path(tmp) / "placeholder.png"
+        gerar_placeholder(caminho, titulo, subtitulo, cores, ambiente)
+        with caminho.open("rb") as arquivo:
+            salvo = default_storage.save(nome, File(arquivo))
+    if salvo != nome:  # não deve acontecer (o arquivo não existia); evita apontar para o nome errado
+        default_storage.delete(salvo)
+        raise RuntimeError(f"o storage gravou {salvo} em vez de {nome}")
+    return True
+
+
+def _recriar_miniaturas(img: ProductImage) -> int:
+    """Grava `card` e `large` ausentes nos nomes já registrados no banco, a partir de `image`."""
+    faltando = {
+        campo: getattr(img, campo).name
+        for campo in TAMANHOS
+        if getattr(img, campo).name and not default_storage.exists(getattr(img, campo).name)
+    }
+    if not faltando:
+        return 0
+    with default_storage.open(img.image.name, "rb") as arquivo, Image.open(arquivo) as original:
+        imagem = original.convert("RGB")
+        for campo, nome in faltando.items():
+            default_storage.save(nome, para_webp(imagem, TAMANHOS[campo]))
+    return len(faltando)
+
+
+def regenerar_midia() -> dict[str, int]:
+    """Recria os arquivos ausentes das imagens de produtos de demonstração, nos mesmos nomes do banco.
+
+    Serve a hospedagens com disco temporário (ex.: Render gratuito): o banco persiste, os arquivos não.
+    Não altera registros. Imagens de produtos reais ausentes só são contadas (não há como recriá-las).
+    """
+    contagem = {"recriadas": 0, "miniaturas": 0, "reais_ausentes": 0}
+    imagens = ProductImage.objects.select_related("product__primary_category").order_by("pk")
+    for img in imagens:
+        if not img.image.name:
+            continue
+        if not img.product.is_demo:
+            if not default_storage.exists(img.image.name):
+                contagem["reais_ausentes"] += 1
+            continue
+        ambiente = img.kind == ImageKind.ENVIRONMENT
+        sub = "Aplicação em campo · imagem ilustrativa" if ambiente else "Imagem ilustrativa"
+        if recriar_arquivo(img.image.name, img.product.name, sub, _cores_do_produto(img.product), ambiente):
+            contagem["recriadas"] += 1
+        contagem["miniaturas"] += _recriar_miniaturas(img)
+    return contagem
 
 
 def carregar(*, se_vazio: bool = False) -> Relatorio | None:

@@ -22,7 +22,7 @@ O site é um único processo Django (gunicorn) com PostgreSQL. Estáticos saem p
 | `SECURE_COOKIES` | | `True` (padrão). Só desligue para testar em HTTP |
 | `USE_S3` + `AWS_*` | opcional | mídia no S3 (requer `uv sync --extra s3`) |
 | `SERVE_MEDIA` | não usar em produção | serve `/media/` pelo Django (só no compose local) |
-| `LOAD_DEMO_DATA` | | `True` carrega a demonstração **apenas se o banco estiver vazio** (entrypoint do Docker) |
+| `LOAD_DEMO_DATA` | | `True` carrega a demonstração **apenas se o banco estiver vazio** e, a cada subida, recria as imagens de demonstração que faltam (`regenerar_midia_demo`; entrypoint do Docker) |
 
 Depois do primeiro deploy, preencha no admin **Configurações do site** (WhatsApp, e-mails que recebem orçamentos, endereço, CNPJ, redes, IDs de GTM e Pixel). Esses dados vêm de `docs/pendencias-empresa.md`.
 
@@ -37,6 +37,26 @@ docker compose exec web python manage.py createsuperuser
 - O `docker-compose.yml` do repositório é para **ambiente local em HTTP**: serve mídia pelo Django e desliga cookies `Secure`. Em produção, use um proxy com HTTPS na frente, `SECURE_COOKIES=True` e mídia pelo Nginx (volume `media`) ou no S3. Para isso, sobrescreva com um `docker-compose.prod.yml`.
 - A imagem roda como usuário não-root, já traz os estáticos coletados (manifest com hash) e tem `HEALTHCHECK` em `/healthz/`.
 - Para atualizar: `git pull && docker compose up -d --build`. As migrações rodam no entrypoint.
+
+### 2.1 Render (serviço web Docker + Postgres gerenciado)
+
+O Render constrói o `Dockerfile`, mas não sobe o `db` do compose. Crie um **Postgres** na mesma região e, no serviço web, defina no mínimo estas variáveis:
+- `DATABASE_URL` (a *Internal Database URL*)
+- `DJANGO_SETTINGS_MODULE=config.settings.prod`
+- `SECRET_KEY`
+- `ALLOWED_HOSTS=<app>.onrender.com` (sem `https://`)
+- `CSRF_TRUSTED_ORIGINS=https://<app>.onrender.com`
+- `BASE_URL=https://<app>.onrender.com`
+- `TRUST_PROXY_HEADERS=True`
+- `SERVE_MEDIA=True`
+- `LOAD_DEMO_DATA=True`
+
+Sem `DATABASE_URL`, o Django cai no SQLite e falha com `unable to open database file`. O superusuário é criado pelo **Shell** do serviço, com `python manage.py createsuperuser`.
+
+**Mídia:** o disco do serviço web é temporário e é apagado a cada deploy, reinício ou hibernação do plano gratuito. O banco persiste, mas os arquivos somem.
+- **Demonstração:** com `LOAD_DEMO_DATA=True`, o entrypoint roda `regenerar_midia_demo`. Ele recria os placeholders e as miniaturas ausentes nos mesmos nomes do banco (cerca de 265 arquivos, alguns segundos) e não altera registros.
+- **Catálogo real:** fotos enviadas pelo admin ou pela importação **não** são recriadas. O comando avisa quantas imagens reais estão sem arquivo. Antes de usar fotos reais, monte um **disco persistente** do Render em `/app/media` (plano pago) ou use `USE_S3=True`.
+- **Plano gratuito:** o Postgres também expira depois de um período. Serve para demonstração, não para produção.
 
 ## 3. VM / EC2 sem Docker (padrão do projeto interno)
 

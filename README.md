@@ -82,3 +82,4 @@ specs/             artefatos do Spec Kit (spec, plan, research, data model, task
 | `limpar_catalogo_demo [--sim]` | remove só produtos, categorias e coleções de demonstração |
 | `carregar_catalogo_demo [--se-vazio]` | carrega o catálogo fictício |
 | `carregar_conteudo_demo [--se-vazio]` | cria o conteúdo inicial da home e das páginas (sem depoimentos inventados) |
+| `regenerar_midia_demo` | recria as imagens de demonstração que faltam (disco temporário, como no Render), sem alterar o banco |

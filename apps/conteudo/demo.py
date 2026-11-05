@@ -13,7 +13,7 @@ from pathlib import Path
 from django.core.files import File
 from django.db import transaction
 
-from apps.catalogo.services.demo import gerar_placeholder
+from apps.catalogo.services.demo import gerar_placeholder, recriar_arquivo
 from apps.conteudo.models import Banner, FAQItem, Highlight, HowItWorksStep, Page, PageSection, PortfolioItem
 
 PROVAS = [
@@ -108,7 +108,16 @@ TERMOS = [
 ]
 
 
-def _imagem(pasta: Path, nome: str, titulo: str, cores=("#1d6a44", "#e2efe7"), ambiente=True) -> File:
+VERDE = ("#1d6a44", "#e2efe7")
+# Imagens do hero: campo do Banner → (arquivo, título no placeholder, cores, foto de campo)
+HERO = {
+    "image_main": ("hero-1.png", "Gotejamento", VERDE, True),
+    "image_2": ("hero-2.png", "Filtragem", ("#9a6400", "#f6deaa"), False),
+    "image_3": ("hero-3.png", "Automacao", ("#1d5fa8", "#b9d3f0"), False),
+}
+
+
+def _imagem(pasta: Path, nome: str, titulo: str, cores=VERDE, ambiente=True) -> File:
     caminho = pasta / nome
     gerar_placeholder(caminho, titulo, "Imagem ilustrativa", cores, ambiente)
     return File(caminho.open("rb"), name=nome)
@@ -127,13 +136,8 @@ def carregar(*, se_vazio: bool = False) -> bool:
             subtitle="Monte a sua lista com produtos e quantidades e receba a proposta pelo WhatsApp ou e-mail. [DEFINIR] proposta de valor da Irrigação Sem Fronteiras.",
             caption_main="Gotejamento", caption_2="Filtragem", caption_3="Automação", is_demo=True,
         )  # fmt: skip
-        banner.image_main.save("hero-1.png", _imagem(pasta, "hero-1.png", "Gotejamento"), save=False)
-        banner.image_2.save(
-            "hero-2.png", _imagem(pasta, "hero-2.png", "Filtragem", ("#9a6400", "#f6deaa"), False), save=False
-        )
-        banner.image_3.save(
-            "hero-3.png", _imagem(pasta, "hero-3.png", "Automacao", ("#1d5fa8", "#b9d3f0"), False), save=False
-        )
+        for campo, (nome, titulo, cores, ambiente) in HERO.items():
+            getattr(banner, campo).save(nome, _imagem(pasta, nome, titulo, cores, ambiente), save=False)
         banner.save()
         for i in range(10):
             item = PortfolioItem(
@@ -179,3 +183,20 @@ def carregar(*, se_vazio: bool = False) -> bool:
         for n, (t, ancora, b) in enumerate(secoes):
             PageSection.objects.create(page=pagina, title=t, anchor=ancora, body=b, order=n)
     return True
+
+
+def regenerar_midia() -> int:
+    """Recria os arquivos ausentes do hero e do portfólio de demonstração, nos mesmos nomes do banco.
+
+    Mesmo uso de `apps.catalogo.services.demo.regenerar_midia`: hospedagem com disco temporário.
+    """
+    recriadas = 0
+    for banner in Banner.objects.filter(is_demo=True):
+        for campo, (_nome, titulo, cores, ambiente) in HERO.items():
+            arquivo = getattr(banner, campo)
+            if arquivo.name and recriar_arquivo(arquivo.name, titulo, "Imagem ilustrativa", cores, ambiente):
+                recriadas += 1
+    for item in PortfolioItem.objects.filter(is_demo=True):
+        if item.image.name and recriar_arquivo(item.image.name, item.title, "Imagem ilustrativa", VERDE, True):
+            recriadas += 1
+    return recriadas
