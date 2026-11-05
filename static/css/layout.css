@@ -150,6 +150,7 @@
 .rodape__base { border-top: 1px solid rgb(255 255 255 / 0.1); }
 .rodape__base-linha { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding-block: 20px; font-size: 13px; }
 .rodape__base nav { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.rodape__demo { flex-basis: 100%; order: 3; font-size: 12px; color: var(--on-dark-muted); opacity: 0.8; }
 .rodape__base button { background: none; border: 0; padding: 0; color: var(--on-dark); font-size: inherit; }
 .rodape__base button:hover { color: var(--brand-gold); }
 @media (max-width: 640px) {

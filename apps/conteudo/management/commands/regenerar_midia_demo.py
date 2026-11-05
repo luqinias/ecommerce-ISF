@@ -20,7 +20,8 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(
                 f"Mídia de demonstração: {catalogo['recriadas']} imagens de produto e "
-                f"{catalogo['miniaturas']} miniaturas recriadas; {conteudo} imagens da home e do portfólio."
+                f"{catalogo['miniaturas']} miniaturas recriadas; {catalogo['colecoes']} imagens de coleções; "
+                f"{conteudo} imagens da home e do portfólio."
             )
         )
         if catalogo["reais_ausentes"]:

@@ -38,7 +38,7 @@
       {% endif %}
       <dialog class="galeria__dialogo" data-galeria-dialogo aria-label="Imagem ampliada">
         <button type="button" class="botao-icone galeria__fechar" data-galeria-fechar aria-label="Fechar">{% icone "x" 20 %}</button>
-        <img src="" alt="">
+        <img alt="">
       </dialog>
     </div>
 
@@ -47,7 +47,6 @@
       {% include "componentes/breadcrumb.html" with trilha=trilha %}
       <a class="selo resumo__categoria" href="{{ produto.primary_category.get_absolute_url }}">{{ produto.primary_category.name }}</a>
       {% if produto.is_new %}<span class="selo selo--novo">Novo</span>{% endif %}
-      {% if produto.is_demo %}<span class="selo selo--demo">Produto de demonstração</span>{% endif %}
       <h1 class="resumo__titulo">{{ produto.name }}</h1>
       <p class="resumo__codigo">Cód. <span class="mono" data-sku>{{ produto.sku }}</span></p>
       {% if produto.short_description %}<p class="resumo__curta">{{ produto.short_description }}</p>{% endif %}
@@ -95,7 +94,7 @@
       <ul class="garantias">
         <li>{% icone "check" 18 %} Proposta personalizada e sem compromisso</li>
         <li>{% icone "users" 18 %} Atendimento técnico para dimensionar o seu sistema</li>
-        <li>{% icone "truck" 18 %} Entrega: <span class="definir">[DEFINIR] área de atendimento</span></li>
+        <li>{% icone "truck" 18 %} Prazo e forma de entrega combinados na proposta</li>
       </ul>
     </div>
   </div>
@@ -105,7 +104,7 @@
     <div class="descricao">
       <h2>Sobre o produto</h2>
       <div class="descricao__texto prosa" id="descricao-texto">
-        {% if produto.description %}{{ produto.description|linebreaks }}{% else %}<p>{{ produto.short_description|default:"Descrição em breve." }}</p>{% endif %}
+        {% if produto.description %}{{ produto.description|texto_rico }}{% else %}<p>{{ produto.short_description|default:"Descrição em breve." }}</p>{% endif %}
       </div>
       {% if produto.description|length > 600 %}
         <button type="button" class="link-seta descricao__mais" data-expandir aria-controls="descricao-texto" aria-expanded="false"

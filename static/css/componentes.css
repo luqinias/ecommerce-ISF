@@ -99,6 +99,7 @@
 .card-produto__selos { position: absolute; top: var(--s-2); left: var(--s-2); display: flex; flex-wrap: wrap; gap: 4px; }
 .card-produto__opcoes { position: absolute; left: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px 4px 6px; border-radius: var(--r-pill); background: rgb(255 255 255 / 0.94); font-size: 11px; font-weight: 600; line-height: 1; color: var(--fg-muted); box-shadow: var(--shadow-sm); }
 .card-produto__opcoes b { color: var(--fg); }
+.card-produto__opcoes { display: block; max-width: calc(100% - 20px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
 .card-produto__corpo { display: flex; flex-direction: column; gap: 4px; flex: 1; padding: 8px 10px 10px; }
 .card-produto__cat { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); }
 .card-produto__nome { margin: 0; font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; letter-spacing: 0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

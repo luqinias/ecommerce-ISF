@@ -1,7 +1,7 @@
 <aside class="faixa-superior" aria-label="Atendimento">
   <div class="container container--header faixa-superior__linha">
-    <span class="faixa-superior__esq">{{ site.topbar_left|definir }}</span>
-    <span class="faixa-superior__centro">{{ site.tagline|definir }}</span>
+    <span class="faixa-superior__esq">{% if not site.topbar_left|e_definir %}{{ site.topbar_left }}{% endif %}</span>
+    <span class="faixa-superior__centro">{% if not site.tagline|e_definir %}{{ site.tagline }}{% endif %}</span>
     <a class="faixa-superior__wpp" href="{% whatsapp_url %}" {% if site.whatsapp_number %}target="_blank" rel="noopener"{% endif %} aria-label="Fale pelo WhatsApp">
       <span class="icone-redondo">{% icone "whatsapp" 14 %}</span>
       <span>Fale pelo WhatsApp</span>

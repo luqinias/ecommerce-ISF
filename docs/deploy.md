@@ -54,7 +54,8 @@ O Render constrói o `Dockerfile`, mas não sobe o `db` do compose. Crie um **Po
 Sem `DATABASE_URL`, o Django cai no SQLite e falha com `unable to open database file`. O superusuário é criado pelo **Shell** do serviço, com `python manage.py createsuperuser`.
 
 **Mídia:** o disco do serviço web é temporário e é apagado a cada deploy, reinício ou hibernação do plano gratuito. O banco persiste, mas os arquivos somem.
-- **Demonstração:** com `LOAD_DEMO_DATA=True`, o entrypoint roda `regenerar_midia_demo`. Ele recria os placeholders e as miniaturas ausentes nos mesmos nomes do banco (cerca de 265 arquivos, alguns segundos) e não altera registros.
+- **Demonstração:** as ilustrações do catálogo (produtos, cenas, hero, portfólio e coleções) são desenhadas **no build da imagem** (`gerar_midia_demo`, cerca de 30 s, em `/app/.cache/demo-midia`). Com `LOAD_DEMO_DATA=True`, o entrypoint roda `regenerar_midia_demo`, que só **copia** do cache os arquivos que faltam, nos mesmos nomes do banco. São cerca de 400 arquivos em poucos segundos, sem alterar registros.
+- **Trocar uma demonstração antiga pela atual** (banco já populado): defina `DEMO_RECARREGAR=True`, faça o deploy e **remova a variável** logo depois. Enquanto ela estiver definida, cada reinício recarrega a demonstração. A troca mexe só em registros `is_demo` e nas listas da home (provas, passos, diferenciais e FAQ); pedidos de orçamento não são apagados.
 - **Catálogo real:** fotos enviadas pelo admin ou pela importação **não** são recriadas. O comando avisa quantas imagens reais estão sem arquivo. Antes de usar fotos reais, monte um **disco persistente** do Render em `/app/media` (plano pago) ou use `USE_S3=True`.
 - **Plano gratuito:** o Postgres também expira depois de um período. Serve para demonstração, não para produção.
 

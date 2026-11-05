@@ -13,10 +13,10 @@
       <h1>{% titulo_destacado texto.title texto.highlight %}</h1>
       <p class="lead">{{ texto.text }}</p>
     </div>
-    <div class="cartao contato__horario">
+    {% if not site.business_hours|e_definir %}<div class="cartao contato__horario">
       <span class="kicker">Horário de atendimento</span>
-      <p>{{ site.business_hours|definir|linebreaksbr }}</p>
-    </div>
+      <p>{{ site.business_hours|linebreaksbr }}</p>
+    </div>{% endif %}
   </div>
 </section>
 <div class="container">
@@ -24,23 +24,30 @@
     <li class="canal canal--destaque">
       <span class="icone-redondo">{% icone "whatsapp" 20 %}</span>
       <span class="kicker">WhatsApp</span>
-      <b>{{ site.phone_display|definir }}</b>
+      <b>{% if site.whatsapp_number and not site.phone_display|e_definir %}{{ site.phone_display }}{% else %}Resposta rápida{% endif %}</b>
       <p>Canal mais rápido para tirar dúvidas e enviar a lista de materiais ou fotos da área.</p>
       <a class="btn btn--acento btn--sm" href="{% whatsapp_url %}" {% if site.whatsapp_number %}target="_blank" rel="noopener"{% endif %}>Chamar no WhatsApp</a>
     </li>
-    <li class="canal">
+    {% if site.contact_email %}<li class="canal">
       <span class="icone-redondo">{% icone "mail" 20 %}</span>
       <span class="kicker">E-mail</span>
-      <b>{{ site.contact_email|definir }}</b>
+      <b>{{ site.contact_email }}</b>
       <p>Para propostas formais, projetos e documentos.</p>
-      {% if site.contact_email %}<a class="btn btn--claro btn--sm" href="mailto:{{ site.contact_email }}">Enviar e-mail</a>{% endif %}
-    </li>
-    <li class="canal">
+      <a class="btn btn--claro btn--sm" href="mailto:{{ site.contact_email }}">Enviar e-mail</a>
+    </li>{% endif %}
+    {% if not site.address|e_definir %}<li class="canal">
       <span class="icone-redondo">{% icone "map-pin" 20 %}</span>
       <span class="kicker">Endereço</span>
-      <b>{{ site.address|definir|linebreaksbr }}</b>
-      <p>CNPJ {{ site.cnpj|definir }}</p>
-      {% if site.address and "[DEFINIR]" not in site.address %}<a class="btn btn--claro btn--sm" href="https://www.google.com/maps/search/?api=1&amp;query={{ site.address|urlencode }}" target="_blank" rel="noopener">Ver no mapa</a>{% endif %}
+      <b>{{ site.address|linebreaksbr }}</b>
+      {% if not site.cnpj|e_definir %}<p>CNPJ {{ site.cnpj }}</p>{% endif %}
+      <a class="btn btn--claro btn--sm" href="https://www.google.com/maps/search/?api=1&amp;query={{ site.address|urlencode }}" target="_blank" rel="noopener">Ver no mapa</a>
+    </li>{% endif %}
+    <li class="canal">
+      <span class="icone-redondo">{% icone "clipboard" 20 %}</span>
+      <span class="kicker">Lista de orçamento</span>
+      <b>Monte e envie pelo site</b>
+      <p>Escolha os produtos e as quantidades no catálogo e receba a proposta com o dimensionamento conferido.</p>
+      <a class="btn btn--claro btn--sm" href="{% url 'catalogo:lista' %}">Abrir o catálogo</a>
     </li>
   </ul>
 

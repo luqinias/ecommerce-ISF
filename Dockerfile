@@ -6,7 +6,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_PROJECT_ENVIRONMENT=/opt/venv \
-    PATH="/opt/venv/bin:$PATH"
+    PATH="/opt/venv/bin:$PATH" \
+    DEMO_MIDIA_DIR=/app/.cache/demo-midia
 
 COPY --from=ghcr.io/astral-sh/uv:0.8.22 /uv /usr/local/bin/uv
 
@@ -18,8 +19,10 @@ RUN uv sync --frozen --no-install-project --no-default-groups
 
 COPY . .
 
-# collectstatic com as settings de produção: gera o manifest com hash usado pelo WhiteNoise
+# collectstatic com as settings de produção (manifest com hash do WhiteNoise) e o cache de ilustrações
+# da demonstração (~30 s; na subida o entrypoint só copia os arquivos)
 RUN DJANGO_SETTINGS_MODULE=config.settings.prod SECRET_KEY=build-only ALLOWED_HOSTS=build python manage.py collectstatic --noinput \
+    && DJANGO_SETTINGS_MODULE=config.settings.prod SECRET_KEY=build-only ALLOWED_HOSTS=build python manage.py gerar_midia_demo \
     && useradd --create-home --uid 1000 app \
     && mkdir -p /app/media \
     && chown -R app:app /app/media

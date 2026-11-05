@@ -60,7 +60,7 @@ def test_home_vazia_funciona(client):
 
 def test_paginas_institucionais(client, conteudo):
     sobre = client.get("/sobre/").content.decode()
-    assert "Nossa história" in sobre and sobre.count("<h1") == 1
+    assert "O que fazemos" in sobre and sobre.count("<h1") == 1
     priv = client.get("/politica-de-privacidade/").content.decode()
     assert 'id="cookies"' in priv and "Nesta página" in priv and "<ul><li>nome" in priv
     assert client.get("/termos-de-uso/").status_code == 200

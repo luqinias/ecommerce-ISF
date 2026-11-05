@@ -1,27 +1,24 @@
-"""Catálogo de demonstração: importa docs/exemplos/catalogo-demo.csv com imagens placeholder geradas.
+"""Catálogo de demonstração: importa docs/exemplos/catalogo-demo.csv com ilustrações próprias.
 
-Tudo é marcado `is_demo=True` e sai com `limpar_catalogo_demo`. Nenhuma foto de terceiros é usada.
+Tudo é marcado `is_demo=True` e sai com `limpar_catalogo_demo`. Nenhuma foto de terceiros é usada:
+as imagens vêm de `ilustracoes.py`, desenhadas uma vez no cache de `demo_midia.py`.
 """
 
 from __future__ import annotations
 
-import csv
-import hashlib
-import tempfile
-import unicodedata
 from datetime import timedelta
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from django.conf import settings
-from django.core.files import File
+from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.db import transaction
 from django.utils import timezone
-from PIL import Image, ImageDraw, ImageFont
+from django.utils.text import slugify
 
-from apps.catalogo.choices import ImageKind
 from apps.catalogo.models import Category, Collection, Product, ProductImage
-from apps.catalogo.services.imagens import TAMANHOS, para_webp
+from apps.catalogo.services import demo_midia
+from apps.catalogo.services.imagens import TAMANHOS
 from apps.catalogo.services.importacao import Relatorio, importar
 
 ARQUIVO = Path(settings.BASE_DIR) / "docs" / "exemplos" / "catalogo-demo.csv"
@@ -57,89 +54,13 @@ def _colecoes():
     hoje = timezone.localdate()
     return {
         "Lançamentos": {"color": "verde", "featured": True, "order": 1,
-                        "description": "Produtos que acabaram de entrar no catálogo de demonstração."},
+                        "description": "Produtos que acabaram de chegar ao catálogo."},
         "Preparo para a safra": {"color": "ouro", "featured": True, "is_main": True, "order": 2,
                                  "starts_on": hoje - timedelta(days=15), "ends_on": hoje + timedelta(days=120),
                                  "order_deadline": hoje + timedelta(days=45),
                                  "deadline_note": "Após a data, consultar disponibilidade",
                                  "description": "Monte o sistema antes do plantio e evite a fila da alta temporada."},
     }  # fmt: skip
-
-
-def _fonte(tamanho: int):
-    try:
-        return ImageFont.load_default(size=tamanho)
-    except TypeError:  # Pillow antigo
-        return ImageFont.load_default()
-
-
-def gerar_placeholder(destino: Path, titulo: str, subtitulo: str, cores: tuple[str, str], ambiente: bool) -> None:
-    """Imagem 900×900 com gradiente, gota estilizada, nome do produto e selo DEMO."""
-    lado = 900
-    escura, clara = cores
-    if ambiente:
-        escura, clara = "#24402f", "#cfe6d6"
-    e = tuple(int(escura[i : i + 2], 16) for i in (1, 3, 5))
-    c = tuple(int(clara[i : i + 2], 16) for i in (1, 3, 5))
-    # gradiente vertical: 1 coluna calculada e ampliada (rápido)
-    coluna = Image.new("RGB", (1, lado))
-    for y in range(lado):
-        t = y / lado * (0.55 if not ambiente else 0.9)
-        coluna.putpixel((0, y), tuple(int(c[k] + (e[k] - c[k]) * t) for k in range(3)))
-    img = coluna.resize((lado, lado))
-    desenho = ImageDraw.Draw(img)
-    if ambiente:  # linhas de plantio em perspectiva
-        for i in range(-6, 7):
-            desenho.line([(lado / 2 + i * 18, 420), (lado / 2 + i * 150, lado)], fill=(255, 255, 255), width=3)
-        desenho.rectangle([0, 0, lado, 420], fill=(222, 236, 228))
-    semente = int(hashlib.md5(titulo.encode(), usedforsecurity=False).hexdigest()[:6], 16)
-    cx, cy, r = lado // 2, 330 + (semente % 40), 120
-    desenho.ellipse([cx - r, cy - r + 60, cx + r, cy + r + 60], fill=e)
-    desenho.polygon([(cx, cy - 170), (cx - r + 8, cy + 30), (cx + r - 8, cy + 30)], fill=e)
-    desenho.ellipse([cx - 40, cy + 40, cx + 10, cy + 90], fill=c)
-    fonte = _fonte(40)
-    # a fonte embutida do Pillow não tem todos os acentos: só na imagem, texto sem acento
-    titulo = unicodedata.normalize("NFKD", titulo).encode("ascii", "ignore").decode()
-    subtitulo = unicodedata.normalize("NFKD", subtitulo).encode("ascii", "ignore").decode()
-    linhas, atual = [], ""
-    for palavra in titulo.split():
-        if len(atual) + len(palavra) > 26:
-            linhas.append(atual)
-            atual = palavra
-        else:
-            atual = f"{atual} {palavra}".strip()
-    linhas.append(atual)
-    y = 600
-    for linha in linhas[:3]:
-        w = desenho.textlength(linha, font=fonte)
-        desenho.text(((lado - w) / 2, y), linha, font=fonte, fill=(17, 37, 26) if not ambiente else (255, 255, 255))
-        y += 50
-    desenho.rounded_rectangle([lado - 230, 30, lado - 30, 92], radius=31, fill=(17, 37, 26))
-    desenho.text((lado - 202, 42), "DEMO", font=_fonte(36), fill=(242, 176, 30))
-    pequena = _fonte(28)
-    w = desenho.textlength(subtitulo, font=pequena)
-    desenho.text(
-        ((lado - w) / 2, lado - 70), subtitulo, font=pequena, fill=(85, 93, 86) if not ambiente else (255, 255, 255)
-    )
-    destino.parent.mkdir(parents=True, exist_ok=True)
-    img.save(destino, format="PNG")
-
-
-def _gerar_imagens(pasta: Path) -> None:
-    with ARQUIVO.open(encoding="utf-8") as f:
-        vistos = set()
-        for linha in csv.DictReader(f, delimiter=";"):
-            sku = linha["sku_produto"]
-            if sku in vistos:
-                continue
-            vistos.add(sku)
-            raiz = linha["categoria"].split(">")[-1].strip()
-            cores = CATEGORIAS.get(raiz, {}).get("cor", ("#1d6a44", "#e2efe7"))
-            for origem in linha["imagens"].split("|"):
-                ambiente = origem.startswith("ambiente:")
-                caminho = origem.split(":", 1)[1] if ambiente else origem
-                sub = "Aplicação em campo · imagem ilustrativa" if ambiente else "Imagem ilustrativa"
-                gerar_placeholder(pasta / caminho, linha["nome"], sub, cores, ambiente)
 
 
 @transaction.atomic
@@ -153,8 +74,8 @@ def _aplicar_metadados() -> None:
         cat.show_on_home = meta.get("home", False)
         cat.description = meta["description"]
         cat.seo_text = (
-            f"{cat.name}: categoria do catálogo de demonstração. Os produtos, textos e especificações são "
-            "fictícios e serão trocados pelo catálogo real da Irrigação Sem Fronteiras."
+            f"{cat.name}: {meta['description'][0].lower()}{meta['description'][1:]} Escolha as opções, informe as "
+            "quantidades e receba a proposta pelo WhatsApp ou e-mail."
         )
         cat.save()
     for nome, meta in _colecoes().items():
@@ -162,75 +83,68 @@ def _aplicar_metadados() -> None:
         if col:
             for campo, valor in meta.items():
                 setattr(col, campo, valor)
+            relativo = f"colecoes/{slugify(nome)}.jpg"
+            if not col.image:
+                col.image.save(PurePosixPath(relativo).name, ContentFile(demo_midia.ler(relativo)), save=False)
             col.save()
-
-
-def _cores_do_produto(produto: Product) -> tuple[str, str]:
-    categoria = produto.primary_category
-    return CATEGORIAS.get(categoria.name if categoria else "", {}).get("cor", ("#1d6a44", "#e2efe7"))
-
-
-def recriar_arquivo(nome: str, titulo: str, subtitulo: str, cores: tuple[str, str], ambiente: bool) -> bool:
-    """Gera o placeholder e grava em `nome` no storage padrão, se o arquivo não existir. Retorna se gravou."""
-    if default_storage.exists(nome):
-        return False
-    with tempfile.TemporaryDirectory(prefix="isf-midia-") as tmp:
-        caminho = Path(tmp) / "placeholder.png"
-        gerar_placeholder(caminho, titulo, subtitulo, cores, ambiente)
-        with caminho.open("rb") as arquivo:
-            salvo = default_storage.save(nome, File(arquivo))
-    if salvo != nome:  # não deve acontecer (o arquivo não existia); evita apontar para o nome errado
-        default_storage.delete(salvo)
-        raise RuntimeError(f"o storage gravou {salvo} em vez de {nome}")
-    return True
-
-
-def _recriar_miniaturas(img: ProductImage) -> int:
-    """Grava `card` e `large` ausentes nos nomes já registrados no banco, a partir de `image`."""
-    faltando = {
-        campo: getattr(img, campo).name
-        for campo in TAMANHOS
-        if getattr(img, campo).name and not default_storage.exists(getattr(img, campo).name)
-    }
-    if not faltando:
-        return 0
-    with default_storage.open(img.image.name, "rb") as arquivo, Image.open(arquivo) as original:
-        imagem = original.convert("RGB")
-        for campo, nome in faltando.items():
-            default_storage.save(nome, para_webp(imagem, TAMANHOS[campo]))
-    return len(faltando)
-
-
-def regenerar_midia() -> dict[str, int]:
-    """Recria os arquivos ausentes das imagens de produtos de demonstração, nos mesmos nomes do banco.
-
-    Serve a hospedagens com disco temporário (ex.: Render gratuito): o banco persiste, os arquivos não.
-    Não altera registros. Imagens de produtos reais ausentes só são contadas (não há como recriá-las).
-    """
-    contagem = {"recriadas": 0, "miniaturas": 0, "reais_ausentes": 0}
-    imagens = ProductImage.objects.select_related("product__primary_category").order_by("pk")
-    for img in imagens:
-        if not img.image.name:
-            continue
-        if not img.product.is_demo:
-            if not default_storage.exists(img.image.name):
-                contagem["reais_ausentes"] += 1
-            continue
-        ambiente = img.kind == ImageKind.ENVIRONMENT
-        sub = "Aplicação em campo · imagem ilustrativa" if ambiente else "Imagem ilustrativa"
-        if recriar_arquivo(img.image.name, img.product.name, sub, _cores_do_produto(img.product), ambiente):
-            contagem["recriadas"] += 1
-        contagem["miniaturas"] += _recriar_miniaturas(img)
-    return contagem
 
 
 def carregar(*, se_vazio: bool = False) -> Relatorio | None:
     """Importa o catálogo de demonstração. Com `se_vazio`, não faz nada se já houver produtos."""
     if se_vazio and Product.objects.exists():
         return None
-    with tempfile.TemporaryDirectory(prefix="isf-demo-") as tmp:
-        pasta = Path(tmp)
-        _gerar_imagens(pasta)
-        relatorio = importar(ARQUIVO, pasta_imagens=pasta, demo=True)
+    demo_midia.gerar()
+    relatorio = importar(ARQUIVO, pasta_imagens=demo_midia.pasta(), demo=True)
     _aplicar_metadados()
     return relatorio
+
+
+def _no_cache(relativo: str) -> str | None:
+    """Chave do cache para um `source` do banco (aceita os nomes .png da versão anterior da demo)."""
+    especs = demo_midia.especificacoes()
+    if relativo in especs:
+        return relativo
+    alternativo = str(PurePosixPath(relativo).with_suffix(".jpg"))
+    return alternativo if alternativo in especs else None
+
+
+def copiar_se_faltar(nome: str, conteudo) -> bool:
+    """Grava `conteudo()` em `nome` no storage padrão, se o arquivo não existir. Retorna se gravou."""
+    if not nome or default_storage.exists(nome):
+        return False
+    salvo = default_storage.save(nome, ContentFile(conteudo()))
+    if salvo != nome:  # não deve acontecer (o arquivo não existia); evita apontar para o nome errado
+        default_storage.delete(salvo)
+        raise RuntimeError(f"o storage gravou {salvo} em vez de {nome}")
+    return True
+
+
+def regenerar_midia() -> dict[str, int]:
+    """Recria os arquivos ausentes das imagens de produtos e coleções de demonstração, nos mesmos nomes do banco.
+
+    Serve a hospedagens com disco temporário (ex.: Render gratuito): o banco persiste, os arquivos não.
+    Copia do cache de ilustrações (rápido) e não altera registros. Imagens de produtos reais ausentes só
+    são contadas: não há como recriá-las.
+    """
+    contagem = {"recriadas": 0, "miniaturas": 0, "colecoes": 0, "reais_ausentes": 0}
+    for img in ProductImage.objects.select_related("product").order_by("pk"):
+        if not img.image.name:
+            continue
+        chave = _no_cache(img.source) if img.product.is_demo else None
+        if chave is None:
+            if not default_storage.exists(img.image.name):
+                contagem["reais_ausentes"] += 1
+            continue
+        if copiar_se_faltar(img.image.name, lambda c=chave: demo_midia.ler(c)):
+            contagem["recriadas"] += 1
+        for campo, lado in TAMANHOS.items():
+            nome = getattr(img, campo).name
+            if copiar_se_faltar(nome, lambda c=chave, ld=lado: demo_midia.ler_miniatura(c, ld)):
+                contagem["miniaturas"] += 1
+    for col in Collection.objects.filter(is_demo=True).exclude(image=""):
+        relativo = f"colecoes/{slugify(col.name)}.jpg"
+        if relativo in demo_midia.especificacoes() and copiar_se_faltar(
+            col.image.name, lambda r=relativo: demo_midia.ler(r)
+        ):
+            contagem["colecoes"] += 1
+    return contagem

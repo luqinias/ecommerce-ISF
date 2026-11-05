@@ -4,6 +4,12 @@ set -e
 
 python manage.py migrate --noinput
 
+if [ "${DEMO_RECARREGAR:-False}" = "True" ]; then
+  # Troca a demonstração antiga pela atual (só registros is_demo e as listas da home). Use uma vez e remova a variável.
+  python manage.py carregar_catalogo_demo --recarregar || true
+  python manage.py carregar_conteudo_demo --recarregar || true
+fi
+
 if [ "${LOAD_DEMO_DATA:-False}" = "True" ]; then
   python manage.py carregar_catalogo_demo --se-vazio || true
   python manage.py carregar_conteudo_demo --se-vazio || true

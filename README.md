@@ -24,7 +24,7 @@ Requer Python 3.12 e [uv](https://docs.astral.sh/uv/).
 cp .env.example .env
 uv sync
 uv run python manage.py migrate
-uv run python manage.py carregar_catalogo_demo     # 42 produtos fictícios com imagens geradas
+uv run python manage.py carregar_catalogo_demo     # 42 produtos fictícios com ilustrações próprias (~30 s na 1ª vez)
 uv run python manage.py carregar_conteudo_demo     # home, Sobre, Termos, Privacidade, FAQ
 uv run python manage.py createsuperuser
 uv run python manage.py runserver
@@ -83,3 +83,5 @@ specs/             artefatos do Spec Kit (spec, plan, research, data model, task
 | `carregar_catalogo_demo [--se-vazio]` | carrega o catálogo fictício |
 | `carregar_conteudo_demo [--se-vazio]` | cria o conteúdo inicial da home e das páginas (sem depoimentos inventados) |
 | `regenerar_midia_demo` | recria as imagens de demonstração que faltam (disco temporário, como no Render), sem alterar o banco |
+| `gerar_midia_demo [--forcar]` | desenha as ilustrações da demonstração no cache (`DEMO_MIDIA_DIR`); roda no build do Docker |
+| `carregar_catalogo_demo --recarregar` · `carregar_conteudo_demo --recarregar` | troca a demonstração atual pela versão do código (só registros de demonstração e as listas da home) |

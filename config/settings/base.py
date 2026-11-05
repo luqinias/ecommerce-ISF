@@ -139,6 +139,10 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+# Cache das ilustrações do catálogo de demonstração (gerado no build do Docker; ver apps/catalogo/services/demo_midia.py)
+DEMO_MIDIA_DIR = Path(os.getenv("DEMO_MIDIA_DIR", str(BASE_DIR / ".cache" / "demo-midia")))
+DEMO_MIDIA_RAPIDA = env_bool("DEMO_MIDIA_RAPIDA", False)
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 

@@ -18,10 +18,12 @@ def test_home_tem_moldura_completa(client):
     assert "Todas as Categorias" in html
 
 
-def test_sem_configuracao_mostra_definir_e_nao_inventa_contato(client):
+def test_sem_configuracao_nao_inventa_contato(client):
     html = client.get("/").content.decode()
-    assert "[DEFINIR]" in html
     assert "wa.me" not in html  # sem número, nada de link de WhatsApp
+    rodape = html[html.index("<footer") :]
+    assert "CNPJ" not in rodape and "Endereço" not in rodape  # campo sem dado real fica oculto
+    assert "[DEFINIR]" not in rodape
 
 
 def test_com_whatsapp_configurado_gera_link_wa_me(client, site_config):
@@ -57,3 +59,11 @@ def test_ids_configurados_viram_dado_inerte(client, site_config):
     bloco = re.search(r'<script type="application/json" id="isf-analytics">(.*?)</script>', html).group(1)
     assert json.loads(bloco) == {"gtm": "GTM-ABC1234", "pixel": "1234567890"}
     assert "googletagmanager.com/gtm.js" not in html and 'fbevents.js"' not in html  # nada carregado no HTML
+
+
+def test_texto_rico_vira_paragrafos_e_lista_com_escape():
+    from apps.core.templatetags.isf import texto_rico
+
+    html = texto_rico("Intro <b>x</b>.\n\nDestaques:\n- um\n- dois & três")
+    assert html == "<p>Intro &lt;b&gt;x&lt;/b&gt;.</p><p>Destaques:</p><ul><li>um</li><li>dois &amp; três</li></ul>"
+    assert texto_rico("") == ""

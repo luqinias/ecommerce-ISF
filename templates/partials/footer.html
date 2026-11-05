@@ -2,7 +2,7 @@
   <div class="container container--produto rodape__grade">
     <div class="rodape__marca">
       {% include "partials/logo.html" %}
-      <p>{{ site.footer_about|definir }}</p>
+      {% if not site.footer_about|e_definir %}<p>{{ site.footer_about }}</p>{% endif %}
       <div class="rodape__redes">
         {% if site.whatsapp_number %}<a href="{% whatsapp_url %}" target="_blank" rel="noopener" aria-label="WhatsApp">{% icone "whatsapp" 18 %}</a>{% endif %}
         {% for nome, url in site.social_links %}<a href="{{ url }}" target="_blank" rel="noopener" aria-label="{{ nome|capfirst }}">{% icone nome 18 %}</a>{% endfor %}
@@ -23,22 +23,24 @@
     <div>
       <h2 class="rodape__titulo">Atendimento</h2>
       <ul class="rodape__contatos">
+        {# Contato sem dado real fica oculto (não inventamos telefone, endereço ou CNPJ) #}
         <li><span class="icone-redondo">{% icone "whatsapp" 16 %}</span>
           <div><span class="rodape__rotulo">WhatsApp</span>
-            {% if site.whatsapp_number %}<a class="rodape__valor" href="{% whatsapp_url %}" target="_blank" rel="noopener">{{ site.phone_display|definir }}</a>{% else %}<span class="rodape__valor">[DEFINIR]</span>{% endif %}
+            <a class="rodape__valor" href="{% whatsapp_url %}" {% if site.whatsapp_number %}target="_blank" rel="noopener"{% endif %}>{% if site.whatsapp_number and not site.phone_display|e_definir %}{{ site.phone_display }}{% else %}Fale com a equipe{% endif %}</a>
           </div></li>
-        <li><span class="icone-redondo">{% icone "mail" 16 %}</span>
-          <div><span class="rodape__rotulo">E-mail</span>
-            {% if site.contact_email %}<a class="rodape__valor" href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a>{% else %}<span class="rodape__valor">[DEFINIR]</span>{% endif %}
-          </div></li>
-        <li><span class="icone-redondo">{% icone "map-pin" 16 %}</span>
-          <div><span class="rodape__rotulo">Endereço</span><span class="rodape__valor">{{ site.address|definir|linebreaksbr }}</span></div></li>
+        {% if site.contact_email %}<li><span class="icone-redondo">{% icone "mail" 16 %}</span>
+          <div><span class="rodape__rotulo">E-mail</span><a class="rodape__valor" href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a></div></li>{% endif %}
+        {% if not site.address|e_definir %}<li><span class="icone-redondo">{% icone "map-pin" 16 %}</span>
+          <div><span class="rodape__rotulo">Endereço</span><span class="rodape__valor">{{ site.address|linebreaksbr }}</span></div></li>{% endif %}
+        <li><span class="icone-redondo">{% icone "clipboard" 16 %}</span>
+          <div><span class="rodape__rotulo">Orçamento</span><a class="rodape__valor" href="{% url 'orcamentos:lista' %}">Monte a sua lista</a></div></li>
       </ul>
     </div>
   </div>
   <div class="rodape__base">
     <div class="container container--produto rodape__base-linha">
-      <span>© {% now "Y" %} {{ site.site_name }} · CNPJ {{ site.cnpj|definir }}</span>
+      <span>© {% now "Y" %} {{ site.site_name }}{% if not site.cnpj|e_definir %} · CNPJ {{ site.cnpj }}{% endif %}</span>
+      {% if demo_ativo %}<span class="rodape__demo">Ambiente de demonstração: produtos, imagens e projetos são ilustrativos.</span>{% endif %}
       <nav aria-label="Links legais">
         <a href="{% url 'conteudo:termos' %}">Termos de uso</a>
         <a href="{% url 'conteudo:privacidade' %}">Política de privacidade</a>

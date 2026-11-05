@@ -8,7 +8,6 @@
     <span class="card-produto__selos">
       {% if p.is_new %}<span class="selo selo--novo">Novo</span>{% endif %}
       {% if p.featured %}<span class="selo selo--destaque">Destaque</span>{% endif %}
-      {% if p.is_demo %}<span class="selo selo--demo">Demo</span>{% endif %}
     </span>
     {% if resumo %}
       <span class="card-produto__opcoes"><b>{{ resumo.total }} {{ resumo.total|pluralize:"opção,opções" }}</b>

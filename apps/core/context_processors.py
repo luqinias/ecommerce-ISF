@@ -22,6 +22,15 @@ def _total_lista(request) -> int:
     return len(ListaOrcamento(request))
 
 
+def _demo_ativo() -> bool:
+    """Há produtos de demonstração no catálogo? (mostra o aviso discreto no rodapé)"""
+    from django.core.cache import cache
+
+    from apps.catalogo.models import Product
+
+    return cache.get_or_set("core:demo-ativo", lambda: Product.objects.filter(is_demo=True).exists(), 60)
+
+
 def site(request):
     menus = SimpleLazyObject(_menus)
     return {
@@ -30,4 +39,5 @@ def site(request):
         "menu_colecoes": SimpleLazyObject(lambda: menus[1]),
         "lista_orcamento_total": SimpleLazyObject(lambda: _total_lista(request)),
         "consentimento_cookies": request.COOKIES.get("isf_consent", ""),
+        "demo_ativo": SimpleLazyObject(_demo_ativo),
     }

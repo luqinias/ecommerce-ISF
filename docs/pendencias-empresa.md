@@ -27,3 +27,6 @@
 | P20 | Horário de atendimento e endereço para retirada/visita (página de contato) | Fase 1 | Aberta |
 | P21 | Revisar o conteúdo inicial da home criado por `carregar_conteudo_demo` (diferenciais, passos, FAQ, Sobre, Termos, Privacidade): os itens com `[DEFINIR]` precisam de texto real antes do go-live | Fase 3 (006) | Aberta |
 | P22 | Política de privacidade: confirmar com o jurídico o texto da seção de cookies e as bases legais | Fase 3 (008) | Aberta |
+
+> **Demonstração (05/11/2026):** o catálogo e o conteúdo de demonstração usam ilustrações próprias e textos institucionais genéricos. O site não mostra mais `[DEFINIR]` nem selos "Demo" por item: há um aviso único no rodapé ("Ambiente de demonstração…") enquanto houver produtos `is_demo`. Telefone, endereço, CNPJ e horário **não foram inventados**: com o campo vazio, o site o oculta. As pendências acima continuam valendo e devem ser preenchidas em **Configurações do site** antes do go-live.
+
