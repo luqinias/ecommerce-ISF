@@ -150,7 +150,7 @@
 
 {# H07 Como funciona #}
 {% if passos %}
-<section class="secao secao--creme como-funciona" aria-labelledby="como-titulo">
+<section class="secao secao--creme secao--respiro como-funciona" aria-labelledby="como-titulo">
   <div class="container">
     {% include "conteudo/_cabecalho_secao.html" with t=textos.como_funciona id_titulo="como-titulo" %}
     <ol class="passos-home">
@@ -177,7 +177,7 @@
 </section>
 
 {# H09 + H10 Por que nós e depoimentos #}
-<section class="secao por-que" aria-labelledby="porque-titulo">
+<section class="secao secao--respiro por-que" aria-labelledby="porque-titulo">
   <div class="container por-que__grade">
     <div>
       {% if textos.por_que.kicker %}<span class="kicker">{{ textos.por_que.kicker }}</span>{% endif %}
@@ -206,7 +206,7 @@
 
 {# H11 FAQ #}
 {% if faq %}
-<section class="secao secao--creme faq" aria-labelledby="faq-titulo">
+<section class="secao secao--creme secao--respiro faq" aria-labelledby="faq-titulo">
   <div class="container container--estreito">
     {% include "conteudo/_cabecalho_secao.html" with t=textos.faq id_titulo="faq-titulo" %}
     {% include "conteudo/_faq.html" with perguntas=faq %}

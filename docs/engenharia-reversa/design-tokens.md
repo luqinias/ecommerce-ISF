@@ -29,15 +29,19 @@ Contraste: a referência tem violações `color-contrast` em todas as páginas (
 
 | Uso | Referência | ISF |
 |---|---|---|
-| Títulos | Fraunces 600 (serifada) | Manrope 800, `letter-spacing: -0.025em` |
-| Corpo | Inter 400, 16/26,4 | Manrope 400, 16/1,6 |
-| Código/SKU | Inter | JetBrains Mono, `tabular-nums` |
-| h1 hero | 56/62,7, -0,5 px | `clamp(2.25rem, 4vw + 1rem, 3.5rem)` |
-| h1 de página / h2 | 40/46 | `clamp(1.625rem, 1.5vw + 1rem, 2.5rem)` |
-| h3 | 22/28,6 | 1,375 rem |
-| Subtítulo (lead) | 17/28 | 1,0625 rem |
-| Navegação | 14,5 / 700 | 0,9 rem / 700 |
-| Botão | 15 / 600 | 0,9375 rem / 700 |
+| Títulos | Fraunces 600 (serifada) | Fraunces 600 (igual; destaque do h1 em itálico) |
+| Corpo | Inter 400, 16/26,4 (14,6 px até 921 px) | Inter 400, 16/1,65 (0,912 rem até 921 px) |
+| Código/SKU | Inter | Inter, `tabular-nums` |
+| h1 hero | 56/62,7, -0,5 px (31 px no celular) | `clamp(31px, 4.3vw, 56px)`, -0,5 px |
+| h1 de listagem | 38/42,6 (23 px no celular) | 38 px a partir de 641 px, 23 px abaixo |
+| h1 de produto | 34/40 (25 px até 544 px) | igual |
+| h2 de seção | `clamp(26px, 3vw, 40px)` (24 px no celular) | igual |
+| h3 | 22/28,6 (18 px no celular) | igual |
+| Subtítulo (lead) | 17/28 | 17/1,65 (15 px no celular) |
+| Navegação | 14,5 / 700 | igual |
+| Botão | 15 / 600, padding 16 × 28 | igual (14 px e 13 × 10 no celular) |
+
+> Tipografia alinhada à referência em 05/11/2026, a pedido da equipe (ver `docs/validacao/comparativo.md`, seção 7). As cores continuam as da ISF ("Campo"). As fontes são OFL e servidas localmente.
 | Kicker | 13 / 700, caixa alta, 2,5 px | 0,8125 rem / 800, caixa alta, 0,16 em |
 | Breadcrumb | 13 | 0,8125 rem |
 | Selo | 11 / 700 | 0,6875 rem / 800 |

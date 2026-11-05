@@ -6,7 +6,7 @@
 | # | Item | Origem | Situação |
 |---|---|---|---|
 | P1 | Logo da ISF (SVG ou PNG em alta resolução, versões clara e escura) | Fase 0: os projetos internos só têm o logo do FarmEvolution | Aberta |
-| P2 | Paleta e tipografia oficiais da ISF. Hoje usamos, de forma provisória, o design system "Campo" do FarmEvolution | Fase 0 (C12) | Aberta |
+| P2 | Paleta e tipografia oficiais da ISF. Hoje usamos, de forma provisória, as cores do design system "Campo" do FarmEvolution e, desde 05/11/2026, a tipografia da referência (Fraunces nos títulos, Inter no texto). Trocar = editar `static/css/tokens.css` | Fase 0 (C12) | Aberta |
 | P3 | Textos institucionais: Sobre, missão, diferenciais, tom de voz oficial | Fase 0 | Aberta |
 | P4 | Contatos: telefone, WhatsApp comercial, e-mails de destino dos orçamentos, endereço, CNPJ, redes sociais | Fase 0 | Aberta |
 | P5 | Termos de Uso e Política de Privacidade: reaproveitar os de `ias.irrigacaosemfronteiras.com.br` ou redigir textos próprios do site? | Fase 0 | Aberta |

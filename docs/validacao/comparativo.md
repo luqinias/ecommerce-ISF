@@ -13,7 +13,7 @@
 | Layout segue a referência nos 3 viewports | ✅ Mesma ordem de seções e mesmas colunas de grade em 390/768/1440 (tabelas abaixo), com divergências justificadas na seção 4 |
 | Sem rolagem horizontal em 390 px | ✅ em todas as páginas |
 | axe sem violações críticas ou sérias | ✅ 0 em todas as páginas (a referência tem 1 a 3 regras sérias/críticas por página) |
-| LCP e CLS iguais ou melhores que a referência | ✅ LCP de 52–240 ms (referência: 240–2184 ms); CLS 0 em todas (referência chega a 0,146) |
+| LCP e CLS iguais ou melhores que a referência | ✅ LCP de 96–372 ms (referência: 240–2184 ms); CLS 0 em todas (referência chega a 0,146). Medido de novo em 05/11/2026, após a troca de tipografia (seção 7) |
 | Comportamentos | ✅ cobertos por E2E (seção 3) |
 
 ## 2. Estrutura
@@ -64,13 +64,13 @@ Os 7 breakpoints da referência foram consolidados em 4 (`sm 640`, `md 768`, `lg
 
 | Componente | Referência | ISF | Observação |
 |---|---|---|---|
-| Container | 1220–1320 px | 1280 px − gutter 32 = 1216 px úteis | dentro da faixa |
-| Faixa superior / header / nav | 46 / 65 / 72 px | 44 / 68 / 64 px | proporção mantida |
+| Container (largura útil) | header 1164 · home 1256 · listagem 1180 · produto e rodapé 1200 px | igual, por tipo de container | igual (seção 7) |
+| Faixa superior / header / nav | 46 / 64 / 72 px | 46 / 64 / 72 px | igual (seção 7) |
 | Botões e chips | pílula (raio 100 px) | pílula (raio 999 px) | igual |
 | Cards de produto, tiles, painéis | raio 16 px, borda clara, hover −4 px + sombra | raio 16 px, borda clara, hover −4 px + sombra | igual |
 | Cards grandes (passos, coleções, depoimentos) | raio 20 px | raio 20 px | igual |
-| h1 de página / h2 de seção | 38–40 px / 40 px | 40 px / 36 px (`clamp`) | escala fluida |
-| Tipografia | Fraunces + Inter | Manrope + JetBrains Mono | identidade ISF provisória ("Campo"), P2 |
+| h1 de página / h2 de seção | 38 px / 40 px (23 / 24 px no celular) | igual | igual (seção 7) |
+| Tipografia | Fraunces 600 (títulos) + Inter (texto) | igual, servidas localmente | alinhada em 05/11/2026 (seção 7) |
 | Cores | petróleo, ouro, escuro, creme | verde-floresta, ouro, "Mata Noturna", papel | mesmos papéis, paleta da empresa (P2) |
 | Foco | `outline 3px dotted` | contorno 2 px + anel 3 px | mais visível (WCAG) |
 
@@ -97,7 +97,7 @@ Os 7 breakpoints da referência foram consolidados em 4 (`sm 640`, `md 768`, `lg
 
 | # | Divergência | Justificativa |
 |---|---|---|
-| D1 | Identidade visual (cores, fontes, logo) | Princípio II: a fidelidade é na forma, não na marca. Tokens "Campo" até a ISF entregar a marca (P1, P2) |
+| D1 | Identidade visual (cores e logo) | Princípio II: a fidelidade é na forma, não na marca. Cores "Campo" até a ISF entregar a marca (P1, P2). A tipografia segue a referência desde 05/11/2026 (seção 7) |
 | D2 | Ao adicionar ao orçamento, a página não redireciona | Facilita montar uma lista com vários itens. O toast leva à lista (gap analysis) |
 | D3 | Contador = número de itens, não soma de quantidades | Unidades diferentes (metro, rolo, peça) não se somam |
 | D4 | Seletor de variação em pílulas de texto, não swatches de cor | Atributos técnicos (vazão, diâmetro), definidos por categoria |
@@ -129,5 +129,62 @@ uv run python tools/engenharia_reversa/captura.py local http://localhost:8000   
 uv run python tools/engenharia_reversa/breakpoints.py http://localhost:8000     # → docs/engenharia-reversa/raw/breakpoints_local.json
 uv run python tools/validacao/comparar.py > docs/validacao/tabelas-geradas.md
 uv run python tools/validacao/lado_a_lado.py                                    # requer as capturas da Fase 1
+uv run python tools/validacao/medir.py http://localhost:8000 [--so-local]       # estilos e caixas por par de elementos → raw/medidas.json
+uv run python tools/validacao/diferencas.py 1440 768 390                        # lista os desvios (ignora cores, D1)
 uv run pytest && uv run pytest -m e2e
 ```
+
+## 7. Ajuste fino de tipografia e métricas (05/11/2026)
+
+A pedido da equipe, que via diferenças de tamanho e fonte, refizemos a comparação **elemento a elemento**. O script `tools/validacao/medir.py` abre a referência e o ISF nos 3 viewports e mede, para cerca de 50 pares de seletores (faixa superior, header, navegação, hero, vitrine, cards, passos, FAQ, rodapé, cookies, listagem e produto), fonte, tamanho, peso, entrelinha, espaçamento, padding, raio e caixa (x, y, largura, altura). Na referência foram 3 navegações, com o limite de 1 requisição a cada 2 s. O script `diferencas.py` lista os desvios e ignora as cores (D1).
+
+### 7.1 O que mudou
+
+| Item | Antes | Agora (= referência) |
+|---|---|---|
+| Fonte dos títulos | Manrope 800, tracking −0,025em | **Fraunces 600**, tracking normal (h1 −0,01em); destaque do h1 em itálico |
+| Fonte do texto | Manrope; SKU em JetBrains Mono | **Inter**; SKU em Inter com `tabular-nums` |
+| Texto corrido até 921 px | 16 px | 14,6 px (a referência reduz a raiz para 91,2 %) |
+| h1 hero / h2 / h3 | 56·36 / 36 / 22 px (celular 36 / 26 / 22) | 56 / 40 / 22 px (celular 31 / 24 / 18) |
+| h1 de listagem / de produto | 40 / 36 px | 38 / 34 px (celular 23 / 25) |
+| Pesos de botões, links e chips | 700–800 | 600 (navegação e gatilhos 700, chips 500) |
+| Botão grande | 56 px, padding 0 × 32, 16 px | 58 px, padding 16 × 28, 15 px (celular 51 px, 14 px) |
+| Faixa superior / header / navegação | 44 / 68 / 64 px | 46 / 64 / 72 px, com sombra na navegação e itens distribuídos |
+| Containers | um só: 1280 px com gutter 32 | por tipo, como a referência: header 1164, home 1256, listagem 1180, produto e rodapé 1200 px úteis; gutters 20–32 px |
+| Respiro das seções | 48 / 80 px | 36 / 56 / 72 px; Como funciona, Por que nós e FAQ com 88 px |
+| Cards de produto | nome 14 px / 700, até 3 linhas | 13,5 px / 600 na grade, 12,5 px no trilho, até 2 linhas |
+| Hero no celular | botões empilhados, provas em cards, sem imagem | 2 botões lado a lado, provas numa linha de texto, imagem principal com card flutuante |
+| Produto no celular (≤ 544 px) | resumo alinhado à esquerda, com breadcrumb | resumo centralizado, sem breadcrumb (os dados estruturados continuam) |
+| Rodapé no celular | alinhado à esquerda | centralizado; títulos em Fraunces 18 px |
+| Banner de cookies | botões esticados | botões compactos no desktop, metade a metade no celular |
+
+### 7.2 Resultado medido (1440 px)
+
+| Elemento | Referência | ISF agora |
+|---|---|---|
+| h1 do hero | Fraunces 56 / 600, x 92 | Fraunces 56 / 600, x 92 |
+| h2 de seção | Fraunces 40 / 600, altura 46 | Fraunces 40 / 600, altura 46 |
+| h1 do hero (390 px) | Fraunces 31 / 600, altura 69 | Fraunces 31 / 600, altura 69 |
+| Nome no card (listagem) | Inter 13,5 / 600, altura 38 | Inter 13,5 / 600, altura 38 |
+| Navegação / CTA dourado | 72 / 46 px | 72 / 46 px |
+| Botão do hero | Inter 15 / 600, 59 px | Inter 15 / 600, 58 px |
+| Número do passo | Fraunces 32 / 600 | Fraunces 32 / 600 |
+| Pergunta do FAQ | Inter 15,5 / 600, 66 px, x 318 | Inter 15,5 / 600, 66 px, x 318 |
+| Chip de categoria | Inter 13 / 500, 33 px | Inter 13 / 500, 33 px |
+
+Os desvios que o `diferencas.py` ainda aponta são de três tipos:
+- **Estrutura equivalente:** o padding fica no pai em vez do filho, ou `999px` em vez de `100px` no raio, com o mesmo resultado visual.
+- **Conteúdo:** textos e quantidades de itens diferentes mudam alturas.
+- **Divergências intencionais:** D4, pílulas de texto em vez de swatches de cor; logo e cores da ISF (D1).
+
+### 7.3 Fontes sem deslocamento de layout
+
+- As fontes Fraunces e Inter (licença OFL, Fontsource) são servidas de `static/fonts/`, sem terceiros antes do consentimento, com preload da Inter e da Fraunces (normal e itálica).
+- A primeira medição depois da troca deu CLS de até 0,18. Com o fallback de sistema, o título quebrava em uma linha a mais e empurrava o conteúdo abaixo.
+- **Correção 1:** fallbacks com métricas ajustadas (`size-adjust`, `ascent-override`) em `tokens.css`. Foram usadas as larguras da biblioteca Capsize para Segoe UI, Roboto, Helvetica e Arial, e a medição em layout para DejaVu Serif e DejaVu Sans no peso usado.
+- **Correção 2:** larguras máximas em `em` em vez de `ch`, porque `ch` muda com a fonte.
+- Em produção (Docker), o CLS ficou em **0 em todas as páginas**.
+- `font-display: optional` foi testado e descartado: numa primeira visita sem cache, a Fraunces chegava depois de 100 ms e a página inteira ficava com a fonte de sistema.
+- **Limites:**
+  - Georgia e Times em negrito (Windows e Mac) ficam sem ajuste, por falta de métricas confiáveis do negrito.
+  - Um título que fica no limite exato da largura (como "Irrigação Sem Fronteiras" a 31 px no celular) ainda pode mudar de linha na troca. No servidor de desenvolvimento, isso deu CLS de 0,03 na página Sobre.

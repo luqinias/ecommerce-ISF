@@ -138,7 +138,7 @@ Português do Brasil, **direto e operacional**, em segunda pessoa ("você") e co
 | Servidor | **gunicorn** atrás de Nginx (mesmo modelo do EC2 interno) |
 | Git | Conventional Commits em pt-BR com escopo por app; branches `feat/<descricao>` |
 | Spec Kit | mesma integração do front (`claude`, `sh`, numeração sequencial, comandos `/speckit-*`) |
-| Visual | tokens "Campo" (cores claro/escuro, Manrope + JetBrains Mono, raios, sombras, alturas de controle), traduzidos para variáveis CSS puras |
+| Visual | tokens "Campo" (cores claro/escuro, raios, sombras, alturas de controle), traduzidos para variáveis CSS puras. A tipografia Manrope + JetBrains Mono foi substituída em 05/11/2026 pela da referência (Fraunces + Inter) |
 
 ---
 

@@ -7,7 +7,7 @@
 {% block body_class %}pagina-listagem pagina-{{ cfg.tipo }}{% endblock %}
 
 {% block content %}
-<div class="container listagem">
+<div class="container container--lista listagem">
   {# L01 Hero da categoria #}
   <section class="hero-lista{% if colecao %} hero-lista--{{ colecao.color }}{% endif %}" aria-labelledby="titulo-lista">
     {% include "componentes/breadcrumb.html" with trilha=cfg.breadcrumb %}

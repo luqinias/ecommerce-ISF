@@ -6,7 +6,7 @@
 | R2 | Banco via `DATABASE_URL` (dj-database-url) **e** variáveis `DB_*` do padrão interno; sem nenhuma, SQLite | só `DB_*` | Compose e PaaS usam URL; equipe já conhece `DB_*` |
 | R3 | `SiteConfiguration` singleton com `pk` fixo e `load()` com cache invalidado no `save()` | django-solo | Evita dependência; poucas linhas |
 | R4 | HTMX 2.0.x vendorizado em `static/vendor/` | CDN | LGPD (sem terceiros), funciona offline, versionado |
-| R5 | Fontes Manrope e JetBrains Mono variáveis (WOFF2 latin) em `static/fonts/`, `font-display: swap`, preload da Manrope | Google Fonts | LGPD e LCP |
+| R5 | Fontes variáveis (WOFF2 latin) em `static/fonts/` com preload. Originalmente Manrope e JetBrains Mono; em 05/11/2026 trocadas por Fraunces (títulos, `font-display: optional`) e Inter (texto, `swap`), como na referência | Google Fonts | LGPD e LCP |
 | R6 | Dropdowns e menu mobile em JS puro com `aria-expanded`; Alpine.js não é necessário | Alpine.js | Princípio IX: menos uma lib |
 | R7 | Ícones SVG inline via `{% icone "nome" %}` (traço estilo lucide) | fonte de ícones | Sem request extra; `aria-hidden` |
 | R8 | Healthcheck `/healthz/` faz `SELECT 1` e responde JSON `{"status": "ok"}`; 503 se o banco falhar | django-health-check | Princípio IX |

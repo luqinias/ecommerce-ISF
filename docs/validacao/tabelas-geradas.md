@@ -6,8 +6,8 @@
 | home | Cards de coleção/data | 1 | — | 1 | — | 3 | — |
 | home | Portfólio | 2 | — | 2 | — | 4 | — |
 | home | Tiles de categoria | 2 | 2 | 4 | 4 | 6 | 6 |
-| home | Como funciona | 2 | 1 | 2 | 2 | 4 | 4 |
-| home | Cards de prova (hero) | — | 1 | 3 | 3 | 3 | 3 |
+| home | Como funciona | 2 | 2 | 2 | 2 | 4 | 4 |
+| home | Cards de prova (hero) | — | — | 3 | 3 | 3 | 3 |
 | categoria | Grade de produtos | 2 | 2 | 3 | 3 | 5 | 5 |
 | catalogo | Grade de produtos | 2 | 2 | 3 | 3 | 5 | 5 |
 | produto | Relacionados | 2 | 2 | 3 | 3 | 5 | 5 |
@@ -20,95 +20,95 @@
 | body (home) | fontWeight | 400 | 400 |
 | body (home) | borderRadius | 0 | 0 |
 | body (home) | padding | 0 | 0 |
-| body (home) | height | 10657.3 | 9936 |
-| h2 (home) | fontSize | 40 | 36.16 |
-| h2 (home) | fontWeight | 600 | 800 |
+| body (home) | height | 10657.3 | 10109.9 |
+| h2 (home) | fontSize | 40 | 40 |
+| h2 (home) | fontWeight | 600 | 600 |
 | h2 (home) | borderRadius | 0 | 0 |
 | h2 (home) | padding | 0 | 0 |
-| h2 (home) | height | 46 | 40.4844 |
+| h2 (home) | height | 46 | 46 |
 | header_main (home) | fontSize | 16 | 16 |
 | header_main (home) | fontWeight | 400 | 400 |
 | header_main (home) | borderRadius | 0 | 0 |
-| header_main (home) | padding | 0 | 0 32 |
-| header_main (home) | height | 65 | 68 |
+| header_main (home) | padding | 0 | 10 28 |
+| header_main (home) | height | 65 | 64 |
 | dd_trigger (home) | fontSize | 14 | 14 |
-| dd_trigger (home) | fontWeight | 700 | 800 |
+| dd_trigger (home) | fontWeight | 700 | 700 |
 | dd_trigger (home) | borderRadius | 100 | 999 |
-| dd_trigger (home) | padding | 10 19 | 0 20 |
-| dd_trigger (home) | height | 34 | 38 |
+| dd_trigger (home) | padding | 10 19 | 0 19 |
+| dd_trigger (home) | height | 34 | 34 |
 | cta_gold (home) | fontSize | 14.5 | 14 |
-| cta_gold (home) | fontWeight | 700 | 800 |
+| cta_gold (home) | fontWeight | 700 | 700 |
 | cta_gold (home) | borderRadius | 100 | 999 |
-| cta_gold (home) | padding | 11 21 | 0 16 |
-| cta_gold (home) | height | 45.9219 | 38 |
-| btn_ghost (home) | fontSize | 15 | 16 |
-| btn_ghost (home) | fontWeight | 600 | 800 |
+| cta_gold (home) | padding | 11 21 | 0 21 |
+| cta_gold (home) | height | 45.9219 | 46 |
+| btn_ghost (home) | fontSize | 15 | 15 |
+| btn_ghost (home) | fontWeight | 600 | 600 |
 | btn_ghost (home) | borderRadius | 100 | 999 |
-| btn_ghost (home) | padding | 16 28 | 0 32 |
-| btn_ghost (home) | height | 58.75 | 56 |
+| btn_ghost (home) | padding | 16 28 | 0 28 |
+| btn_ghost (home) | height | 58.75 | 58 |
 | card_produto (home) | fontSize | 16 | 16 |
 | card_produto (home) | fontWeight | 400 | 400 |
 | card_produto (home) | borderRadius | 16 | 16 |
 | card_produto (home) | padding | 0 | 0 |
-| card_produto (home) | height | 277.203 | 310.453 |
+| card_produto (home) | height | 277.203 | 282.453 |
 | passo (home) | fontSize | 16 | 16 |
 | passo (home) | fontWeight | 400 | 400 |
 | passo (home) | borderRadius | 20 | 20 |
-| passo (home) | padding | 30 22 | 24 20 |
-| passo (home) | height | 232.719 | 211.156 |
+| passo (home) | padding | 30 22 | 30 22 |
+| passo (home) | height | 232.719 | 216.312 |
 | cookie_banner (home) | fontSize | 16 | 14 |
 | cookie_banner (home) | fontWeight | 400 | 400 |
 | cookie_banner (home) | borderRadius | 0 | 18 |
-| cookie_banner (home) | padding | 0 | 20 |
-| cookie_banner (home) | height | auto | 138.781 |
-| h1 (categoria) | fontSize | 38 | 40 |
-| h1 (categoria) | fontWeight | 600 | 800 |
+| cookie_banner (home) | padding | 0 | 18 20 |
+| cookie_banner (home) | height | auto | 134.172 |
+| h1 (categoria) | fontSize | 38 | 38 |
+| h1 (categoria) | fontWeight | 600 | 600 |
 | h1 (categoria) | borderRadius | 0 | 0 |
 | h1 (categoria) | padding | 0 | 0 |
-| h1 (categoria) | height | 42.5469 | 44.7969 |
+| h1 (categoria) | height | 42.5469 | 42.5469 |
 | header_nav (categoria) | fontSize | 16 | 16 |
 | header_nav (categoria) | fontWeight | 400 | 400 |
 | header_nav (categoria) | borderRadius | 0 | 0 |
 | header_nav (categoria) | padding | 0 | 0 |
-| header_nav (categoria) | height | 71.9219 | 64 |
+| header_nav (categoria) | height | 71.9219 | 72 |
 | chip (categoria) | fontSize | 16 | 16 |
 | chip (categoria) | fontWeight | 400 | 400 |
 | chip (categoria) | borderRadius | 0 | 0 |
 | chip (categoria) | padding | 0 | 0 |
-| chip (categoria) | height | 32.8906 | 38 |
-| util_bar (produto) | fontSize | 16 | 13 |
+| chip (categoria) | height | 32.8906 | 35 |
+| util_bar (produto) | fontSize | 16 | 13.5 |
 | util_bar (produto) | fontWeight | 400 | 400 |
 | util_bar (produto) | borderRadius | 0 | 0 |
 | util_bar (produto) | padding | 0 | 0 |
-| util_bar (produto) | height | 46 | 44 |
+| util_bar (produto) | height | 46 | 46 |
 | btn_primario (produto) | fontSize | 16 | 14 |
-| btn_primario (produto) | fontWeight | 700 | 800 |
+| btn_primario (produto) | fontWeight | 700 | 600 |
 | btn_primario (produto) | borderRadius | 12 | 999 |
-| btn_primario (produto) | padding | 16 20 | 0 16 |
-| btn_primario (produto) | height | 54 | 38 |
+| btn_primario (produto) | padding | 16 20 | 11 20 |
+| btn_primario (produto) | height | 54 | 40.7969 |
 | breadcrumb (produto) | fontSize | 13 | 16 |
 | breadcrumb (produto) | fontWeight | 400 | 400 |
 | breadcrumb (produto) | borderRadius | 0 | 0 |
 | breadcrumb (produto) | padding | 0 | 0 |
-| breadcrumb (produto) | height | 42.875 | 20.7969 |
+| breadcrumb (produto) | height | 42.875 | 21.4375 |
 
 ## Desempenho e acessibilidade (1440 px, rastreadores bloqueados na referência)
 
 | Tipo | LCP ref (ms) | LCP local (ms) | CLS ref | CLS local | axe crít./sérias ref | axe crít./sérias local | rolagem horizontal 390 (local) |
 |---|---|---|---|---|---|---|---|
-| home | 1316 | 240 | 0.1291 | 0 | 1 | 0 | não |
-| catalogo | 792 | 144 | 0.0022 | 0 | 1 | 0 | não |
-| categoria | 2184 | 132 | 0.0015 | 0 | 2 | 0 | não |
-| subcategoria | 1200 | 88 | 0.002 | 0 | 2 | 0 | não |
-| data-especial | 1196 | 80 | 0.0022 | 0 | 2 | 0 | não |
-| produto | 1740 | 96 | 0.0103 | 0 | 3 | 0 | não |
-| busca | 1832 | 84 | 0.1206 | 0 | 1 | 0 | não |
-| novidades | 1440 | 88 | 0.1455 | 0 | 1 | 0 | não |
-| sobre | 1276 | 60 | 0.003 | 0 | 1 | 0 | não |
-| contato | 1084 | 88 | 0.0018 | 0 | 1 | 0 | não |
-| orcamento | 1388 | 60 | 0.0023 | 0 | 1 | 0 | não |
-| termos | 240 | 56 | 0.0067 | 0 | 1 | 0 | não |
-| 404 | 248 | 52 | 0.0038 | 0 | 1 | 0 | não |
+| home | 1316 | 372 | 0.1291 | 0 | 1 | 0 | não |
+| catalogo | 792 | 176 | 0.0022 | 0 | 1 | 0 | não |
+| categoria | 2184 | 204 | 0.0015 | 0 | 2 | 0 | não |
+| subcategoria | 1200 | 180 | 0.002 | 0 | 2 | 0 | não |
+| data-especial | 1196 | 208 | 0.0022 | 0 | 2 | 0 | não |
+| produto | 1740 | 132 | 0.0103 | 0 | 3 | 0 | não |
+| busca | 1832 | 156 | 0.1206 | 0 | 1 | 0 | não |
+| novidades | 1440 | 168 | 0.1455 | 0 | 1 | 0 | não |
+| sobre | 1276 | 120 | 0.003 | 0 | 1 | 0 | não |
+| contato | 1084 | 132 | 0.0018 | 0 | 1 | 0 | não |
+| orcamento | 1388 | 96 | 0.0023 | 0 | 1 | 0 | não |
+| termos | 240 | 100 | 0.0067 | 0 | 1 | 0 | não |
+| 404 | 248 | 108 | 0.0038 | 0 | 1 | 0 | não |
 
 ## Ordem das seções (1440 px)
 

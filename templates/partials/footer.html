@@ -1,5 +1,5 @@
 <footer class="rodape">
-  <div class="container rodape__grade">
+  <div class="container container--produto rodape__grade">
     <div class="rodape__marca">
       {% include "partials/logo.html" %}
       <p>{{ site.footer_about|definir }}</p>
@@ -37,7 +37,7 @@
     </div>
   </div>
   <div class="rodape__base">
-    <div class="container rodape__base-linha">
+    <div class="container container--produto rodape__base-linha">
       <span>© {% now "Y" %} {{ site.site_name }} · CNPJ {{ site.cnpj|definir }}</span>
       <nav aria-label="Links legais">
         <a href="{% url 'conteudo:termos' %}">Termos de uso</a>
